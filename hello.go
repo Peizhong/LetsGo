@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	// . fmt 省略前缀 Println("hello world")
+	// f fmt 重命名 f.Println("hello world")
+	// _ "github.com/ziutek/mymysql/godrv" 引入该包, init()，而不直接使用包里面的函数
 	"io"
 	"log"
 	"net/http"
@@ -43,18 +46,118 @@ func test() {
 	cnums := [...]int{2, 4, 6, 8}
 	// 二维数组 row*column
 	doubleArray := [...][4]int{{1, 2, 3, 4}, {5, 6, 7, 8}}
-	// slice 不固定长度
+	// slice 不固定长度，引用类型
 	slice := []byte{'a', 'b', 'c', 'd'}
+
+	var array [10]int
+	// 长度2，容量2-10:8
+	slice2 := array[2:4]
+	// append函数会改变slice所引用的数组的内容，从而影响到引用同一数组的其它slice。
+	// 但当slice中没有剩余空间（即(cap-len) == 0）时，此时将动态分配新的数组空间。返回的slice数组指针将指向这个空间，而原数组的内容将保持不变；其它引用此数组的slice则不受影响
+	slice3 := append(slice2, 1)
 	// iota枚举， const中重置，每行加1
 	const (
 		red   = iota //0
 		green = iota //1
 		blue  = iota //2
 	)
+	// 长度2，容量6
+	slice4 := make([]byte, 2, 6)
+	// map, 用make初始化
+	numbers := map[string]string{}
+	numbers["one"] = "a"
+	numbers["two"] = "b"
+	//value2, enable := numbers["one2"] 生成new value
+	helloString, enable = numbers["one2"]
+
+	// make用于内建类型（map、slice 和channel）的内存分配。new用于各种类型的内存分配。
+
 	fmt.Println("%s", sraw)
-	fmt.Println(code, b, n, v1, v2, v3, value2, enable, num, nums, cnums, doubleArray, slice)
+	fmt.Println(code, b, n, v1, v2, v3, value2, enable, num, nums, cnums, doubleArray, slice, slice3, slice4)
 	fmt.Println("!oG ,olleH")
 	// 大写变量/函数是可导出的，其他包可以读取，小写的是私有
+
+	logic()
+	readWrite()
+	callFunc(100, realFunc)
+}
+
+func logic() {
+	sum := 0
+	for index := 0; index < 10; index++ {
+		sum += index
+	}
+	// 相当于while了
+	for sum > 0 {
+		sum -= 1
+	}
+	mp := map[int]string{}
+	mp[1] = "1"
+	mp[2] = "2"
+	kv := ""
+	for k, v := range mp {
+		sum += k
+		kv += v
+	}
+	i := 10
+	switch i {
+	case 1:
+		sum = 1
+	case 2:
+		sum = 2
+	default:
+		sum = 0
+	}
+	aa := 123
+	bb := addPtr(&aa)
+	fmt.Println(sum, bb)
+}
+
+func multiReturn(a int, b int) (sa string, sb string) {
+	sa = "123"
+	sb = "321"
+	return
+}
+
+func multiParams(arg ...int) (res int) {
+	// arg 是个 slice
+	for _, n := range arg {
+		res += n
+	}
+	return res
+}
+
+// 传指针
+func addPtr(a *int) int {
+	*a = *a + 1
+	return *a
+}
+
+// 延迟
+func readWrite() bool {
+	fp, err := os.Open("README.md")
+	if err != nil {
+		fmt.Println("Open file error: ", err)
+		return false
+	}
+	// defer后指定的函数会在函数退出前调用，后进先出模式
+	defer fp.Close()
+	return true
+}
+
+// 声明了一个函数类型
+type testFunc func(int) bool
+
+func realFunc(a int) bool {
+	if z := a % 2; z == 1 {
+		return true
+	}
+	return false
+}
+
+func callFunc(a int, f testFunc) (r bool) {
+	r = f(a)
+	return
 }
 
 type Person struct {
@@ -86,7 +189,15 @@ var secrets = gin.H{
 	"lena":   gin.H{"email": "lena@guapa.com", "phone": "523443"},
 }
 
+// 如果导入了多个包，先初始化包的参数，然后init()，最后执行package的main()
+func init() {
+
+}
+
+// 每个package必须有个main
 func main() {
+	test()
+
 	// Logging to a file.
 	f, _ := os.Create("gin.log")
 	//gin.DefaultWriter = io.MultiWriter(f)
