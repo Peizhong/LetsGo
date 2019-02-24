@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/peizhong/letsgo/search"
 )
 
 func test() {
@@ -89,7 +90,7 @@ func logic() {
 	}
 	// 相当于while了
 	for sum > 0 {
-		sum -= 1
+		sum -= 2
 	}
 	mp := map[int]string{}
 	mp[1] = "1"
@@ -191,11 +192,14 @@ var secrets = gin.H{
 
 // 如果导入了多个包，先初始化包的参数，然后init()，最后执行package的main()
 func init() {
-
+	// 将日志输出到标准输出
+	log.SetOutput(os.Stdout)
 }
 
 // 每个package必须有个main
 func main() {
+	search.Run("mimi")
+
 	test()
 
 	// Logging to a file.
