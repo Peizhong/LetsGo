@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/peizhong/letsgo/search"
+	"github.com/peizhong/letsgo/play"
 )
 
 func test() {
@@ -63,6 +63,7 @@ func test() {
 		blue  = iota //2
 	)
 	// 长度2，容量6
+	// make 用于map, slice, channel的内存分配
 	slice4 := make([]byte, 2, 6)
 	// map, 用make初始化
 	numbers := map[string]string{}
@@ -146,7 +147,7 @@ func readWrite() bool {
 	return true
 }
 
-// 声明了一个函数类型
+// 声明了一个函数类型, 委托
 type testFunc func(int) bool
 
 func realFunc(a int) bool {
@@ -198,7 +199,8 @@ func init() {
 
 // 每个package必须有个main
 func main() {
-	search.Run("mimi")
+	play.FromSQL2NoSQL("‪C:/Users/wxyz/Desktop/avmt.db", "", "")
+	//search.Run("mimi")
 
 	test()
 

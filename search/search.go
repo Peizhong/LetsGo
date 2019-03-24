@@ -15,6 +15,7 @@ func Run(searchTerm string) {
 	}
 
 	// 无缓冲的通道，接受匹配后的结果
+	// 定义发送到channel的值类型
 	results := make(chan *Result)
 
 	// 处理所有的数据源
@@ -30,6 +31,7 @@ func Run(searchTerm string) {
 		// 启动goroutine执行搜索
 		go func(matcher Matcher, feed *Feed) {
 			Match(matcher, feed, searchTerm, results)
+			// goroutine之间进行数据的通信
 			waitGroup.Done()
 		}(matcher, feed)
 	}
