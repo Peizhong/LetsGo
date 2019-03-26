@@ -10,10 +10,91 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"unsafe"
 
 	"github.com/gin-gonic/gin"
 	"github.com/peizhong/letsgo/play"
 )
+
+// 闭包
+func adder() func(int) int {
+	sum := 0
+	return func(x int) int {
+		sum += x
+		return sum
+	}
+}
+
+func doVariables() {
+	var width, height int
+	var (
+		name = "naveen"
+		age  = 29
+	)
+	// least one of the variables in the left side of := is newly declared
+	sex, width, height := "male", 174, 65
+	_, _, _, _, _ = name, age, sex, width, height
+}
+
+func doTypes() {
+	// bool
+	a := true
+	b := false
+	c := a && b
+	d := a || b
+	e := unsafe.Sizeof(a)
+	_, _, _ = c, d, e
+
+	// float and complex
+	f := 5.67
+	g := complex(5, 7)
+	g = 8 + 27i
+	_, _ = f, g
+
+	// byte = unint8, rune = int32
+
+	// type conversion: no automatic type promotion or conversion
+	i := 55
+	j := 6.78
+	// k := i + j // int + float not allowed
+	sum0 := i + int(j)
+	sum1 := float64(i) + j
+	_, _ = sum0, sum1
+}
+
+func doConstants() {
+	const a = 55
+	// const b = math.Sqrt(3) // value of a constant should be known at compile time
+
+	// string constant like "hello world" does not have any type
+	// untyped constants have a default type associated with them and they supply it if and only if a line of code demands it
+	const hello = "hello world"
+
+	var defaultName = "Sam" //allowed
+	type myString string
+	var customName myString = "Sam" //allowed
+	//customName = defaultName        //not allowed
+
+	_, _ = defaultName, customName
+}
+
+func doLogin() {
+	nums := map[string]string{}
+	nums["a"] = "bcd"
+	// if else
+	// loop
+	for no, i := 10, 1; i <= 10 && no <= 19; i, no = i+1, no+1 { //multiple initialisation and increment
+
+	}
+	// switch
+}
+
+// If a return value is named, it can be considered as being declared as a variable
+func rectProps(length, width float64) (area, perimeter float64) {
+	area = length * width
+	perimeter = (length + width) * 2
+	return //no explicit return value
+}
 
 func test() {
 	// 定义变量
@@ -42,20 +123,22 @@ func test() {
 	ads
 	`
 	// array
+	//var array [10]int
 	nums := [4]int{1, 3, 5, 7}
 	// 省略长度
-	cnums := [...]int{2, 4, 6, 8}
+	cnums := [...]int{2, 4, 6, 8, 10, 12}
 	// 二维数组 row*column
 	doubleArray := [...][4]int{{1, 2, 3, 4}, {5, 6, 7, 8}}
 	// slice 不固定长度，引用类型
 	slice := []byte{'a', 'b', 'c', 'd'}
 
-	var array [10]int
-	// 长度2，容量2-10:8
-	slice2 := array[2:4]
+	// 长度3，容量2-10:8
+	slice2 := cnums[1:3]
 	// append函数会改变slice所引用的数组的内容，从而影响到引用同一数组的其它slice。
 	// 但当slice中没有剩余空间（即(cap-len) == 0）时，此时将动态分配新的数组空间。返回的slice数组指针将指向这个空间，而原数组的内容将保持不变；其它引用此数组的slice则不受影响
-	slice3 := append(slice2, 1)
+	// 设置索引上限
+	//var slice1 = numbers3[1:4:4]
+
 	// iota枚举， const中重置，每行加1
 	const (
 		red   = iota //0
@@ -64,7 +147,8 @@ func test() {
 	)
 	// 长度2，容量6
 	// make 用于map, slice, channel的内存分配
-	slice4 := make([]byte, 2, 6)
+	slice4 := make([]byte, 2, cap(slice2))
+	_ = slice4
 	// map, 用make初始化
 	numbers := map[string]string{}
 	numbers["one"] = "a"
@@ -75,7 +159,7 @@ func test() {
 	// make用于内建类型（map、slice 和channel）的内存分配。new用于各种类型的内存分配。
 
 	fmt.Println("%s", sraw)
-	fmt.Println(code, b, n, v1, v2, v3, value2, enable, num, nums, cnums, doubleArray, slice, slice3, slice4)
+	fmt.Println(code, b, n, v1, v2, v3, value2, enable, num, nums, cnums, doubleArray, slice)
 	fmt.Println("!oG ,olleH")
 	// 大写变量/函数是可导出的，其他包可以读取，小写的是私有
 
@@ -150,7 +234,13 @@ func readWrite() bool {
 // 声明了一个函数类型, 委托
 type testFunc func(int) bool
 
+// 别名
+type MyNumbers [3]int
+
 func realFunc(a int) bool {
+	num := MyNumbers{1, 2, 3}
+	num[1] = 5
+	fmt.Println(num)
 	if z := a % 2; z == 1 {
 		return true
 	}

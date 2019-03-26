@@ -29,6 +29,7 @@ type classify struct {
 	name string `gorm:"column classify_name"`
 }
 
+// 传值
 func (classify) TableName() string {
 	return "dm_classify"
 }
@@ -45,7 +46,8 @@ type device struct {
 	asset
 }
 
-func (d device) DeviceName() string {
+// *传指针
+func (d *device) DeviceName() string {
 	return d.name
 }
 
@@ -53,11 +55,16 @@ type part struct {
 	asset
 }
 
-func (p part) PartName() string {
+func (p *part) PartName() string {
 	return p.name
 }
 
 func FromSQL2NoSQL(sql string, nosql string, tables ...string) {
+	a := &asset{name: `big`}
+	b := a.name
+	a2 := new(asset)
+	a3 := asset{}
+	_, _, _, _ = a, a2, a3, b
 	//result := make(map[string]int)
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://192.168.3.19:27017"))
 	if err == nil {
