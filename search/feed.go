@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const dataFile = "data/data.json"
+const dataFile = "config/data.json"
 
 // 声明结构类型
 type Feed struct {
