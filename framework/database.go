@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 
+	// load myysql driver
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func init() {
-	connStr, _ := GetConnectionString("avmt")
+	connStr := GetConnectionString("avmt")
 	db, err := sql.Open("mysql", connStr)
 	if err != nil {
 		panic(err.Error())

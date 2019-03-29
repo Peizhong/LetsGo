@@ -14,6 +14,46 @@ import (
 var router *gin.Engine
 
 func init() {
+
+}
+
+// Person gin object
+type Person struct {
+	Name     string    `form:"name"`
+	Address  string    `form:"address"`
+	Birthday time.Time `form:"birthday" time_format:"2006-01-02"`
+}
+
+// WhoAmI test func
+func (p Person) WhoAmI(yourName string) {
+	fmt.Println(fmt.Sprintf("Hello %v, I'am %v", yourName, p.Name))
+}
+
+func userInfo(c *gin.Context) {
+	var person Person
+	// If `GET`, only `Form` binding engine (`query`) used.
+	// If `POST`, first checks the `content-type` for `JSON` or `XML`, then uses `Form` (`form-data`).
+	// See more at https://github.com/gin-gonic/gin/blob/master/binding/binding.go#L48
+	if err := c.ShouldBindJSON(&person); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	log.Println(person.Name)
+	log.Println(person.Address)
+	log.Println(person.Birthday)
+
+	c.String(200, "Success")
+}
+
+// simulate some private data
+var secrets = gin.H{
+	"foo":    gin.H{"email": "foo@bar.com", "phone": "123433"},
+	"austin": gin.H{"email": "austin@example.com", "phone": "666"},
+	"lena":   gin.H{"email": "lena@guapa.com", "phone": "523443"},
+}
+
+// RunServer start gin server
+func RunServer(port uint16) {
 	// Logging to a file.
 	f, _ := os.Create("gin.log")
 	//gin.DefaultWriter = io.MultiWriter(f)
@@ -116,42 +156,7 @@ func init() {
 
 		fmt.Printf("Cookie value: %s \n", cookie)
 	})
-}
 
-type Person struct {
-	Name     string    `form:"name"`
-	Address  string    `form:"address"`
-	Birthday time.Time `form:"birthday" time_format:"2006-01-02"`
-}
-
-func (p Person) WhoAmI(yourName string) {
-	fmt.Printf("Hello %v, I'am %v", yourName, p.Name)
-}
-
-func userInfo(c *gin.Context) {
-	var person Person
-	// If `GET`, only `Form` binding engine (`query`) used.
-	// If `POST`, first checks the `content-type` for `JSON` or `XML`, then uses `Form` (`form-data`).
-	// See more at https://github.com/gin-gonic/gin/blob/master/binding/binding.go#L48
-	if err := c.ShouldBindJSON(&person); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	log.Println(person.Name)
-	log.Println(person.Address)
-	log.Println(person.Birthday)
-
-	c.String(200, "Success")
-}
-
-// simulate some private data
-var secrets = gin.H{
-	"foo":    gin.H{"email": "foo@bar.com", "phone": "123433"},
-	"austin": gin.H{"email": "austin@example.com", "phone": "666"},
-	"lena":   gin.H{"email": "lena@guapa.com", "phone": "523443"},
-}
-
-func RunServer(port uint16) {
 	// By default it serves on :8080 unless a
 	// PORT environment variable was defined.
 	router.Run(fmt.Sprint(":", port))

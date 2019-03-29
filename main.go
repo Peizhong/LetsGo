@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"time"
 	"unsafe"
 
 	"github.com/peizhong/letsgo/framework"
@@ -98,6 +99,7 @@ func checkReflect(obj interface{}) {
 			value := getValue.Field(i).Interface()
 			fmt.Printf("Field:%d %s: %v = %v\n", i, field.Name, field.Type, value)
 		}
+		// NumMethod公共方法
 		for i := 0; i < getType.NumMethod(); i++ {
 			m := getType.Method(i)
 			fmt.Printf("%s: %v\n", m.Name, m.Type)
@@ -125,16 +127,28 @@ func checkReflect(obj interface{}) {
 	}
 }
 
-// 延迟
-func readWrite() bool {
-	fp, err := os.Open("README.md")
-	if err != nil {
-		fmt.Println("Open file error: ", err)
-		return false
+// <-chan writeonly, chan<- readonly
+func helloProducer(ch chan<- int) {
+	fmt.Println("producer started")
+	for i := 0; i < 10; i++ {
+		time.Sleep(1 * time.Second)
+		fmt.Println("write to channel", i)
+		ch <- i
 	}
-	// defer后指定的函数会在函数退出前调用，后进先出模式
-	defer fp.Close()
-	return true
+	close(ch)
+	fmt.Println("producer all done")
+}
+
+// cost of creating a Goroutine is tiny when compared to a thread
+func doGoroutines(count int32) {
+	ch := make(chan int)
+	// whern a goroutine is started, the goroutine call returns immediately to the next line of code after the Goroutine call
+	go helloProducer(ch)
+	// write and send to channel are bolcking by default
+	// v, ok := <-ch
+	for v := range ch {
+		fmt.Println("Received ", v)
+	}
 }
 
 // 如果导入了多个包，先初始化包的参数，然后init()，最后执行package的main()
@@ -145,6 +159,8 @@ func init() {
 
 // 每个package必须有个main
 func main() {
+	doGoroutines(123)
+
 	doRelect()
 
 	//play.FromSQL2NoSQL("‪C:/Users/wxyz/Desktop/avmt.db", "", "")
