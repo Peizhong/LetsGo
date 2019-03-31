@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"unicode/utf8"
+
 	// . fmt 省略前缀 Println("hello world")
 	// f fmt 重命名 f.Println("hello world")
 	// _ "github.com/ziutek/mymysql/godrv" 引入该包, init()，而不直接使用包里面的函数
@@ -72,9 +74,141 @@ func doConstants() {
 	var defaultName = "Sam" //allowed
 	type myString string
 	var customName myString = "Sam" //allowed
-	//customName = defaultName        //not allowed
+	//customName = defaultName        //different type, not allowed
+	fmt.Println(fmt.Sprintf("%T %T", defaultName, customName))
+}
 
-	_, _ = defaultName, customName
+func doCondition() {
+	for i := 0; i < 10; i++ {
+		if i < 5 {
+			continue
+		}
+		if i == 6 {
+			break
+		}
+	}
+	j := 0
+	// aka while
+	for j < 10 {
+		j++
+	}
+	letter := "i"
+	switch letter {
+	case "a", "e", "i", "o", "u": //multiple expressions in case
+		fmt.Println("vowel")
+	default:
+		fmt.Println("not a vowel")
+	}
+	// Expressionless switch
+	// If the expression is omitted, the switch is considered to be switch true and each of the case expression is evaluated for truth
+	num := 75
+	switch {
+	case num >= 0 && num <= 50:
+		fmt.Println("num is greater than 0 and less than 50")
+	case num >= 51 && num <= 100:
+		fmt.Println("num is greater than 51 and less than 100")
+		fallthrough //go to next
+	case num >= 101:
+		fmt.Println("num is greater than 100")
+	}
+}
+
+func changeSlice(s []string) {
+	s[0] = "Go"             // original s changed
+	s = append(s, "eSlice") // original s not changed
+}
+
+func changeVariadic(s ...string) {
+	s[0] = "Go"               // original s changed
+	s = append(s, "Variadic") // original s not changed
+}
+
+func doSlice() {
+	a := [...]int{1, 2, 3, 4}
+	s := a[:3]
+	// 如果slice还有容量，会把原来array的值改变
+	s = append(s, 5)
+
+	cars := []string{"Ferrari", "Honda", "Ford"}
+	// The capacity of the new slice is twice that of the old slice
+	cars = append(cars, "Toyota")
+
+	countries := []string{"USA", "Singapore", "Germany", "India", "Australia"}
+	neededCountries := countries[:len(countries)-2]
+	countriesCpy := make([]string, len(neededCountries))
+	copy(countriesCpy, neededCountries) //copies neededCountries to countriesCpy
+	welcome := make([]string, 2, 4)
+	welcome[0] = "hello"
+	welcome[1] = "world"
+	// slice will be passed as an argument without a new slice
+	changeVariadic(welcome...)
+	changeSlice(welcome)
+}
+
+func doMap() {
+	personSalary := map[string]int{
+		"steve": 12000,
+		"jamie": 15000,
+	}
+	personSalary["mike"] = 9000
+	if _, ok := personSalary["joe"]; !ok {
+		personSalary["joe"] = 14000
+	}
+	// order of the retrieval of values from a map when using for range is not guaranteed
+	for k, v := range personSalary {
+		println(k, "", v)
+	}
+	for k, v := range personSalary {
+		println(k, "", v)
+	}
+	delete(personSalary, "joe")
+}
+
+func changeString(s []rune) string {
+	s[0] = 'a'
+	return string(s)
+}
+
+func doString() {
+	name := "Hello World"
+	runes := []rune(name)
+	str := string(runes)
+	fmt.Printf("length of %s is %d\n", str, utf8.RuneCountInString(str))
+
+	name = changeString([]rune(name))
+}
+
+func doStructure() {
+	// anonymous structures
+	emp3 := struct {
+		firstName, lastName string
+		age, salary         int
+	}{
+		firstName: "Andreah",
+		lastName:  "Nikola",
+		age:       31,
+		salary:    5000,
+	}
+	fmt.Println("Employee 3", emp3)
+	// Structs are value types and are comparable if each of their fields are comparable
+	// Struct variables are not comparable if they contain fields which are not comparable, like map
+}
+
+func doMethod() {
+	/*
+		pointer receiver and when to use value receiver
+		Pointers receivers can also be used in places where it's expensive to copy a data structure.
+		Consider a struct which has many fields.
+		Using this struct as a value receiver in a method will need the entire struct to be copied which will be expensive.
+		In this case if a pointer receiver is used, the struct will not be copied and only a pointer to it will be used in the method.
+		In all other situations value receivers can be used.
+	*/
+}
+
+type Describer interface {
+	// The concrete value stored in an interface is not addressable
+	// must implement using value reciver
+	Describe()
 }
 
 func doRelect() {
@@ -83,11 +217,17 @@ func doRelect() {
 		Address: "shezhen",
 	}
 	pJoe := &joe
-	pJoe.WhoAmI("GH")
+	pJoe.WhoAmI("WPZ")
 	checkReflect(pJoe)
 }
 
 func checkReflect(obj interface{}) {
+	// compare the concrete type of an interface
+	switch obj.(type) {
+	case string:
+	case int:
+	default:
+	}
 	getType := reflect.TypeOf(obj)
 	getKind := getType.Kind()
 	getValue := reflect.ValueOf(obj)
@@ -159,8 +299,12 @@ func init() {
 
 // 每个package必须有个main
 func main() {
-	doGoroutines(123)
+	// doGoroutines(123)
 
+	doConstants()
+	doSlice()
+	doMap()
+	doString()
 	doRelect()
 
 	//play.FromSQL2NoSQL("‪C:/Users/wxyz/Desktop/avmt.db", "", "")
