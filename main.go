@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/peizhong/letsgo/framework"
+	"github.com/peizhong/letsgo/gonet"
 )
 
 // 如果导入了多个包，先初始化包的参数，然后init()，最后执行package的main()
@@ -15,5 +15,8 @@ func init() {
 
 // 每个package必须有个main
 func main() {
-	framework.RunServer(8080)
+	//gonet.RunHTTPServer("localhost", 8080)
+	md := &gonet.MiddleWareBuilder{}
+	entry := md.Build()
+	entry(&gonet.Context{})
 }
