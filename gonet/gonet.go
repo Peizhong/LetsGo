@@ -3,9 +3,9 @@ package gonet
 import (
 	"fmt"
 	"log"
-	"net"
 	"net/http"
 	"runtime"
+	"sync"
 )
 
 func init() {
@@ -13,48 +13,29 @@ func init() {
 	runtime.GOMAXPROCS(cpus)
 }
 
-func doServerStuff(conn net.Conn) {
-	for {
-		buf := make([]byte, 512)
-		len, err := conn.Read(buf)
-		if err != nil {
-			fmt.Println("Error reading", err.Error())
-			return //终止程序
-		}
-		fmt.Printf("Received data: %v", string(buf[:len]))
-		conn.Write([]byte("ok"))
-	}
-}
+var once sync.Once
 
-// RunTCPServer start gonet server
-func RunTCPServer(ip string, port int) error {
-	address := fmt.Sprintf("%v:%v", ip, port)
-	fmt.Println("Starting the server on: ", address)
-	listener, err := net.Listen("tcp", address)
+var entryPoint func(*Context) error
+
+func gatewayHandler(w http.ResponseWriter, req *http.Request) {
+	once.Do(func() {
+		entryPoint = BuildPipeline()
+	})
+	context := &Context{
+		SrcPath:   req.RequestURI,
+		Responser: w,
+	}
+	err := entryPoint(context)
 	if err != nil {
-		fmt.Println("Error listening", err.Error())
-		return err
+		fmt.Println("request error")
 	}
-	// 监听并接受来自客户端的连接
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			fmt.Println("Error accepting", err.Error())
-			return err
-		}
-		go doServerStuff(conn)
-	}
-}
-
-func helloServer(w http.ResponseWriter, req *http.Request) {
-	//fmt.Println("Inside HelloServer handler")
-	fmt.Fprintf(w, "Hello,"+req.URL.Path[1:])
 }
 
 // RunHTTPServer start gonet http server
 func RunHTTPServer(ip string, port int) (err error) {
 	address := fmt.Sprintf("%v:%v", ip, port)
-	http.HandleFunc("/", helloServer)
+	http.HandleFunc("/", gatewayHandler)
+	fmt.Println("HTTP server listening at:", address)
 	err = http.ListenAndServe(address, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err.Error())

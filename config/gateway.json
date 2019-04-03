@@ -1,0 +1,31 @@
+{
+    "Author": "wpz",
+    "Routes": [
+      {
+        "ServiceName": "Demo",
+        "UpstreamPathTemplate": "/myservice/",
+        "DownstreamPathTemplate": "/api/",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": "5100"
+          }
+        ],
+        "UpstreamHttpMethod": [ "GET" ]
+      },
+      {
+        "ServiceName": "Demo2",
+        "UpstreamPathTemplate": "/netapp/",
+        "DownstreamPathTemplate": "/",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": "5000"
+          }
+        ],
+        "UpstreamHttpMethod": [ "GET" ],
+        "CacheTtlSeconds": 60
+      }
+    ]
+}
+  
