@@ -1,9 +1,7 @@
 package gonet
 
 import (
-	"fmt"
 	"net/http"
-	"time"
 )
 
 type headers map[string]string
@@ -17,6 +15,10 @@ type Context struct {
 	Responser http.ResponseWriter
 }
 
+func (c *Context) GetConfig() GatewayConfig {
+	return gatewayConfig
+}
+
 func (c *Context) SayHi(message string) {
-	fmt.Println(time.Now(), message)
+	// fmt.Println(time.Now(), message)
 }

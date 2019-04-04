@@ -20,7 +20,7 @@ type dbContext struct {
 	dbSet            []dbEntity
 }
 
-func init() {
+func initDatabase() {
 	connStr := GetConnectionString("avmt")
 	db, err := sql.Open("mysql", connStr)
 	if err != nil {

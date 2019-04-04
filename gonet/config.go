@@ -3,6 +3,7 @@ package gonet
 import (
 	"encoding/json"
 	"os"
+	"regexp"
 )
 
 type DownStreamConfig struct {
@@ -13,6 +14,7 @@ type DownStreamConfig struct {
 type RouteConfig struct {
 	ServiceName            string
 	UpstreamPathTemplate   string
+	UpstreamRegexp         *regexp.Regexp `json:",omitempty"`
 	DownstreamPathTemplate string
 	DownstreamHostAndPorts []DownStreamConfig
 	UpstreamHttpMethod     []string
@@ -20,7 +22,7 @@ type RouteConfig struct {
 
 type GatewayConfig struct {
 	Author string
-	Routes []RouteConfig
+	Routes []*RouteConfig
 }
 
 var gatewayConfig GatewayConfig
@@ -32,5 +34,9 @@ func LoadConfig(configFile string) {
 	if err != nil {
 	} else {
 		json.NewDecoder(file).Decode(&gatewayConfig)
+	}
+	// make sure route regexp is correct
+	for _, route := range gatewayConfig.Routes {
+		route.UpstreamRegexp = regexp.MustCompile(route.UpstreamPathTemplate)
 	}
 }

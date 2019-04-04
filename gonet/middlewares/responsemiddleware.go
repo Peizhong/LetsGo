@@ -9,11 +9,16 @@ import (
 type ResponseMiddleware struct {
 }
 
-func (m *ResponseMiddleware) Invoke(c *gonet.Context, next func(*gonet.Context) error) (err error) {
+func (m *ResponseMiddleware) Invoke(c *gonet.Context, ch chan<- struct{}, next func(*gonet.Context, chan<- struct{}) error) (err error) {
 	if next != nil {
-		err = next(c)
+		nch := make(chan struct{})
+		go next(c, nch)
+		<-nch
 	}
 	c.SayHi("responseMiddleware处理了上一个，然后再处理自己的")
 	fmt.Fprintf(c.Responser, "Hello,"+"这是最后一个咯"+c.SrcPath)
-	return
+	if ch != nil {
+		close(ch)
+	}
+	return nil
 }

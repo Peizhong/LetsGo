@@ -34,8 +34,11 @@ func gatewayHandler(w http.ResponseWriter, req *http.Request) {
 // RunHTTPServer start gonet http server
 func RunHTTPServer(ip string, port int) (err error) {
 	address := fmt.Sprintf("%v:%v", ip, port)
-	http.HandleFunc("/", gatewayHandler)
 	fmt.Println("HTTP server listening at:", address)
+	http.HandleFunc("/", gatewayHandler)
+	// 替代默认的DefaultServeMux
+	//gateway := Gateway{}
+	//err = http.ListenAndServe(address, gateway)
 	err = http.ListenAndServe(address, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err.Error())
