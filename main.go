@@ -5,6 +5,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 
+	"github.com/peizhong/letsgo/cpplib"
 	"github.com/peizhong/letsgo/gonet"
 	"github.com/peizhong/letsgo/gonet/middlewares"
 )
@@ -23,8 +24,9 @@ func configGoNetMiddleware() {
 	gonet.AddMiddleware(&middlewares.ResponseMiddleware{})
 }
 
-// 每个package必须有个main
 func main() {
+	cpplib.CppTest()
+
 	configGoNetMiddleware()
 	gonet.LoadConfig("config/gateway.json")
 	gonet.RunHTTPServer("localhost", 8080)
