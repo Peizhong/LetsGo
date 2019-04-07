@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	_ "net/http/pprof"
 	"os"
+	"os/signal"
+	"time"
 
-	"github.com/peizhong/letsgo/cpplib"
 	"github.com/peizhong/letsgo/gonet"
 	"github.com/peizhong/letsgo/gonet/middlewares"
 )
@@ -25,9 +27,17 @@ func configGoNetMiddleware() {
 }
 
 func main() {
-	cpplib.CppTest()
+	//cpplib.CppTest()
 
-	configGoNetMiddleware()
-	gonet.LoadConfig("config/gateway.json")
-	gonet.RunHTTPServer("localhost", 8080)
+	begin := time.Now()
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		configGoNetMiddleware()
+		gonet.LoadConfig("config/gateway.json")
+		gonet.RunHTTPServer("localhost", 8080)
+	}()
+	<-c
+	taken := time.Since(begin)
+	fmt.Println("program exit, last for", taken)
 }

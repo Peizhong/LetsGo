@@ -12,7 +12,10 @@ type Context struct {
 	SrcHeaders headers
 	DstHeaders headers
 
+	ReqsCount uint64 `remark:"请求次数"`
+
 	Responser http.ResponseWriter
+	Response  *[]byte
 }
 
 func (c *Context) GetConfig() GatewayConfig {

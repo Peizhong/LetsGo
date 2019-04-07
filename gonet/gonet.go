@@ -22,7 +22,7 @@ func gatewayHandler(w http.ResponseWriter, req *http.Request) {
 		entryPoint = BuildPipeline()
 	})
 	context := &Context{
-		SrcPath:   req.RequestURI,
+		SrcPath:   req.RequestURI[1:],
 		Responser: w,
 	}
 	err := entryPoint(context)
