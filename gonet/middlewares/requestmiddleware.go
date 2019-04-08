@@ -41,13 +41,13 @@ func (m *RequestMiddleware) Invoke(c *gonet.Context, ch chan<- struct{}, next fu
 					// continue
 				}
 				for _, v := range values {
-					c.Responser.Header().Add(k, v)
+					c.Response.AddHeader(k, v)
 				}
 			}
 			bytes, err := ioutil.ReadAll(response.Body)
 			if err == nil {
-				c.Responser.Header().Set("Content-Length", string(len(bytes)))
-				c.Response = &bytes
+				c.Response.AddHeader("Content-Length", string(len(bytes)))
+				c.Response.Body = &bytes
 			}
 		}
 	}
