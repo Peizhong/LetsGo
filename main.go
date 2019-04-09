@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/peizhong/letsgo/gonet"
 	"github.com/peizhong/letsgo/gonet/middlewares"
@@ -39,5 +39,8 @@ func main() {
 	}()
 	<-c
 	taken := time.Since(begin)
-	fmt.Println("program exit, last for", taken)
+	log.WithFields(log.Fields{
+		"omg":    true,
+		"number": 100,
+	}).Info("The ice breaks!", taken)
 }

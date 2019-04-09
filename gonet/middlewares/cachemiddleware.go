@@ -42,7 +42,7 @@ func (repo CacheRepository) TryGet(key string) (*CachedGatewayResponse, bool) {
 }
 
 func (repo CacheRepository) TryAdd(key string, response *CachedGatewayResponse) bool {
-	if value, exist := repo.cache[key]; !exist {
+	if _, exist := repo.cache[key]; !exist {
 		repo.cache[key] = response
 	}
 	return true
