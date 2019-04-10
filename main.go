@@ -2,9 +2,12 @@ package main
 
 import (
 	_ "net/http/pprof"
+	// load myysql driver
 	"os"
 	"os/signal"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 
 	log "github.com/sirupsen/logrus"
 
@@ -21,6 +24,7 @@ func init() {
 func configGoNetMiddleware() {
 	// 请求进来时的最先遇到的在前面
 	gonet.AddMiddleware(&middlewares.FirstMiddleware{})
+	gonet.AddMiddleware(&middlewares.CacheMiddleware{})
 	gonet.AddMiddleware(&middlewares.ReRouteMiddleware{})
 	gonet.AddMiddleware(&middlewares.RequestMiddleware{})
 	gonet.AddMiddleware(&middlewares.ResponseMiddleware{})

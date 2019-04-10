@@ -11,6 +11,13 @@ type GatewayResponse struct {
 	Body    *[]byte
 }
 
+func NewGatewayResponse() *GatewayResponse {
+	response := &GatewayResponse{
+		Headers: make(headers),
+	}
+	return response
+}
+
 func (gw *GatewayResponse) AddHeader(key, value string) {
 	if key == "" {
 		return

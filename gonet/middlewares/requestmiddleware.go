@@ -34,6 +34,7 @@ func (m *RequestMiddleware) Invoke(c *gonet.Context, ch chan<- struct{}, next fu
 	client := &http.Client{}
 	request, err := http.NewRequest("GET", "http://www.baidu.com/s?wd="+c.SrcPath, nil)
 	if err == nil {
+		c.Response = gonet.NewGatewayResponse()
 		response, err := client.Do(request)
 		if err == nil {
 			for k, values := range response.Header {

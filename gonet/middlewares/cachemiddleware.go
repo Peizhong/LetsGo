@@ -3,6 +3,7 @@ package middlewares
 import (
 	"time"
 
+	"github.com/peizhong/letsgo/framework"
 	"github.com/peizhong/letsgo/gonet"
 )
 
@@ -14,6 +15,7 @@ func (m *CacheMiddleware) Invoke(c *gonet.Context, ch chan<- struct{}, next func
 	if value, exist := cacheRepo.TryGet(c.SrcPath); exist {
 		c.Response = value.Response
 	}
+	framework.SayHiOrm()
 	if ch != nil {
 		close(ch)
 	}

@@ -16,6 +16,9 @@ func (m *ResponseMiddleware) Invoke(c *gonet.Context, ch chan<- struct{}, next f
 		<-nch
 	}
 	c.SayHi("responseMiddleware处理了上一个，然后再处理自己的")
+	for k, v := range c.Response.Headers {
+		c.Responser.Header().Add(k, v[0])
+	}
 	fmt.Fprintf(c.Responser, "proxy:"+c.SrcPath)
 	c.Responser.Write(*c.Response.Body)
 	if ch != nil {
