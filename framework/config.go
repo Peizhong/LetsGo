@@ -10,7 +10,7 @@ type logging struct {
 	LogLevel map[string]string
 }
 
-type appsettings struct {
+type Appsettings struct {
 	Logging           logging
 	ConnectionStrings map[string]string
 }
@@ -19,7 +19,7 @@ const dataFile = "config/appsettings.json"
 
 var once sync.Once
 
-var settings appsettings
+var settings Appsettings
 
 // GetConnectionString get connection string from appsettings.json
 func GetConnectionString(key string) string {
@@ -36,4 +36,8 @@ func GetConnectionString(key string) string {
 	// _ = level
 	value := settings.ConnectionStrings[key]
 	return value
+}
+
+func GetAppsettings() Appsettings {
+	return settings
 }

@@ -8,6 +8,7 @@ import (
 )
 
 type CacheMiddleware struct {
+	Settings framework.Appsettings
 }
 
 func (m *CacheMiddleware) Invoke(c *gonet.Context, ch chan<- struct{}, next func(*gonet.Context, chan<- struct{}) error) (err error) {

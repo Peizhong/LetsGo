@@ -8,9 +8,11 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"go.uber.org/dig"
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/peizhong/letsgo/framework"
 	"github.com/peizhong/letsgo/gonet"
 	"github.com/peizhong/letsgo/gonet/middlewares"
 )
@@ -32,7 +34,18 @@ func configGoNetMiddleware() {
 
 func main() {
 	//cpplib.CppTest()
-
+	container := dig.New()
+	container.Provide(func() framework.Appsettings {
+		return framework.GetAppsettings()
+	})
+	container.Provide(func(settings framework.Appsettings) (*middlewares.CacheMiddleware, error) {
+		return &middlewares.CacheMiddleware{
+			Settings: settings,
+		}, nil
+	})
+	container.Invoke(func(md *middlewares.CacheMiddleware) {
+		log.Info(md.Settings)
+	})
 	begin := time.Now()
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
