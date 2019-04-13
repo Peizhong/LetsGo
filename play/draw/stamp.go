@@ -73,8 +73,8 @@ func Draw(message string) {
 	// 180 270
 	// 120 210
 	// 270 0
-	startAngle = 180 + (-45)
-	stepAngel = 320.0 / float64(strLen)
+	stepAngel = 360.0 / float64(strLen)
+	startAngle = 180 + (stepAngel * -1)
 	var testAngle float64 = startAngle + 90
 	for _, c := range message {
 		p := position(Radius-32, startAngle)
@@ -97,5 +97,5 @@ func Draw(message string) {
 }
 
 func main() {
-	Draw("深圳市零成本科技股份有限公司")
+	Draw("你好嘤嘤嘤")
 }
