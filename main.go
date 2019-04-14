@@ -36,7 +36,7 @@ func main() {
 	//cpplib.CppTest()
 	container := dig.New()
 	container.Provide(func() framework.Appsettings {
-		return framework.GetAppsettings()
+		return framework.GetAppsettings("")
 	})
 	container.Provide(func(settings framework.Appsettings) (*middlewares.CacheMiddleware, error) {
 		return &middlewares.CacheMiddleware{

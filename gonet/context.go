@@ -2,6 +2,8 @@ package gonet
 
 import (
 	"net/http"
+
+	"github.com/opentracing/opentracing-go"
 )
 
 type headers map[string][]string
@@ -34,10 +36,13 @@ type Context struct {
 	DstPath    string `Remark:"转发地址"`
 	SrcHeaders headers
 
+	Request   *http.Request
 	ReqsCount uint64 `remark:"请求次数"`
 
 	Responser http.ResponseWriter
 	Response  *GatewayResponse
+
+	Tracer opentracing.Tracer
 }
 
 func (c *Context) GetConfig() GatewayConfig {

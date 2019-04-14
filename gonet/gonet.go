@@ -2,10 +2,16 @@ package gonet
 
 import (
 	"fmt"
-	"log"
+	"io"
 	"net/http"
 	"runtime"
 	"sync"
+	"time"
+
+	log "github.com/sirupsen/logrus"
+
+	"github.com/opentracing/opentracing-go"
+	"github.com/uber/jaeger-client-go"
 )
 
 func init() {
@@ -17,18 +23,48 @@ var once sync.Once
 
 var entryPoint func(*Context) error
 
+var reporter jaeger.Reporter
+
+func configJaeger() {
+	sender, err := jaeger.NewUDPTransport("192.168.3.19:5775", 0)
+	if err != nil {
+		log.Error("Failed to start jaeger udp transport")
+	}
+	reporter = jaeger.NewRemoteReporter(
+		sender,
+		jaeger.ReporterOptions.BufferFlushInterval(1*time.Second),
+	)
+}
+
+func newTracer() (opentracing.Tracer, io.Closer) {
+	tracer, closer := jaeger.NewTracer(
+		"LetsGo",
+		jaeger.NewConstSampler(true),
+		reporter)
+	return tracer, closer
+}
+
 func gatewayHandler(w http.ResponseWriter, req *http.Request) {
 	once.Do(func() {
+		configJaeger()
 		entryPoint = BuildPipeline()
 	})
+	tracer, closer := newTracer()
+	span := tracer.StartSpan("myspan")
+	span.SetTag("mytag", "123")
+	tracer.Inject(span.Context(), opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(req.Header))
 	context := &Context{
 		SrcPath:   req.RequestURI[1:],
+		Request:   req,
 		Responser: w,
+		Tracer:    tracer,
 	}
 	err := entryPoint(context)
 	if err != nil {
 		fmt.Println("request error")
 	}
+	span.Finish()
+	closer.Close()
 }
 
 // RunHTTPServer start gonet http server

@@ -5,14 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch file",
+            "name": "Debug File",
             "type": "go",
             "request": "launch",
             "mode": "debug",
             "program": "${file}"
         },
         {
-            "name": "Launch Project",
+            "name": "Debug Project",
             "type": "go",
             "request": "launch",
             "mode": "auto",
