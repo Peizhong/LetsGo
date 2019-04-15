@@ -43,26 +43,28 @@ func configService() (*dig.Container, func()) {
 	}
 
 	// config mysql
-	connStr := appsettings.ConnectionStrings["MallDB"]
-	db, err := framework.NewMySQLConn(connStr)
+	connMySQLStr := appsettings.ConnectionStrings["MallDB"]
+	dbPing, err := framework.NewMySQLConn(connMySQLStr)()
 	if err != nil {
-		log.WithField("MySQL connectionstring", connStr).Error(err.Error())
+		log.WithField("MySQL connectionstring", connMySQLStr).Error(err.Error())
 	}
+	// test connection only
+	dbPing.Close()
 
 	// config redis
-	connStr = appsettings.ConnectionStrings["Redis"]
-	rdPool, err := framework.NewRedisPool(connStr)
+	connRedisStr := appsettings.ConnectionStrings["Redis"]
+	rdPool, err := framework.InitRedisPool(connRedisStr)
 	if err != nil {
-		log.WithField("Redis connectionstring", connStr).Error(err.Error())
+		log.WithField("Redis connectionstring", connRedisStr).Error(err.Error())
 	}
 
 	// config dbContext
 	container.Provide(func() *framework.DbContext {
 		return &framework.DbContext{
-			Database: db,
-			Cache:    rdPool.Get(),
+			// 只提供创建的工厂
+			GetDatabase: framework.NewMySQLConn(connMySQLStr),
+			GetCache:    framework.NewRedisConn(rdPool),
 		}
-		// todo: 请求结束后关闭连接
 	})
 
 	// config controller
@@ -75,7 +77,6 @@ func configService() (*dig.Container, func()) {
 	// close connection before program exit
 	return container, func() {
 		log.Info("close db connection before exit")
-		db.Close()
 		rdPool.Close()
 	}
 }

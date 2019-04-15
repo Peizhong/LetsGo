@@ -6,6 +6,7 @@ import (
 )
 
 type DbContext struct {
-	Database *gorm.DB
-	Cache    redis.Conn
+	//
+	GetDatabase func() (*gorm.DB, error)
+	GetCache    func() (redis.Conn, error)
 }
