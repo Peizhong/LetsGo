@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 	"os/signal"
 
@@ -58,9 +59,10 @@ func configService() (*dig.Container, func()) {
 		log.WithField("Redis connectionstring", connRedisStr).Error(err.Error())
 	}
 
-	// config dbContext
-	container.Provide(func() *framework.DbContext {
-		return &framework.DbContext{
+	// config GoContext
+	container.Provide(func() *framework.GoContext {
+		return &framework.GoContext{
+			Context: context.Background(),
 			// 只提供创建的工厂
 			GetDatabase: framework.NewMySQLConn(connMySQLStr),
 			GetCache:    framework.NewRedisConn(rdPool),
@@ -68,9 +70,9 @@ func configService() (*dig.Container, func()) {
 	})
 
 	// config controller
-	container.Provide(func(c *framework.DbContext) *ProductController {
+	container.Provide(func(c *framework.GoContext) *ProductController {
 		return &ProductController{
-			DbContext: c,
+			GoContext: c,
 		}
 	})
 

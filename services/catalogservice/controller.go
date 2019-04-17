@@ -9,7 +9,7 @@ import (
 
 type ProductController struct {
 	HTTPContext *gin.Context
-	DbContext   *framework.DbContext
+	GoContext   *framework.GoContext
 }
 
 /*
@@ -18,7 +18,7 @@ type ProductController struct {
 
 func (c ProductController) GetProduct() {
 	log.Info("GetProduct")
-	data, _ := catalog.GetProduct(c.DbContext, catalog.GetProductRequest{
+	data, _ := catalog.GetProduct(c.GoContext, catalog.GetProductRequest{
 		ProductId: c.HTTPContext.Param("id"),
 	})
 	c.HTTPContext.JSON(200, data)
@@ -28,7 +28,7 @@ func (c ProductController) GetProducts() {
 	log.Info("GetProducts")
 	pageIndex, _ := framework.IntTryParse(c.HTTPContext.Param("pageindex"))
 	pageSize, _ := framework.IntTryParse(c.HTTPContext.DefaultQuery("pagesize", "100"))
-	data, _ := catalog.GetProducts(c.DbContext, catalog.GetProductsRequest{
+	data, _ := catalog.GetProducts(c.GoContext, catalog.GetProductsRequest{
 		PageIndex: pageIndex,
 		PageSize:  pageSize,
 	})

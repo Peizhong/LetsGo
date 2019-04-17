@@ -2,6 +2,7 @@ package catalog
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
@@ -33,14 +34,14 @@ func hiGrpc() {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	demo := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	demo := []int{1, 2}
 	for d := range demo {
-		r, err := c.SayHello(ctx, &pb.HelloRequest{Name: name})
+		r, err := c.SayHello(ctx, &pb.HelloRequest{Name: fmt.Sprintf("%v_%v", d, name)})
 		if err != nil {
 			log.Fatalf("could not greet: %v", err)
 		}
 		log.Printf("Greeting %d: %s", d, r.Message)
-		r, err = c.SayHelloAgain(ctx, &pb.HelloRequest{Name: name})
+		r, err = c.SayHelloAgain(ctx, &pb.HelloRequest{Name: fmt.Sprintf("%v_%v", d, name)})
 		if err != nil {
 			log.Fatalf("could not greet: %v", err)
 		}
@@ -48,7 +49,7 @@ func hiGrpc() {
 	}
 }
 
-func GetProduct(c *framework.DbContext, r GetProductRequest) (*GetProductsResponse, error) {
+func GetProduct(c *framework.GoContext, r GetProductRequest) (*GetProductsResponse, error) {
 	var classify Classify
 	db, err := c.GetDatabase()
 	if err != nil {
@@ -75,7 +76,7 @@ func GetProduct(c *framework.DbContext, r GetProductRequest) (*GetProductsRespon
 	}, nil
 }
 
-func GetProducts(c *framework.DbContext, r GetProductsRequest) (*GetProductsResponse, error) {
+func GetProducts(c *framework.GoContext, r GetProductsRequest) (*GetProductsResponse, error) {
 	var classifies []Classify
 	db, err := c.GetDatabase()
 	if err != nil {

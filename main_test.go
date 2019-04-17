@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"math/rand"
 	"reflect"
 	"runtime"
@@ -10,8 +12,6 @@ import (
 	"time"
 	"unicode/utf8"
 	"unsafe"
-
-	"github.com/peizhong/letsgo/framework"
 )
 
 // 闭包
@@ -209,13 +209,7 @@ type Describer interface {
 }
 
 func doRelect() {
-	joe := framework.Person{
-		Name:    "wang peizhong",
-		Address: "shezhen",
-	}
-	pJoe := &joe
-	pJoe.WhoAmI("WPZ")
-	checkReflect(pJoe)
+
 }
 
 func checkReflect(obj interface{}) {
@@ -359,6 +353,35 @@ func doSelectChannel() {
 	default:
 		fmt.Println("no value received")
 	}
+}
+
+type C1 struct {
+	context.Context
+}
+
+func (c C1) Run() {
+	log.Println("waiting for parent to stop it")
+	<-c.Done()
+	log.Println("child completed")
+}
+
+func TestContext(t *testing.T) {
+	pt := context.Background()
+	ct1 := context.WithValue(pt, "hello", "world")
+	ct11 := context.WithValue(ct1, "world", "hello")
+	v := ct11.Value("hello").(string)
+	_ = v
+	ct2, cancel := context.WithCancel(ct1)
+	ct0 := C1{
+		Context: ct2,
+	}
+	go func() {
+		ct0.Run()
+	}()
+	time.AfterFunc(time.Second*3, func() {
+		cancel()
+	})
+	time.Sleep(time.Second * 5)
 }
 
 func TestXXX(t *testing.T) {
