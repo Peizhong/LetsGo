@@ -1,6 +1,10 @@
 package framework
 
-import "strconv"
+import (
+	"strconv"
+
+	"github.com/davecgh/go-spew/spew"
+)
 
 func IntTryParse(s string) (n int, b bool) {
 	if num, err := strconv.Atoi(s); err == nil {
@@ -14,4 +18,10 @@ func Int64TryParse(s string) (n int64, b bool) {
 		return num, true
 	}
 	return
+}
+
+func WhatIsThis(values ...interface{}) {
+	for _, v := range values {
+		spew.Dump(v)
+	}
 }

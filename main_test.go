@@ -12,6 +12,9 @@ import (
 	"time"
 	"unicode/utf8"
 	"unsafe"
+
+	"github.com/peizhong/letsgo/framework"
+	"github.com/stretchr/testify/assert"
 )
 
 // 闭包
@@ -382,6 +385,63 @@ func TestContext(t *testing.T) {
 		cancel()
 	})
 	time.Sleep(time.Second * 5)
+}
+
+func TestMapper(t *testing.T) {
+	d1 := framework.DemoOne{
+		Id:         1,
+		Value:      "D1",
+		UpdateTime: time.Now(),
+		Data: []*framework.ObjOne{
+			{Key: "K1", Value: "V1"},
+			{Key: "K2", Value: "V2"},
+		},
+		Nums: []int{
+			1, 2, 3, 4, 5,
+		},
+	}
+	d2 := framework.DemoTwo{}
+	framework.DirectMapTo(&d1, &d2)
+	framework.WhatIsThis(d1, d2)
+	assert.Equal(t, d1.UpdateTime, d2.UpdateTime)
+}
+
+func BenchmarkMap(b *testing.B) {
+	d1 := framework.DemoOne{
+		Id:         1,
+		Value:      "D1",
+		UpdateTime: time.Now(),
+		Data: []*framework.ObjOne{
+			{Key: "K1", Value: "V1"},
+			{Key: "K2", Value: "V2"},
+		},
+		Nums: []int{
+			1, 2, 3, 4, 5,
+		},
+	}
+	d2 := framework.DemoTwo{}
+	for n := 0; n < b.N; n++ {
+		framework.DirectMapTo(&d1, &d2)
+	}
+}
+
+func BenchmarkMapJson(b *testing.B) {
+	d1 := framework.DemoOne{
+		Id:         1,
+		Value:      "D1",
+		UpdateTime: time.Now(),
+		Data: []*framework.ObjOne{
+			{Key: "K1", Value: "V1"},
+			{Key: "K2", Value: "V2"},
+		},
+		Nums: []int{
+			1, 2, 3, 4, 5,
+		},
+	}
+	d2 := framework.DemoTwo{}
+	for n := 0; n < b.N; n++ {
+		framework.JsonMapTo(&d1, &d2)
+	}
 }
 
 func TestXXX(t *testing.T) {

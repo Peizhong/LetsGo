@@ -37,6 +37,10 @@ type Product struct {
 	Manufacture string
 }
 
+func (Product) TableName() string {
+	return "Products"
+}
+
 /*
 request
 */

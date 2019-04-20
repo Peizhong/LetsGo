@@ -50,14 +50,22 @@ func hiGrpc() {
 }
 
 func GetProduct(c *framework.GoContext, r GetProductRequest) (*GetProductsResponse, error) {
-	var classify Classify
+	var product Product
 	db, err := c.GetDatabase()
 	if err != nil {
 		log.Error(err.Error())
 		return nil, err
 	}
 	defer db.Close()
-	db.First(&classify, r.ProductId)
+	db.First(&product, r.ProductId)
+	// raw sql
+	var products []Product
+	db.Raw("SELECT SQL_CALC_FOUND_ROWS * FROM `Products`;").Scan(&products)
+	// count := make([]int, 0)
+	// db.Raw("SELECT FOUND_ROWS() ROWCOUNT;").Pluck("ROWCOUNT", &count)
+	var count int
+	db.DB().QueryRow("SELECT FOUND_ROWS() ROWCOUNT;").Scan(&count)
+
 	// play redis
 	cache, _ := c.GetCache()
 	defer cache.Close()
