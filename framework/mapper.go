@@ -34,13 +34,9 @@ type DemoTwo struct {
 	Nums       []int
 }
 
-func MapTo(src, dst interface{}) {
-	// UseDefault
-	// IngnoreAll
-}
-
 // DirectMapTo just map the same name and type
 // src and dst should be pointer of struct
+// todo: support arrary as source
 func DirectMapTo(src, dst interface{}) {
 	srcValue := reflect.ValueOf(src).Elem()
 	srcType := srcValue.Type()

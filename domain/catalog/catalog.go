@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"runtime"
 	"time"
 
 	"github.com/gomodule/redigo/redis"
@@ -14,11 +15,20 @@ import (
 )
 
 func hiGrpc() {
+	defer func() {
+		if r := recover(); r != nil {
+			switch r.(type) {
+			case runtime.Error:
+				log.Printf("runtime error: %v", r)
+			default:
+				log.Printf("error: %v", r)
+			}
+		}
+	}()
 	const (
 		address     = "localhost:50051"
 		defaultName = "world"
 	)
-
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
@@ -49,22 +59,15 @@ func hiGrpc() {
 	}
 }
 
-func GetProduct(c *framework.GoContext, r GetProductRequest) (*GetProductsResponse, error) {
-	var product Product
+func GetProduct(c *framework.GoContext, r GetProductRequest) (*GetProductResponse, error) {
+	product := new(Product)
 	db, err := c.GetDatabase()
 	if err != nil {
 		log.Error(err.Error())
 		return nil, err
 	}
 	defer db.Close()
-	db.First(&product, r.ProductId)
-	// raw sql
-	var products []Product
-	db.Raw("SELECT SQL_CALC_FOUND_ROWS * FROM `Products`;").Scan(&products)
-	// count := make([]int, 0)
-	// db.Raw("SELECT FOUND_ROWS() ROWCOUNT;").Pluck("ROWCOUNT", &count)
-	var count int
-	db.DB().QueryRow("SELECT FOUND_ROWS() ROWCOUNT;").Scan(&count)
+	db.Where(&Product{Id: r.ProductId}).First(product)
 
 	// play redis
 	cache, _ := c.GetCache()
@@ -76,25 +79,40 @@ func GetProduct(c *framework.GoContext, r GetProductRequest) (*GetProductsRespon
 			_ = v
 		}
 	}
+
 	// play grpc
 	hiGrpc()
-	return &GetProductsResponse{
-		PageIndex: 1,
-		PageSize:  100,
-	}, nil
+
+	response := new(GetProductResponse)
+	framework.DirectMapTo(product, response)
+	return response, nil
 }
 
 func GetProducts(c *framework.GoContext, r GetProductsRequest) (*GetProductsResponse, error) {
-	var classifies []Classify
+	var products []*Product
 	db, err := c.GetDatabase()
 	if err != nil {
 		log.Error(err.Error())
 		return nil, err
 	}
 	defer db.Close()
-	db.Offset(r.PageIndex * r.PageSize).Limit(r.PageSize).Find(&classifies)
-	return &GetProductsResponse{
+
+	// raw sql
+	db.Raw("SELECT SQL_CALC_FOUND_ROWS * FROM `Products`;").Scan(&products)
+	// count := make([]int, 0)
+	// db.Raw("SELECT FOUND_ROWS() ROWCOUNT;").Pluck("ROWCOUNT", &count)
+	var count int
+	db.Raw("SELECT FOUND_ROWS() ROWCOUNT;").Row().Scan(&count)
+
+	db.Offset(r.PageIndex * r.PageSize).Limit(r.PageSize).Find(&products)
+	response := &GetProductsResponse{
+		Count:     count,
 		PageIndex: r.PageIndex,
 		PageSize:  r.PageSize,
-	}, nil
+	}
+	tmp := struct {
+		Items []*Product
+	}{Items: products}
+	framework.DirectMapTo(&tmp, response)
+	return response, nil
 }

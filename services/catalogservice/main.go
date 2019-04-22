@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/DeanThompson/ginpprof"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/peizhong/letsgo/framework"
@@ -103,6 +104,7 @@ func configGin(serviceProvider *dig.Container) *gin.Engine {
 			log.Error(err.Error())
 		}
 	})
+	ginpprof.Wrapper(r)
 	return r
 }
 

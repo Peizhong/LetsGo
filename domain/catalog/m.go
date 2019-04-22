@@ -1,6 +1,8 @@
 package catalog
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -28,13 +30,14 @@ func (Classify) TableName() string {
 }
 
 type Product struct {
-	Id          string
-	WorkspaceId string
-	Name        string
-	Code        string
-	ClassifyId  uint
-	AssetState  uint
-	Manufacture string
+	Id          string    `gorm:"primary_key;column:Id"`
+	WorkspaceId string    `gorm:"column:WorkspaceId"`
+	Name        string    `gorm:"column:Name"`
+	Code        string    `gorm:"column:Code"`
+	ClassifyId  uint      `gorm:"column:CategoryId"`
+	AssetState  uint      `gorm:"column:DataStatus"`
+	Manufacture string    `gorm:"column:Manufacture"`
+	UpdateTime  time.Time `gorm:"column:UpdateAt"`
 }
 
 func (Product) TableName() string {
@@ -69,9 +72,17 @@ type GetClassifyResponse struct {
 }
 
 type GetProductResponse struct {
+	Id          string
+	WorkspaceId string
+	Name        string
+	Code        string
+	ClassifyId  uint
+	AssetState  uint
+	Manufacture string
 }
 
 type GetProductsResponse struct {
+	Items     []*GetProductResponse
 	Count     int
 	PageIndex int
 	PageSize  int
