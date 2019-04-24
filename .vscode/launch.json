@@ -16,7 +16,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/services/catalogservice/main.go",
+            "program": "${workspaceFolder}/services/gatewayservice/main.go",
             "env": {},
             "args": []
         }

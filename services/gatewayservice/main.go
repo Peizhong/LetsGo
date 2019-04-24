@@ -1,8 +1,14 @@
 package main
 
 import (
-	"github.com/jinzhu/gorm"
+	"fmt"
+	"net/http"
+	"os"
+	"os/signal"
+
 	log "github.com/sirupsen/logrus"
+
+	"github.com/gorilla/mux"
 )
 
 /*
@@ -13,10 +19,25 @@ func init() {
 
 }
 
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "%v", vars["all"])
+}
+
 func main() {
-	db, err := gorm.Open("mysql", "user:password@/dbname?charset=utf8&parseTime=True&loc=Local")
-	if err != nil {
-		log.Error(err.Error())
+	r := mux.NewRouter()
+	r.HandleFunc("/{all}/", HomeHandler)
+	http.Handle("/", r)
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, os.Interrupt)
+	go func() {
+		if err := http.ListenAndServe("localhost:8080", nil); err != nil {
+			log.Error(err.Error())
+		}
+	}()
+	select {
+	case <-ch:
+		log.Println("Program exit")
 	}
-	defer db.Close()
 }
