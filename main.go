@@ -9,11 +9,11 @@ import (
 
 func main() {
 	log.Info("Let's Go start")
+	workers := loadWorkers()
 	c := make(chan os.Signal, 1)
-	go func() {
-
-	}()
 	signal.Notify(c, os.Interrupt)
 	<-c
+	log.Info("Closing Services")
+	stopWorkers(workers...)
 	log.Info("Let's Go exit")
 }

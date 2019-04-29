@@ -9,7 +9,7 @@ import (
 
 	"github.com/gomodule/redigo/redis"
 	"github.com/peizhong/letsgo/framework"
-	pb "github.com/peizhong/letsgo/services/helloworld"
+	pb "github.com/peizhong/letsgo/services/grpc/client/helloworld"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )

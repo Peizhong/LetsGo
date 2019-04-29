@@ -24,7 +24,7 @@ func (m *CacheMiddleware) Invoke(c *gonet.Context, ch chan<- struct{}, next func
 
 type CachedGatewayResponse struct {
 	Response    *gonet.GatewayResponse
-	Exipre      time.Time `remark:"过期时间“`
+	Exipre      time.Time `remark:"过期时间"`
 	RequestTime int64     `remark:"请求次数"`
 }
 
