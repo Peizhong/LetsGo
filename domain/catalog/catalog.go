@@ -9,8 +9,8 @@ import (
 
 	"github.com/gomodule/redigo/redis"
 	"github.com/peizhong/letsgo/framework"
-	pb "github.com/peizhong/letsgo/services/grpc/client/helloworld"
-	log "github.com/sirupsen/logrus"
+	log "github.com/peizhong/letsgo/framework/log"
+	pb "github.com/peizhong/letsgo/services/grpc/pb/helloworld"
 	"google.golang.org/grpc"
 )
 
@@ -19,9 +19,9 @@ func hiGrpc() {
 		if r := recover(); r != nil {
 			switch r.(type) {
 			case runtime.Error:
-				log.Printf("runtime error: %v", r)
+				log.Info("runtime error: %v", r)
 			default:
-				log.Printf("error: %v", r)
+				log.Info("error: %v", r)
 			}
 		}
 	}()
@@ -32,7 +32,7 @@ func hiGrpc() {
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Fatal("did not connect: %v", err)
 	}
 	defer conn.Close()
 	c := pb.NewGreeterClient(conn)
@@ -48,14 +48,14 @@ func hiGrpc() {
 	for d := range demo {
 		r, err := c.SayHello(ctx, &pb.HelloRequest{Name: fmt.Sprintf("%v_%v", d, name)})
 		if err != nil {
-			log.Fatalf("could not greet: %v", err)
+			log.Fatal("could not greet: %v", err)
 		}
-		log.Printf("Greeting %d: %s", d, r.Message)
+		log.Info("Greeting %d: %s", d, r.Message)
 		r, err = c.SayHelloAgain(ctx, &pb.HelloRequest{Name: fmt.Sprintf("%v_%v", d, name)})
 		if err != nil {
-			log.Fatalf("could not greet: %v", err)
+			log.Fatal("could not greet: %v", err)
 		}
-		log.Printf("Greeting again %d: %s", d, r.Message)
+		log.Info("Greeting again %d: %s", d, r.Message)
 	}
 }
 

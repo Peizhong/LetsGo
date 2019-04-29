@@ -1,4 +1,4 @@
-package catalogservice
+package catalog
 
 import (
 	"github.com/gin-gonic/gin"

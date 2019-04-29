@@ -1,4 +1,4 @@
-package catalogservice
+package catalog
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/peizhong/letsgo/framework"
-	log "github.com/sirupsen/logrus"
+	log "github.com/peizhong/letsgo/framework/log"
 	"go.uber.org/dig"
 )
 
@@ -122,6 +122,9 @@ func _main() {
 }
 
 func Run() {
+	serviceProvider, closer := configService()
 	g := configGin(serviceProvider)
+	log.Info("api_catalogservice is on")
 	g.Run(":8080")
+	closer()
 }

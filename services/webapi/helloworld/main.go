@@ -1,4 +1,4 @@
-package main
+package helloworld
 
 import (
 	"flag"
@@ -9,7 +9,8 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
-	gw "github.com/peizhong/letsgo/services/helloworld"
+	"github.com/peizhong/letsgo/framework/log"
+	gw "github.com/peizhong/letsgo/services/grpc/pb/helloworld"
 )
 
 var (
@@ -28,7 +29,7 @@ func run() error {
 		return err
 	}
 
-	return http.ListenAndServe(":8080", mux)
+	return http.ListenAndServe(":8081", mux)
 }
 
 // https://github.com/grpc-ecosystem/grpc-gateway
@@ -37,10 +38,11 @@ func run() error {
 // protoc -I C:/Users/wxyz/go/src  -I C:/Users/wxyz/go/src/github.com/googleapis/googleapis -I helloworld/ --grpc-gateway_out=logtostderr=true:helloworld helloworld/helloworld.proto
 // protoc -I C:/Users/wxyz/go/src  -I C:/Users/wxyz/go/src/github.com/googleapis/googleapis -I helloworld/ --swagger_out=logtostderr=true:helloworld helloworld/helloworld.proto
 // curl -X POST -k http://localhost:8080/v1/example/sayhello -d '{"name": "CoS is hname:"}'
-func main() {
+func Run() {
 	flag.Parse()
 	defer glog.Flush()
 
+	log.Info("api_helloworldproxy is on")
 	if err := run(); err != nil {
 		glog.Fatal(err)
 	}

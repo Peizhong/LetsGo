@@ -1,4 +1,4 @@
-package gatewayservice
+package gateway
 
 import (
 	"fmt"
@@ -46,6 +46,7 @@ func Run() {
 	r := mux.NewRouter()
 	r.HandleFunc("/{all}/", HomeHandler)
 	http.Handle("/", r)
+	log.Info("api_gatewayservice is on")
 	if err := http.ListenAndServe("localhost:8080", nil); err != nil {
 		log.Error(err.Error())
 	}

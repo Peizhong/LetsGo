@@ -10,8 +10,11 @@ import (
 	"github.com/peizhong/letsgo/services/grpc/server/helloworld"
 
 	// webapi
-	"github.com/peizhong/letsgo/services/webapi/catalogservice"
-	"github.com/peizhong/letsgo/services/webapi/gatewayservice"
+	catalogservice "github.com/peizhong/letsgo/services/webapi/catalog"
+	gatewayservice "github.com/peizhong/letsgo/services/webapi/gateway"
+
+	// proxy
+	helloworldproxy "github.com/peizhong/letsgo/services/webapi/helloworld"
 )
 
 type Starter interface {
@@ -29,6 +32,9 @@ func (b *BatchHttp) Start() {
 	}()
 	go func() {
 		gatewayservice.Run()
+	}()
+	go func() {
+		helloworldproxy.Run()
 	}()
 }
 
