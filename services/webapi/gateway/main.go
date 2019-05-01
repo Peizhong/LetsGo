@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/signal"
 
-	log "github.com/sirupsen/logrus"
+	log "github.com/peizhong/letsgo/framework/log"
 
 	"github.com/gorilla/mux"
 )
@@ -15,39 +15,30 @@ import (
 consul for service discovery
 */
 
-func init() {
-
-}
-
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "%v", vars["all"])
-}
-
 func _main() {
-	r := mux.NewRouter()
-	r.HandleFunc("/{all}/", HomeHandler)
-	http.Handle("/", r)
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, os.Interrupt)
 	go func() {
-		if err := http.ListenAndServe("localhost:8080", nil); err != nil {
-			log.Error(err.Error())
-		}
+		Run()
 	}()
 	select {
 	case <-ch:
-		log.Println("Program exit")
+		log.Info("Program exit")
 	}
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "%v", r.RequestURI)
 }
 
 func Run() {
 	r := mux.NewRouter()
-	r.HandleFunc("/{all}/", HomeHandler)
+	r.PathPrefix("/api/").HandlerFunc(homeHandler)
+	r.Use(errorMiddleware, loggingMiddleware, tracingMiddleware, reRoutingMiddleware)
 	http.Handle("/", r)
 	log.Info("api_gatewayservice is on")
-	if err := http.ListenAndServe("localhost:8080", nil); err != nil {
+	if err := http.ListenAndServe("localhost:8010", nil); err != nil {
 		log.Error(err.Error())
 	}
 }
