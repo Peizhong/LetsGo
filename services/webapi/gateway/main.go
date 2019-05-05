@@ -1,7 +1,6 @@
 package gateway
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -28,14 +27,13 @@ func _main() {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "%v", r.RequestURI)
+	log.Info("I do nothing")
 }
 
 func Run() {
 	r := mux.NewRouter()
 	r.PathPrefix("/api/").HandlerFunc(homeHandler)
-	r.Use(errorMiddleware, loggingMiddleware, tracingMiddleware, reRoutingMiddleware)
+	r.Use(errorMiddleware, loggingMiddleware, tracingMiddleware, reRoutingMiddleware, requestMiddleware, responseMiddleware)
 	http.Handle("/", r)
 	log.Info("api_gatewayservice is on")
 	if err := http.ListenAndServe("localhost:8010", nil); err != nil {
