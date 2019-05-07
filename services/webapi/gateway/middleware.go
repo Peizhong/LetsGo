@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 
+	httpclient "github.com/peizhong/letsgo/framework/http"
 	log "github.com/peizhong/letsgo/framework/log"
 )
 
@@ -83,7 +84,9 @@ func requestMiddleware(next http.Handler) http.Handler {
 		// Do stuff here
 		if gwContext, ok := r.Context().(GWContext); ok {
 			destURL := gwContext.ReRouteInfo.DestURL
-			gwContext.ReRouteInfo.RecvData = []byte("data from other: " + destURL)
+			if res, err := httpclient.Get(destURL, nil, nil); err == nil {
+				gwContext.ReRouteInfo.RecvData = res.Body
+			}
 		}
 		next.ServeHTTP(w, r)
 	})
