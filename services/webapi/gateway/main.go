@@ -10,6 +10,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const apiPreFix = "/api/"
+
 /*
 consul for service discovery
 */
@@ -32,7 +34,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 
 func Run() {
 	r := mux.NewRouter()
-	r.PathPrefix("/api/").HandlerFunc(homeHandler)
+	r.PathPrefix(apiPreFix).HandlerFunc(homeHandler)
 	r.Use(errorMiddleware, loggingMiddleware, tracingMiddleware, reRoutingMiddleware, requestMiddleware, responseMiddleware)
 	http.Handle("/", r)
 	log.Info("api_gatewayservice is on")

@@ -15,7 +15,8 @@ type Header struct {
 }
 
 type HTTPResponse struct {
-	Body []byte
+	Body    []byte
+	Headers []Header
 }
 
 func (r HTTPResponse) String() string {
@@ -59,7 +60,14 @@ func Get(url string, headers []Header, query ...interface{}) (*HTTPResponse, err
 	if err != nil {
 		return nil, err
 	}
+	rHeaders := make([]Header, len(response.Header))
+	var i int
+	for k, v := range response.Header {
+		rHeaders[i] = Header{k, v[0]}
+		i++
+	}
 	return &HTTPResponse{
-		Body: bytes,
+		Body:    bytes,
+		Headers: rHeaders,
 	}, nil
 }

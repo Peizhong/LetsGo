@@ -17,9 +17,13 @@ const (
 	ReRouteK
 )
 
+type Header struct {
+	K, V string
+}
+
 type ReRouteInfo struct {
 	DestURL     string
-	DestHeaders map[string]string
+	DestHeaders []Header
 	RecvData    []byte
 }
 
@@ -86,6 +90,13 @@ func requestMiddleware(next http.Handler) http.Handler {
 			destURL := gwContext.ReRouteInfo.DestURL
 			if res, err := httpclient.Get(destURL, nil, nil); err == nil {
 				gwContext.ReRouteInfo.RecvData = res.Body
+				gwContext.ReRouteInfo.DestHeaders = make([]Header, len(res.Headers))
+				for i, h := range res.Headers {
+					gwContext.ReRouteInfo.DestHeaders[i] = Header{
+						h.K,
+						h.V,
+					}
+				}
 			}
 		}
 		next.ServeHTTP(w, r)
@@ -96,6 +107,9 @@ func responseMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Do stuff here
 		if gwContext, ok := r.Context().(GWContext); ok {
+			for _, h := range gwContext.ReRouteInfo.DestHeaders {
+				w.Header().Set(h.K, h.V)
+			}
 			w.Write(gwContext.ReRouteInfo.RecvData)
 		}
 		next.ServeHTTP(w, r)
