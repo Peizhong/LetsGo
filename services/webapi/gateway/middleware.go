@@ -88,7 +88,7 @@ func requestMiddleware(next http.Handler) http.Handler {
 		// Do stuff here
 		if gwContext, ok := r.Context().(GWContext); ok {
 			destURL := gwContext.ReRouteInfo.DestURL
-			if res, err := httpclient.Get(destURL, nil, nil); err == nil {
+			if res, err := httpclient.Do(r.Method, destURL, nil, "", nil); err == nil {
 				gwContext.ReRouteInfo.RecvData = res.Body
 				gwContext.ReRouteInfo.DestHeaders = make([]Header, len(res.Headers))
 				for i, h := range res.Headers {

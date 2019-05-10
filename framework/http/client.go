@@ -1,6 +1,7 @@
 package http
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -27,7 +28,7 @@ func (r HTTPResponse) Fill(obj interface{}) {
 	json.Unmarshal(r.Body, obj)
 }
 
-func Get(url string, headers []Header, query ...interface{}) (*HTTPResponse, error) {
+func Do(method, url string, headers []Header, body string, query ...interface{}) (*HTTPResponse, error) {
 	req := strings.Builder{}
 	req.WriteString(url)
 	ql := len(query)
@@ -45,7 +46,7 @@ func Get(url string, headers []Header, query ...interface{}) (*HTTPResponse, err
 	reqURL := req.String()
 	log.Info("requset url: %v", reqURL)
 	client := _http.Client{}
-	r, err := _http.NewRequest("GET", reqURL, nil)
+	r, err := _http.NewRequest(method, reqURL, bytes.NewBufferString(body))
 	if err != nil {
 		return nil, err
 	}
