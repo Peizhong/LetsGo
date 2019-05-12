@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/peizhong/letsgo/framework"
+	config "github.com/peizhong/letsgo/framework/config"
 	log "github.com/peizhong/letsgo/framework/log"
 	"go.uber.org/dig"
 )
@@ -33,12 +34,12 @@ func init() {
 }
 
 func configService() (*dig.Container, func()) {
-	appsettings := framework.GetAppsettings("")
+	appsettings := config.GetAppsettings("")
 
 	container := dig.New()
 
 	// appsettings
-	if err := container.Provide(func() framework.Appsettings {
+	if err := container.Provide(func() config.Appsettings {
 		return appsettings
 	}); err != nil {
 		log.Error(err.Error())

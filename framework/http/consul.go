@@ -6,6 +6,19 @@ import (
 	"github.com/peizhong/letsgo/framework/log"
 )
 
+/*
+Consul: Consul is a service mesh solution providing a full featured control plane with:
+service discovery: api or mysql, DNS or HTTP
+health checking
+kv store: configuration
+secure serivce communication: TLS
+multi datacenter: segmentation functionality
+//https://www.consul.io/docs/internals/architecture.html
+agent: server or client mode
+client: talk to server
+server: elect leader
+*/
+
 func RegisterConsul(name, address string, port int, consul string) bool {
 	// https://www.consul.io/api/agent/service.html#register-service
 	sample := `
