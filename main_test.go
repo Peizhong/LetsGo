@@ -303,14 +303,18 @@ func doWaitGroup() {
 }
 
 type job struct {
+	// unsafe 对齐
+	b        byte
 	id       int
 	randomno int
+	i32      int32
+	i64      int64
 }
 
 func createBeater(noOfJobs int, jobs chan<- job) {
 	for i := 0; i < noOfJobs; i++ {
 		randomno := rand.Intn(999)
-		j := job{i, randomno}
+		j := job{1, i, randomno, 1, 2}
 		fmt.Println("go ", i)
 		jobs <- j
 	}
@@ -455,4 +459,70 @@ func TestXXX(t *testing.T) {
 	doMap()
 	doString()
 	doRelect()
+}
+
+func f2i(f float64) uint64 {
+	return *(*uint64)(unsafe.Pointer(&f))
+}
+
+type company struct {
+	j    job
+	name int32
+}
+
+func TestPtr(t *testing.T) {
+	var f float64
+	f = 12
+	log.Println(unsafe.Sizeof(f))
+	var d uint64
+	log.Println(unsafe.Sizeof(d))
+	d = f2i(f)
+	j := &job{
+		id:       1,
+		randomno: 2,
+	}
+	ao := unsafe.Alignof(j.b)
+	os := unsafe.Offsetof(j.b)
+	so := unsafe.Sizeof(j.b)
+	// 结构体对齐值，
+	ao = unsafe.Alignof(*j)
+	so = unsafe.Sizeof(*j)
+	cp := &company{
+		*j,
+		123,
+	}
+	ao = unsafe.Alignof(*cp)
+	so = unsafe.Sizeof(*cp)
+	os = unsafe.Offsetof(cp.name)
+	log.Println(ao, os, so)
+	str := "aaaa"
+	so = unsafe.Sizeof(str)
+	so = unsafe.Sizeof(&str)
+	// array, slice 的区别
+	a := [...]int{1, 2, 3}
+	prtA := unsafe.Pointer(&a)
+	prt0 := unsafe.Pointer(&a[0])
+	sum := uintptr(prt0) - uintptr(prtA)
+	log.Println(sum)
+	b := a[0]
+	off := unsafe.Sizeof(b)
+	prt1 := unsafe.Pointer(uintptr(prt0) + off)
+	v := (*int)(prt1)
+	log.Println(v)
+	var x struct {
+		a bool
+		b int16
+		c []int
+	}
+	fmt.Println(x.b) // "42"
+	tmp := uintptr(unsafe.Pointer(&x)) + unsafe.Offsetof(x.b)
+	// gc可能移动了x，导致tmp指向的地址无效
+	pb := (*int16)(unsafe.Pointer(tmp))
+	*pb = 42
+	fmt.Println(x.b) // "42"
+	log.Println(unsafe.Sizeof(j))
+	log.Println(unsafe.Alignof(j.b))
+	log.Println(unsafe.Sizeof(*j))
+	log.Println(unsafe.Sizeof(j.i32))
+	log.Println(unsafe.Sizeof(j.i64))
 }
