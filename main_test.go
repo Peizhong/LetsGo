@@ -533,11 +533,11 @@ func TestPtr(t *testing.T) {
 		e byte
 	}
 	var p2 struct {
-		a bool //
-		e byte
-		c int8
-		b int32
-		d int64
+		a bool  //0 1
+		e byte  //1 1
+		c int8  //2 1 + 1
+		b int32 //4 4
+		d int64 //8 8
 	}
 	assert.Equal(t, unsafe.Sizeof(p1), uintptr(32))
 	assert.Equal(t, unsafe.Sizeof(p2), uintptr(16))
