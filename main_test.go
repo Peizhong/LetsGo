@@ -506,6 +506,12 @@ func TestPtr(t *testing.T) {
 	log.Println(sum)
 	b := a[0]
 	off := unsafe.Sizeof(b)
+	/*
+	   （1）任何类型的指针都可以被转化为Pointer
+	   （2）Pointer可以被转化为任何类型的指针
+	   （3）uintptr可以被转化为Pointer
+	   （4）Pointer可以被转化为uintptr
+	*/
 	prt1 := unsafe.Pointer(uintptr(prt0) + off)
 	v := (*int)(prt1)
 	log.Println(v)
@@ -519,6 +525,23 @@ func TestPtr(t *testing.T) {
 	// gc可能移动了x，导致tmp指向的地址无效
 	pb := (*int16)(unsafe.Pointer(tmp))
 	*pb = 42
+	var p1 struct {
+		a bool
+		b int32
+		c int8
+		d int64
+		e byte
+	}
+	var p2 struct {
+		a bool //
+		e byte
+		c int8
+		b int32
+		d int64
+	}
+	assert.Equal(t, unsafe.Sizeof(p1), uintptr(32))
+	assert.Equal(t, unsafe.Sizeof(p2), uintptr(16))
+
 	fmt.Println(x.b) // "42"
 	log.Println(unsafe.Sizeof(j))
 	log.Println(unsafe.Alignof(j.b))
