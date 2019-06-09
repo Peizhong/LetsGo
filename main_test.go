@@ -486,6 +486,7 @@ func TestPtr(t *testing.T) {
 	so := unsafe.Sizeof(j.b)
 	// 结构体对齐值，
 	ao = unsafe.Alignof(*j)
+	// 64位对齐系数=8
 	so = unsafe.Sizeof(*j)
 	cp := &company{
 		*j,
@@ -504,17 +505,12 @@ func TestPtr(t *testing.T) {
 	prt0 := unsafe.Pointer(&a[0])
 	sum := uintptr(prt0) - uintptr(prtA)
 	log.Println(sum)
-	b := a[0]
-	off := unsafe.Sizeof(b)
 	/*
 	   （1）任何类型的指针都可以被转化为Pointer
 	   （2）Pointer可以被转化为任何类型的指针
 	   （3）uintptr可以被转化为Pointer
 	   （4）Pointer可以被转化为uintptr
 	*/
-	prt1 := unsafe.Pointer(uintptr(prt0) + off)
-	v := (*int)(prt1)
-	log.Println(v)
 	var x struct {
 		a bool
 		b int16
@@ -522,7 +518,7 @@ func TestPtr(t *testing.T) {
 	}
 	fmt.Println(x.b) // "42"
 	tmp := uintptr(unsafe.Pointer(&x)) + unsafe.Offsetof(x.b)
-	// gc可能移动了x，导致tmp指向的地址无效
+	// gc可能移动了x，导致tmp uintptr指向的地址无效
 	pb := (*int16)(unsafe.Pointer(tmp))
 	*pb = 42
 	var p1 struct {
@@ -539,6 +535,13 @@ func TestPtr(t *testing.T) {
 		b int32 //4 4
 		d int64 //8 8
 	}
+	var p3 struct {
+		a bool
+	}
+	var p4 struct {
+		b bool
+	}
+	fmt.Println(unsafe.Alignof(p3)) //64位不超过8
 	assert.Equal(t, unsafe.Sizeof(p1), uintptr(32))
 	assert.Equal(t, unsafe.Sizeof(p2), uintptr(16))
 
