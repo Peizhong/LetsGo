@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"log"
 	"math/rand"
 	"reflect"
@@ -13,8 +14,7 @@ import (
 	"unicode/utf8"
 	"unsafe"
 
-	"github.com/peizhong/letsgo/framework"
-	"github.com/stretchr/testify/assert"
+	"letsgo/framework"
 )
 
 // 闭包
@@ -537,9 +537,6 @@ func TestPtr(t *testing.T) {
 	}
 	var p3 struct {
 		a bool
-	}
-	var p4 struct {
-		b bool
 	}
 	fmt.Println(unsafe.Alignof(p3)) //64位不超过8
 	assert.Equal(t, unsafe.Sizeof(p1), uintptr(32))

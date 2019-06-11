@@ -4,7 +4,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/peizhong/letsgo/framework/log"
+	"letsgo/framework/log"
 )
 
 func main() {
