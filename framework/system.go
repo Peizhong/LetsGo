@@ -21,7 +21,5 @@ func Int64TryParse(s string) (n int64, b bool) {
 }
 
 func WhatIsThis(values ...interface{}) {
-	for _, v := range values {
-		spew.Dump(v)
-	}
+	spew.Dump(values...)
 }
