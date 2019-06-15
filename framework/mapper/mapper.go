@@ -1,4 +1,4 @@
-package framework
+package mapper
 
 import (
 	"encoding/json"

@@ -2,6 +2,8 @@ package config
 
 import (
 	"encoding/json"
+	"github.com/go-ini/ini"
+	"letsgo/framework/log"
 	"os"
 	"path/filepath"
 	"sync"
@@ -21,9 +23,38 @@ type Appsettings struct {
 
 const defaultSettingFile = "config/appsettings.json"
 
-var once sync.Once
+var (
+	// json
+	once     sync.Once
+	settings atomic.Value
 
-var settings atomic.Value
+	// ini
+	cfg       *ini.File
+	RunMode   string
+	JwtSecret string
+)
+
+func init() {
+	var err error
+	cfg, err = ini.Load("config/app.ini")
+	if err != nil {
+		log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
+	}
+	loadBase()
+	loadApp()
+}
+
+func loadBase() {
+	RunMode = cfg.Section("").Key("RUN_MODE").MustString("debug")
+}
+
+func loadApp() {
+	sec, err := cfg.GetSection("app")
+	if err != nil {
+		log.Fatalf("Fail to get section 'app': %v", err)
+	}
+	JwtSecret = sec.Key("JWT_SECRET").MustString("!@)*#)!@U#@*!@!)")
+}
 
 // GetConnectionString get connection string from appsettings.json
 func GetConnectionString(key string) string {

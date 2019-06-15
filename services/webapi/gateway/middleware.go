@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/uuid"
 
-	httpclient "github.com/peizhong/letsgo/framework/http"
-	log "github.com/peizhong/letsgo/framework/log"
+	httpclient "letsgo/framework/http"
+	log "letsgo/framework/log"
 )
 
 type key int

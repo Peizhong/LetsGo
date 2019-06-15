@@ -1,18 +1,25 @@
 package log
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/davecgh/go-spew/spew"
+)
 
 // Info log level info
-func Info(format string, args ...interface{}) {
-	fmt.Println(fmt.Sprintf(format, args...))
+func Info(args ...interface{}) {
+	fmt.Println(spew.Sprint(args...))
 }
 
-func Error(format string, args ...interface{}) {
-	fmt.Println(fmt.Sprintf(format, args...))
+func Infof(format string, args ...interface{}) {
+	fmt.Println(spew.Sprintf(format, args...))
 }
 
-func Fatal(format string, args ...interface{}) {
-	fmt.Println(fmt.Sprintf(format, args...))
+func Errorf(format string, args ...interface{}) {
+	fmt.Println(spew.Sprintf(format, args...))
+}
+
+func Fatalf(format string, args ...interface{}) {
+	fmt.Println(spew.Sprintf(format, args...))
 }
 
 func WithField(str ...string) *Entry {

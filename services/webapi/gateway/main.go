@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/signal"
 
-	log "github.com/peizhong/letsgo/framework/log"
+	log "letsgo/framework/log"
 
 	"github.com/gorilla/mux"
 )
@@ -39,6 +39,6 @@ func Run() {
 	http.Handle("/", r)
 	log.Info("api_gatewayservice is on")
 	if err := http.ListenAndServe("localhost:8010", nil); err != nil {
-		log.Error(err.Error())
+		log.Errorf(err.Error())
 	}
 }

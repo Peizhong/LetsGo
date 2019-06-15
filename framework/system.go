@@ -2,8 +2,6 @@ package framework
 
 import (
 	"strconv"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 func IntTryParse(s string) (n int, b bool) {
@@ -18,8 +16,4 @@ func Int64TryParse(s string) (n int64, b bool) {
 		return num, true
 	}
 	return
-}
-
-func WhatIsThis(values ...interface{}) {
-	spew.Dump(values...)
 }

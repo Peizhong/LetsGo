@@ -3,7 +3,7 @@ package http
 import (
 	"fmt"
 
-	"github.com/peizhong/letsgo/framework/log"
+	"letsgo/framework/log"
 )
 
 /*

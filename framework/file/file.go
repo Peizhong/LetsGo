@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/peizhong/letsgo/framework/log"
+	"letsgo/framework/log"
 )
 
 const (
