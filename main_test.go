@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"log"
 	"math/rand"
 	"reflect"
 	"runtime"
@@ -14,7 +13,7 @@ import (
 	"unicode/utf8"
 	"unsafe"
 
-	"letsgo/framework"
+	"letsgo/framework/log"
 )
 
 // 闭包
@@ -78,7 +77,7 @@ func doConstants() {
 	fmt.Println(fmt.Sprintf("%T %T", defaultName, customName))
 }
 
-func doCondition() {
+func TestCondition(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		if i < 5 {
 			continue
@@ -101,9 +100,11 @@ func doCondition() {
 	}
 	// Expressionless switch
 	// If the expression is omitted, the switch is considered to be switch true and each of the case expression is evaluated for truth
-	num := 75
+	num := 50
+	num += 2
 	switch {
 	case num >= 0 && num <= 50:
+		num += 2
 		fmt.Println("num is greater than 0 and less than 50")
 	case num >= 51 && num <= 100:
 		fmt.Println("num is greater than 51 and less than 100")
@@ -111,16 +112,6 @@ func doCondition() {
 	case num >= 101:
 		fmt.Println("num is greater than 100")
 	}
-}
-
-func changeSlice(s []string) {
-	s[0] = "Go"             // original s changed
-	s = append(s, "eSlice") // original s not changed
-}
-
-func changeVariadic(s ...string) {
-	s[0] = "Go"               // original s changed
-	s = append(s, "Variadic") // original s not changed
 }
 
 func doSlice() {
@@ -136,13 +127,8 @@ func doSlice() {
 	countries := []string{"USA", "Singapore", "Germany", "India", "Australia"}
 	neededCountries := countries[:len(countries)-2]
 	countriesCpy := make([]string, len(neededCountries))
-	copy(countriesCpy, neededCountries) //copies neededCountries to countriesCpy
-	welcome := make([]string, 2, 4)
-	welcome[0] = "hello"
-	welcome[1] = "world"
-	// slice will be passed as an argument without a new slice
-	changeVariadic(welcome...)
-	changeSlice(welcome)
+	copy(countriesCpy, neededCountries) //copies neededCountries to countriesCpy, min len
+
 }
 
 func doMap() {
@@ -155,9 +141,6 @@ func doMap() {
 		personSalary["joe"] = 14000
 	}
 	// order of the retrieval of values from a map when using for range is not guaranteed
-	for k, v := range personSalary {
-		println(k, "", v)
-	}
 	for k, v := range personSalary {
 		println(k, "", v)
 	}
@@ -189,7 +172,18 @@ func doStructure() {
 		age:       31,
 		salary:    5000,
 	}
-	fmt.Println("Employee 3", emp3)
+	emp4 := struct {
+		firstName, lastName string
+		age, salary         int
+	}{
+		firstName: "Andreah",
+		lastName:  "Nikola",
+		age:       31,
+		salary:    5000,
+	}
+	if emp3 == emp4 {
+
+	}
 	// Structs are value types and are comparable if each of their fields are comparable
 	// Struct variables are not comparable if they contain fields which are not comparable, like map
 }
@@ -203,16 +197,6 @@ func doMethod() {
 		In this case if a pointer receiver is used, the struct will not be copied and only a pointer to it will be used in the method.
 		In all other situations value receivers can be used.
 	*/
-}
-
-type Describer interface {
-	// The concrete value stored in an interface is not addressable
-	// must implement using value reciver
-	Describe()
-}
-
-func doRelect() {
-
 }
 
 func checkReflect(obj interface{}) {
@@ -261,47 +245,6 @@ func checkReflect(obj interface{}) {
 	}
 }
 
-// <-chan writeonly, chan<- readonly
-func helloProducer(ch chan<- int) {
-	fmt.Println("producer started")
-	for i := 0; i < 10; i++ {
-		time.Sleep(1 * time.Second)
-		fmt.Println("write to channel", i)
-		ch <- i
-	}
-	close(ch)
-	fmt.Println("producer all done")
-}
-
-// cost of creating a Goroutine is tiny when compared to a thread
-func doGoroutines(count int32) {
-	ch := make(chan int)
-	// ch = make(chan int, 3) // buffered channel
-	// whern a goroutine is started, the goroutine call returns immediately to the next line of code after the Goroutine call
-	go helloProducer(ch)
-	// write and send to channel are bolcking by default
-	// v, ok := <-ch
-	for v := range ch {
-		fmt.Println("Received ", v)
-	}
-}
-
-func process(i int, wg *sync.WaitGroup) {
-	d := time.Duration(i) * time.Second
-	time.Sleep(d)
-	wg.Done()
-}
-
-func doWaitGroup() {
-	var wg sync.WaitGroup
-	no := 3
-	for i := 1; i < no; i++ {
-		wg.Add(1)
-		process(i, &wg)
-	}
-	wg.Wait()
-}
-
 type job struct {
 	// unsafe 对齐
 	b        byte
@@ -348,28 +291,14 @@ func doWorkerPool() {
 	createWorker(cpus, jobs)
 }
 
-func doSelectChannel() {
-	output1 := make(chan string)
-	output2 := make(chan string)
-	// blocks until one of its cases is ready, then will terminate
-	select {
-	case s1 := <-output1:
-		fmt.Println(s1)
-	case s2 := <-output2:
-		fmt.Println(s2)
-	default:
-		fmt.Println("no value received")
-	}
-}
-
 type C1 struct {
 	context.Context
 }
 
 func (c C1) Run() {
-	log.Println("waiting for parent to stop it")
+	log.Info("waiting for parent to stop it")
 	<-c.Done()
-	log.Println("child completed")
+	log.Info("child completed")
 }
 
 func TestContext(t *testing.T) {
@@ -391,76 +320,6 @@ func TestContext(t *testing.T) {
 	time.Sleep(time.Second * 5)
 }
 
-func TestMapper(t *testing.T) {
-	d1 := framework.DemoOne{
-		Id:         1,
-		Value:      "D1",
-		UpdateTime: time.Now(),
-		Data: []*framework.ObjOne{
-			{Key: "K1", Value: "V1"},
-			{Key: "K2", Value: "V2"},
-		},
-		Nums: []int{
-			1, 2, 3, 4, 5,
-		},
-	}
-	d2 := framework.DemoTwo{}
-	framework.DirectMapTo(&d1, &d2)
-	framework.WhatIsThis(d1, d2)
-	assert.Equal(t, d1.UpdateTime, d2.UpdateTime)
-}
-
-func BenchmarkMap(b *testing.B) {
-	d1 := framework.DemoOne{
-		Id:         1,
-		Value:      "D1",
-		UpdateTime: time.Now(),
-		Data: []*framework.ObjOne{
-			{Key: "K1", Value: "V1"},
-			{Key: "K2", Value: "V2"},
-		},
-		Nums: []int{
-			1, 2, 3, 4, 5,
-		},
-	}
-	d2 := framework.DemoTwo{}
-	for n := 0; n < b.N; n++ {
-		framework.DirectMapTo(&d1, &d2)
-	}
-}
-
-func BenchmarkMapJson(b *testing.B) {
-	d1 := framework.DemoOne{
-		Id:         1,
-		Value:      "D1",
-		UpdateTime: time.Now(),
-		Data: []*framework.ObjOne{
-			{Key: "K1", Value: "V1"},
-			{Key: "K2", Value: "V2"},
-		},
-		Nums: []int{
-			1, 2, 3, 4, 5,
-		},
-	}
-	d2 := framework.DemoTwo{}
-	for n := 0; n < b.N; n++ {
-		framework.JsonMapTo(&d1, &d2)
-	}
-}
-
-func TestXXX(t *testing.T) {
-	t.Log("hello world")
-
-	doWorkerPool()
-	// doGoroutines(123)
-
-	doConstants()
-	doSlice()
-	doMap()
-	doString()
-	doRelect()
-}
-
 func f2i(f float64) uint64 {
 	return *(*uint64)(unsafe.Pointer(&f))
 }
@@ -473,9 +332,9 @@ type company struct {
 func TestPtr(t *testing.T) {
 	var f float64
 	f = 12
-	log.Println(unsafe.Sizeof(f))
+	log.Info(unsafe.Sizeof(f))
 	var d uint64
-	log.Println(unsafe.Sizeof(d))
+	log.Info(unsafe.Sizeof(d))
 	d = f2i(f)
 	j := &job{
 		id:       1,
@@ -495,7 +354,7 @@ func TestPtr(t *testing.T) {
 	ao = unsafe.Alignof(*cp)
 	so = unsafe.Sizeof(*cp)
 	os = unsafe.Offsetof(cp.name)
-	log.Println(ao, os, so)
+	log.Info(ao, os, so)
 	str := "aaaa"
 	so = unsafe.Sizeof(str)
 	so = unsafe.Sizeof(&str)
@@ -504,7 +363,7 @@ func TestPtr(t *testing.T) {
 	prtA := unsafe.Pointer(&a)
 	prt0 := unsafe.Pointer(&a[0])
 	sum := uintptr(prt0) - uintptr(prtA)
-	log.Println(sum)
+	log.Info(sum)
 	/*
 	   （1）任何类型的指针都可以被转化为Pointer
 	   （2）Pointer可以被转化为任何类型的指针
@@ -543,9 +402,16 @@ func TestPtr(t *testing.T) {
 	assert.Equal(t, unsafe.Sizeof(p2), uintptr(16))
 
 	fmt.Println(x.b) // "42"
-	log.Println(unsafe.Sizeof(j))
-	log.Println(unsafe.Alignof(j.b))
-	log.Println(unsafe.Sizeof(*j))
-	log.Println(unsafe.Sizeof(j.i32))
-	log.Println(unsafe.Sizeof(j.i64))
+	log.Info(unsafe.Sizeof(j))
+	log.Info(unsafe.Alignof(j.b))
+	log.Info(unsafe.Sizeof(*j))
+	log.Info(unsafe.Sizeof(j.i32))
+	log.Info(unsafe.Sizeof(j.i64))
+}
+
+func slowCal(fac int) int {
+	if fac < 2 {
+		return fac
+	}
+	return slowCal(fac-1) + slowCal(fac-2)
 }

@@ -18,7 +18,7 @@ type BaseInfo struct {
 }
 
 type Classify struct {
-	Id             string `gorm:"primary_key;column:Id"`
+	gorm.Model
 	Name           string `gorm:"column:Name"`
 	FullPath       string `gorm:"column:FullPath"`
 	BaseInfoTypeId string `gorm:"_"`

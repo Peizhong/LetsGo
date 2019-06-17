@@ -1,44 +1,48 @@
 package gateway
 
 import (
+	"context"
+	"fmt"
+	"letsgo/framework/config"
+	"letsgo/framework/log"
 	"net/http"
-	"os"
-	"os/signal"
-
-	log "letsgo/framework/log"
 
 	"github.com/gorilla/mux"
 )
 
 const apiPreFix = "/api/"
 
+var (
+	srv *http.Server
+)
+
 /*
 consul for service discovery
 */
-
-func _main() {
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, os.Interrupt)
-	go func() {
-		Run()
-	}()
-	select {
-	case <-ch:
-		log.Info("Program exit")
-	}
-}
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Info("I do nothing")
 }
 
-func Run() {
+type GatewayService struct {
+}
+
+func (*GatewayService) Start() {
 	r := mux.NewRouter()
 	r.PathPrefix(apiPreFix).HandlerFunc(homeHandler)
 	r.Use(errorMiddleware, loggingMiddleware, tracingMiddleware, reRoutingMiddleware, requestMiddleware, responseMiddleware)
-	http.Handle("/", r)
-	log.Info("api_gatewayservice is on")
-	if err := http.ListenAndServe("localhost:8010", nil); err != nil {
+	srv = &http.Server{
+		Addr:    fmt.Sprintf(":%d", config.GatewayPort),
+		Handler: r,
+	}
+	log.Info("api gateway service is on")
+	if err := srv.ListenAndServe(); err != nil {
 		log.Errorf(err.Error())
+	}
+}
+
+func (*GatewayService) Stop() {
+	if err := srv.Shutdown(context.Background()); err != nil {
+		panic(err) // failure/timeout shutting down the server gracefully
 	}
 }

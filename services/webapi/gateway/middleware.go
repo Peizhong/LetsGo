@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 
 	httpclient "letsgo/framework/http"
-	log "letsgo/framework/log"
+	"letsgo/framework/log"
 )
 
 type key int
@@ -37,7 +37,7 @@ func errorMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if r := recover(); r != nil {
-				log.Error("error", r)
+				log.Errorf("error", r)
 			}
 		}()
 		// Do stuff here

@@ -21,7 +21,7 @@ type Appsettings struct {
 	ConnectionStrings map[string]string
 }
 
-const defaultSettingFile = "config/appsettings.json"
+const defaultSettingFile = "c:/users/peizhong/source/repos/letsgo/config/appsettings.json"
 
 var (
 	// json
@@ -32,20 +32,39 @@ var (
 	cfg       *ini.File
 	RunMode   string
 	JwtSecret string
+
+	// database
+	DBType     string
+	DBHost     string
+	DBName     string
+	DBUser     string
+	DBPassword string
+
+	// server
+	GatewayPort int
 )
 
 func init() {
 	var err error
-	cfg, err = ini.Load("config/app.ini")
+	cfg, err = ini.Load("c:/users/peizhong/source/repos/letsgo/config/app.ini")
 	if err != nil {
 		log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
 	}
 	loadBase()
+	loadDatabase()
 	loadApp()
 }
 
 func loadBase() {
 	RunMode = cfg.Section("").Key("RUN_MODE").MustString("debug")
+}
+
+func loadDatabase() {
+	DBType = cfg.Section("database").Key("TYPE").MustString("sqlite3")
+	DBName = cfg.Section("database").Key("NAME").MustString("dev")
+	DBHost = cfg.Section("database").Key("HOST").MustString("localhost")
+	DBUser = cfg.Section("database").Key("USER").MustString("root")
+	DBPassword = cfg.Section("database").Key("PASSWORD").MustString("root")
 }
 
 func loadApp() {
@@ -54,6 +73,8 @@ func loadApp() {
 		log.Fatalf("Fail to get section 'app': %v", err)
 	}
 	JwtSecret = sec.Key("JWT_SECRET").MustString("!@)*#)!@U#@*!@!)")
+
+	GatewayPort = cfg.Section("server").Key("GATEWAY_PORT").MustInt(8010)
 }
 
 // GetConnectionString get connection string from appsettings.json
