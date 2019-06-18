@@ -4,6 +4,7 @@ import (
 	"letsgo/framework/config"
 	"letsgo/framework/log"
 	"letsgo/services/webapi/basicweb"
+	"letsgo/services/webapi/eventloop"
 	"letsgo/services/webapi/gateway"
 	"os"
 	"os/signal"
@@ -22,6 +23,7 @@ func startServices() {
 	services = []Starter{
 		&gateway.GatewayService{},
 		&basicweb.BasicWeb{},
+		&eventloop.EventLoop{},
 	}
 	for _, s := range services {
 		srv := s

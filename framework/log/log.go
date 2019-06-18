@@ -18,6 +18,10 @@ func Errorf(format string, args ...interface{}) {
 	fmt.Println(spew.Sprintf(format, args...))
 }
 
+func Fatal(args ...interface{}) {
+	fmt.Println(spew.Sprint(args...))
+}
+
 func Fatalf(format string, args ...interface{}) {
 	fmt.Println(spew.Sprintf(format, args...))
 }

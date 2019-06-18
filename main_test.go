@@ -114,9 +114,12 @@ func TestCondition(t *testing.T) {
 	}
 }
 
-func doSlice() {
+func TestSlice(t *testing.T) {
 	a := [...]int{1, 2, 3, 4}
 	s := a[:3]
+	sx := a[1:2:3]     //起点:1, 长度:2-1,容量:3-1// 限制容量: a[1:2:2]
+	sx = append(sx, 1) // 会把a的值改变
+	_ = sx
 	// 如果slice还有容量，会把原来array的值改变
 	s = append(s, 5)
 
