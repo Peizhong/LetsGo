@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"letsgo/framework/config"
+	"letsgo/pkg/config"
 )
 
 func GetConnString() (dbType, connStr string) {
