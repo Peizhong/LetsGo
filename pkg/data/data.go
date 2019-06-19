@@ -1,6 +1,7 @@
 package data
 
 import (
+	"github.com/google/uuid"
 	"strconv"
 )
 
@@ -16,4 +17,9 @@ func Int64TryParse(s string) (n int64, b bool) {
 		return num, true
 	}
 	return
+}
+
+func NewGuid() string {
+	id := uuid.New().String()
+	return id
 }

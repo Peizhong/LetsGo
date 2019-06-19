@@ -3,7 +3,7 @@ package http
 import (
 	"fmt"
 
-	"letsgo/pkg/log"
+	"github.com/peizhong/letsgo/pkg/log"
 )
 
 /*

@@ -1,8 +1,8 @@
 package catalog
 
 import (
-	"letsgo/framework/db"
-	"letsgo/models/catalog"
+	"github.com/peizhong/letsgo/pkg/db"
+	"github.com/peizhong/letsgo/playground/models/catalog"
 )
 
 type CatalogDomain struct {

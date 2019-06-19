@@ -3,7 +3,7 @@ package config
 import (
 	"encoding/json"
 	"github.com/go-ini/ini"
-	"letsgo/pkg/log"
+	"github.com/peizhong/letsgo/pkg/log"
 	"os"
 	"path/filepath"
 	"sync"

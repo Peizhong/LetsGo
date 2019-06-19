@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/micro/go-micro"
-	proto "letsgo/services/grpc/greeter"
+	proto "github.com/peizhong/letsgo/playground/grpc/greeter"
 )
 
 type Greeter struct{}
