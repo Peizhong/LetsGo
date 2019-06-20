@@ -2,6 +2,7 @@ package data
 
 import (
 	"github.com/google/uuid"
+	"github.com/tidwall/gjson"
 	"strconv"
 )
 
@@ -22,4 +23,9 @@ func Int64TryParse(s string) (n int64, b bool) {
 func NewGuid() string {
 	id := uuid.New().String()
 	return id
+}
+
+func GetJsonValue(data, path string) string {
+	value := gjson.Get(data, path)
+	return value.String()
 }

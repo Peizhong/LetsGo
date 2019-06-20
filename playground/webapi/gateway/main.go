@@ -1,20 +1,22 @@
-package gateway
+package main
 
 import (
 	"context"
 	"fmt"
-	"letsgo/framework/config"
-	"letsgo/framework/log"
+	"github.com/peizhong/letsgo/internal"
+	"github.com/peizhong/letsgo/pkg/config"
+	"github.com/peizhong/letsgo/pkg/log"
+	"github.com/peizhong/letsgo/playground/webapi/gateway/middlewares"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-const apiPreFix = "/api/"
-
 var (
 	srv *http.Server
 )
+
+const apiPreFix = "/api/"
 
 /*
 consul for service discovery
@@ -24,13 +26,10 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Info("I do nothing")
 }
 
-type GatewayService struct {
-}
-
-func (*GatewayService) Start() {
+func Start() {
 	r := mux.NewRouter()
 	r.PathPrefix(apiPreFix).HandlerFunc(homeHandler)
-	r.Use(errorMiddleware, loggingMiddleware, tracingMiddleware, reRoutingMiddleware, requestMiddleware, responseMiddleware)
+	r.Use(middlewares.ErrorMiddleware, middlewares.LoggingMiddleware, middlewares.TracingMiddleware, middlewares.ReRoutingMiddleware, middlewares.RequestMiddleware, middlewares.ResponseMiddleware)
 	srv = &http.Server{
 		Addr:    fmt.Sprintf(":%d", config.GatewayPort),
 		Handler: r,
@@ -41,8 +40,12 @@ func (*GatewayService) Start() {
 	}
 }
 
-func (*GatewayService) Stop() {
+func Stop() {
 	if err := srv.Shutdown(context.Background()); err != nil {
 		panic(err) // failure/timeout shutting down the server gracefully
 	}
+}
+
+func main() {
+	internal.Host(Start, Stop)
 }

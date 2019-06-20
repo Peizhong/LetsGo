@@ -21,7 +21,7 @@ type Appsettings struct {
 	ConnectionStrings map[string]string
 }
 
-const defaultSettingFile = "c:/users/peizhong/source/repos/letsgo/config/appsettings.json"
+const defaultSettingFile = "c:/users/peizhong/source/repos/letsgo/playground/conf/appsettings.json"
 
 var (
 	// json
@@ -46,7 +46,7 @@ var (
 
 func init() {
 	var err error
-	cfg, err = ini.Load("c:/users/peizhong/source/repos/letsgo/config/app.ini")
+	cfg, err = ini.Load("c:/users/peizhong/source/repos/letsgo/playground/conf/app.ini")
 	if err != nil {
 		log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
 	}

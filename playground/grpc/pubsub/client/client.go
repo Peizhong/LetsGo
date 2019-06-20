@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/google/uuid"
-	"letsgo/framework/log"
+	"github.com/peizhong/letsgo/pkg/log"
 	"time"
 
 	"context"
 	"github.com/micro/go-micro"
-	proto "letsgo/services/grpc/pubsub"
+	proto "github.com/peizhong/letsgo/playground/grpc/pubsub"
 )
 
 // send events using the publisher
@@ -29,6 +29,7 @@ func sendEv(topic string, p micro.Publisher) {
 		if err := p.Publish(context.Background(), ev); err != nil {
 			log.Infof("error publishing: %v", err)
 		}
+		t.Stop()
 	}
 }
 
@@ -42,12 +43,12 @@ func main() {
 
 	// create publisher
 	pub1 := micro.NewPublisher("example.topic.pubsub.1", service.Client())
-	pub2 := micro.NewPublisher("example.topic.pubsub.2", service.Client())
+	// pub2 := micro.NewPublisher("example.topic.pubsub.2", service.Client())
 
 	// pub to topic 1
 	go sendEv("example.topic.pubsub.1", pub1)
 	// pub to topic 2
-	go sendEv("example.topic.pubsub.2", pub2)
+	// go sendEv("example.topic.pubsub.2", pub2)
 
 	// block forever
 	select {}

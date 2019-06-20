@@ -1,13 +1,13 @@
-package eventloop
+package main
 
-import "github.com/tidwall/evio"
-
-type EventLoop struct {
-}
+import (
+	"github.com/peizhong/letsgo/internal"
+	"github.com/tidwall/evio"
+)
 
 var events evio.Events
 
-func (*EventLoop) Start() {
+func Start() {
 	events.Data = func(c evio.Conn, in []byte) (out []byte, action evio.Action) {
 		out = in
 		res := string(in)
@@ -20,6 +20,8 @@ func (*EventLoop) Start() {
 	}
 }
 
-func (*EventLoop) Stop() {
+func main() {
+	internal.Host(Start, func() {
 
+	})
 }

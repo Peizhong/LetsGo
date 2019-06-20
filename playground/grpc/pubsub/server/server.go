@@ -4,8 +4,8 @@ import (
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/metadata"
 	"github.com/micro/go-micro/server"
-	"letsgo/framework/log"
-	proto "letsgo/services/grpc/pubsub"
+	"github.com/peizhong/letsgo/pkg/log"
+	proto "github.com/peizhong/letsgo/playground/grpc/pubsub"
 
 	"context"
 )

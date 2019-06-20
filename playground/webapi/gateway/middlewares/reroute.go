@@ -1,6 +1,10 @@
-package gateway
+package middlewares
 
-import "strings"
+import (
+	"strings"
+)
+
+const apiPreFix = "/api/"
 
 func ConvertURL(src string) string {
 	trim := strings.TrimPrefix(src, apiPreFix)

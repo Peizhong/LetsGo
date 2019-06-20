@@ -1,4 +1,4 @@
-package gateway
+package middlewares
 
 import (
 	"context"
@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/uuid"
 
-	httpclient "letsgo/framework/http"
-	"letsgo/framework/log"
+	httpclient "github.com/peizhong/letsgo/pkg/http"
+	"github.com/peizhong/letsgo/pkg/log"
 )
 
 type key int
@@ -33,7 +33,7 @@ type GWContext struct {
 	ReRouteInfo *ReRouteInfo
 }
 
-func errorMiddleware(next http.Handler) http.Handler {
+func ErrorMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if r := recover(); r != nil {
@@ -46,7 +46,7 @@ func errorMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func loggingMiddleware(next http.Handler) http.Handler {
+func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Do stuff here
 		log.Info(r.RequestURI)
@@ -54,7 +54,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func tracingMiddleware(next http.Handler) http.Handler {
+func TracingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Do stuff here
 		tracingID := uuid.New().String()
@@ -68,7 +68,7 @@ func tracingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func reRoutingMiddleware(next http.Handler) http.Handler {
+func ReRoutingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Do stuff here
 		if gwContext, ok := r.Context().(GWContext); ok {
@@ -83,7 +83,7 @@ func reRoutingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func requestMiddleware(next http.Handler) http.Handler {
+func RequestMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Do stuff here
 		if gwContext, ok := r.Context().(GWContext); ok {
@@ -103,7 +103,7 @@ func requestMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func responseMiddleware(next http.Handler) http.Handler {
+func ResponseMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Do stuff here
 		if gwContext, ok := r.Context().(GWContext); ok {
