@@ -29,7 +29,6 @@ func sendEv(topic string, p micro.Publisher) {
 		if err := p.Publish(context.Background(), ev); err != nil {
 			log.Infof("error publishing: %v", err)
 		}
-		t.Stop()
 	}
 }
 

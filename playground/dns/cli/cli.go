@@ -1,18 +1,22 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/micro/mdns"
+	"github.com/peizhong/letsgo/internal"
 	"time"
 )
 
-func main() {
+func app(ctx context.Context, exit chan struct{}) {
 	// Make a channel for results and start listening
 	entriesCh := make(chan *mdns.ServiceEntry, 1)
-
 loop:
 	for {
 		select {
+		case <-ctx.Done():
+			fmt.Println("got cancel request, bye")
+			break loop
 		case entry := <-entriesCh:
 			fmt.Printf("Got new entry: %v\n", entry)
 			break loop
@@ -25,5 +29,9 @@ loop:
 			time.Sleep(1 * time.Second)
 		}
 	}
-	fmt.Println("bye")
+	exit <- struct{}{}
+}
+
+func main() {
+	internal.HostWithContext(app)
 }

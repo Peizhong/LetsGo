@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"github.com/google/uuid"
 	"github.com/tidwall/gjson"
 	"strconv"
@@ -17,6 +18,7 @@ func Int64TryParse(s string) (n int64, b bool) {
 	if num, err := strconv.ParseInt(s, 10, 64); err == nil {
 		return num, true
 	}
+	context.Background()
 	return
 }
 

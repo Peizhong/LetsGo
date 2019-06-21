@@ -6,6 +6,7 @@ import (
 	"github.com/micro/go-micro/server"
 	"github.com/peizhong/letsgo/pkg/log"
 	proto "github.com/peizhong/letsgo/playground/grpc/pubsub"
+	"os"
 
 	"context"
 )
@@ -31,10 +32,15 @@ func subEv(ctx context.Context, event *proto.Event) error {
 }
 
 func main() {
+	if registry := os.Getenv("MICRO_REGISTRY"); registry == "" {
+		os.Setenv("MICRO_REGISTRY", "consul")
+	}
+
 	// create a service
 	service := micro.NewService(
 		micro.Name("go.micro.srv.pubsub"),
 	)
+
 	// parse command line
 	service.Init()
 
