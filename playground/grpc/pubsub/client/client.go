@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/micro/go-micro/registry"
+	"github.com/micro/go-micro/registry/consul"
 	"github.com/peizhong/letsgo/pkg/log"
 	"time"
 
@@ -33,10 +35,16 @@ func sendEv(topic string, p micro.Publisher) {
 }
 
 func main() {
+	reg := consul.NewRegistry(func(op *registry.Options) {
+		op.Addrs = []string{"http://localhost:8500"}
+	})
+
 	// create a service
 	service := micro.NewService(
 		micro.Name("go.micro.cli.pubsub"),
+		micro.Registry(reg),
 	)
+
 	// parse command line
 	service.Init()
 

@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+// protoc --micro_out=. --go_out=. greeter.proto
+
 service Greeter {
 	rpc Hello(HelloRequest) returns (HelloResponse) {}
 }
