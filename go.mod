@@ -11,6 +11,7 @@ require (
 	github.com/golang/protobuf v1.3.1
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/mux v1.7.2
+	github.com/jarcoal/httpmock v1.0.4 // indirect
 	github.com/jinzhu/gorm v1.9.9
 	github.com/jinzhu/now v1.0.1
 	github.com/micro/go-micro v1.7.0
@@ -27,7 +28,6 @@ require (
 	golang.org/x/sys v0.0.0-20190624142023-c5567b49c5d0 // indirect
 	golang.org/x/tools v0.0.0-20190621195816-6e04913cbbac // indirect
 	google.golang.org/grpc v1.21.1
-
 )
 
 replace github.com/docker/docker v0.7.3-0.20190309235953-33c3200e0d16 => github.com/docker/docker v1.13.1
