@@ -18,6 +18,7 @@ require (
 	github.com/micro/mdns v0.1.0
 	github.com/micro/micro v1.7.0
 	github.com/mitchellh/hashstructure v1.0.0
+	github.com/modern-go/reflect2 v1.0.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/stretchr/testify v1.3.0
 	github.com/tidwall/evio v1.0.2
