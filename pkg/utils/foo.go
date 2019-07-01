@@ -40,5 +40,6 @@ func Template2() {
 		err = tpl.Execute(os.Stdout, map[string]interface{}{
 			"Name": "wpz",
 		})
+
 	}
 }

@@ -1,9 +1,13 @@
 syntax = "proto3";
 
-// protoc --micro_out=. --go_out=. greeter.proto
+// protoc --micro_out=. --go_out=. greeter/greeter.proto
+
+package greeter;
+import "model/common.proto";
 
 service Greeter {
 	rpc Hello(HelloRequest) returns (HelloResponse) {}
+	rpc Stream(model.SRequest) returns (stream model.SResponse) {}
 }
 
 message HelloRequest {
