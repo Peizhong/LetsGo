@@ -1,6 +1,9 @@
 package internal
 
-import "testing"
+import (
+	"log"
+	"testing"
+)
 
 const size = 1024
 
@@ -58,4 +61,16 @@ func TestStack2(t *testing.T) {
 
 	// 逃逸分析报告 go build -gcflags "-m -m"
 	println("u1", &u1, "u2", &u2)
+}
+
+func TestChan(t *testing.T) {
+	ch := make(chan struct{}, 1)
+	close(ch)
+	// ch会阻塞，在close后可以读到默认值
+	s := <-ch
+	s, ok := <-ch
+	if ok {
+
+	}
+	log.Println(s)
 }

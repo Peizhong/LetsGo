@@ -11,6 +11,7 @@ require (
 	github.com/golang/protobuf v1.3.1
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/mux v1.7.2
+	github.com/gorilla/websocket v1.4.0
 	github.com/jarcoal/httpmock v1.0.4 // indirect
 	github.com/jinzhu/gorm v1.9.9
 	github.com/jinzhu/now v1.0.1
