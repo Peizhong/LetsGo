@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/peizhong/letsgo/internal"
 	"io"
+	"log"
 	"strconv"
 	"sync"
 
@@ -239,6 +240,32 @@ func releaseConnMatch() {
 	}
 }
 
+func simpleServer() {
+	hijack := "HTTP/1.1 200 OK\r\n\r\nwulala"
+	l, err := net.Listen("tcp", ":8000")
+	if err != nil {
+		log.Panic(err)
+	}
+	for {
+		client, err := l.Accept()
+		if err != nil {
+			log.Println(err.Error())
+		}
+		buf := make([]byte, 1024)
+		n, err := client.Read(buf)
+		log.Println(string(buf))
+		if err == nil {
+			n, err = client.Write([]byte(hijack))
+			client.Write([]byte{})
+			log.Println(n)
+		}
+		err = client.Close()
+		if err == nil {
+			println("close client")
+		}
+	}
+}
+
 func main() {
-	internal.Host(start, stop)
+	internal.Host(simpleServer, stop)
 }

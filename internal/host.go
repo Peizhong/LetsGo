@@ -5,17 +5,21 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"runtime"
 )
 
 // 强制退出/自动运行结束
 func Host(start, stop func()) {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, os.Kill)
-	log.Println("start")
+	_, file, _, _ := runtime.Caller(1)
+	log.Println("start ", file)
 	go start()
 	<-c
 	log.Println("closing...")
-	stop()
+	if stop != nil {
+		stop()
+	}
 	log.Println("bye")
 }
 
