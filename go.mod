@@ -3,7 +3,7 @@ module github.com/peizhong/letsgo
 go 1.12
 
 require (
-	github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5 // indirect
+	github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5
 	github.com/coreos/bbolt v1.3.3 // indirect
 	github.com/coreos/etcd v3.3.13+incompatible
 	github.com/coreos/go-semver v0.3.0 // indirect
@@ -11,6 +11,7 @@ require (
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/docker/distribution v2.7.1+incompatible // indirect
 	github.com/emirpasic/gods v1.12.0
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/go-ini/ini v1.42.0
@@ -32,6 +33,7 @@ require (
 	github.com/miekg/dns v1.1.15 // indirect
 	github.com/mitchellh/hashstructure v1.0.0
 	github.com/nats-io/nats-server/v2 v2.0.0 // indirect
+	github.com/sirupsen/logrus v1.4.2
 	github.com/smartystreets/goconvey v0.0.0-20190710185942-9d28bd7c0945 // indirect
 	github.com/soheilhy/cmux v0.1.4 // indirect
 	github.com/stretchr/testify v1.3.0

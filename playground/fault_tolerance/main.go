@@ -5,6 +5,8 @@ import (
 	"github.com/afex/hystrix-go/hystrix"
 	"github.com/sirupsen/logrus"
 	"log"
+	"net"
+	"net/http"
 	"runtime"
 	"sync"
 	"sync/atomic"
@@ -51,6 +53,37 @@ func producer(total, size int) <-chan int {
 	return ch
 }
 
+func doCond() {
+	var m sync.RWMutex
+	// cond控制锁释放，等待wait的通知
+	c := sync.NewCond(&m)
+	var key bool
+	go func() {
+		m.Lock()
+		log.Println("wait 1")
+		for !key {
+			c.Wait()
+		}
+		log.Println("resume 1")
+		m.Unlock()
+	}()
+	go func() {
+		m.Lock()
+		log.Println("wait 2")
+		for !key {
+			c.Wait()
+		}
+		log.Println("resume 2")
+		m.Unlock()
+	}()
+	go func() {
+		time.Sleep(time.Second)
+		log.Println("Broadcast")
+		key = true
+		c.Broadcast()
+	}()
+}
+
 func main() {
 	hystrix.ConfigureCommand("my_command", hystrix.CommandConfig{
 		// Timeout:               1000,
@@ -61,9 +94,10 @@ func main() {
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
 	hystrix.SetLogger(logger)
-	settings := hystrix.GetCircuitSettings()
-	log.Println(settings)
 	breaker, ok, err := hystrix.GetCircuit("my_command")
+	hystrixStreamHandler := hystrix.NewStreamHandler()
+	hystrixStreamHandler.Start()
+	go http.ListenAndServe(net.JoinHostPort("", "81"), hystrixStreamHandler)
 	todo := producer(1000, 10)
 	var wait sync.WaitGroup
 	log.Println(runtime.GOMAXPROCS(0))
@@ -74,7 +108,6 @@ func main() {
 			// log.Println("run thread", v)
 			for n := range todo {
 				if breaker.IsOpen() {
-					breaker.ReportEvent()
 					log.Println("breaker on, sleep+")
 					time.Sleep(1 * time.Second)
 				}
