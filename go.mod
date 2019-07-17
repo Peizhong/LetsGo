@@ -15,6 +15,7 @@ require (
 	github.com/emirpasic/gods v1.12.0
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/go-ini/ini v1.42.0
+	github.com/go-redis/redis v6.15.3+incompatible // indirect
 	github.com/golang/groupcache v0.0.0-20190702054246-869f871628b6 // indirect
 	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.3.1
