@@ -64,6 +64,14 @@ func etcdClient() {
 	}
 }
 
+func DoRedis() {
+
+}
+
+func DoEtcd() {
+
+}
+
 func main() {
 	redisClient()
 	etcdClient()
