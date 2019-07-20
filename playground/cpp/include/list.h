@@ -1,46 +1,11 @@
 #ifndef _LIST_H
+#define _LIST_H
 
-#include <string>
-
-using namespace std;
+#include "basic.h"
 
 typedef struct Node *PtrToNode;
 typedef PtrToNode List;
 typedef PtrToNode Position;
-
-typedef struct Element ElementType;
-
-struct Element
-{
-    int ID;
-    string Value;
-
-    Element()
-    {
-
-    }
-
-    Element(int id,string value)
-    {
-        ID = id;
-        Value = value;
-    }
-
-    bool operator!=(Element const& b) const
-    {
-        return true;
-    }
-    /*
-    bool operator==(Element const& b) const
-    {
-        return true;
-    }
-    bool operator<(Element const& b) const
-    {
-        return true;
-    }
-     */
-};
 
 struct Node
 {
