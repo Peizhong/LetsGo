@@ -14,8 +14,9 @@ require (
 	github.com/docker/distribution v2.7.1+incompatible // indirect
 	github.com/emirpasic/gods v1.12.0
 	github.com/fsnotify/fsnotify v1.4.7
+	github.com/gin-gonic/gin v1.4.0 // indirect
 	github.com/go-ini/ini v1.42.0
-	github.com/go-redis/redis v6.15.3+incompatible // indirect
+	github.com/go-redis/redis v6.15.3+incompatible
 	github.com/golang/groupcache v0.0.0-20190702054246-869f871628b6 // indirect
 	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.3.1
@@ -45,6 +46,7 @@ require (
 	github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5 // indirect
 	github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2 // indirect
 	go.etcd.io/bbolt v1.3.3 // indirect
+	go.etcd.io/etcd v3.3.13+incompatible
 	go.uber.org/atomic v1.4.0 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.10.0 // indirect
