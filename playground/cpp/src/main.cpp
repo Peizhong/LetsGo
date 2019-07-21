@@ -8,14 +8,25 @@
 
 using namespace std;
 
-// g++ -I../include/ *.cpp -g 
-int main(){
+void Test0()
+{
     int a[10] = {1,2,3,4,5,6};
     // 指向数组的指针
     int *b = a;
     int c = b[1];
     cout<<c<<"and"<<*(b+1)<<endl;
 
+    vector<string> msg {"Hello", "C++", "World", "from", "VS Code!"};
+    for (const string& word : msg)
+    {
+        cout << word << " ";
+    }
+    cout << endl;
+}
+
+// abstract data type: 抽象数据类型
+void TestADT()
+{
     List l = new Node();
     cout<<"list"<<l<<"list.next"<<l->Next<<endl;
     Element i= Element(1,"hello");
@@ -41,11 +52,12 @@ int main(){
     cout<<q->Array<<endl;
     DisposeQueue(q);
 
-    vector<string> msg {"Hello", "C++", "World", "from", "VS Code!"};
-    for (const string& word : msg)
-    {
-        cout << word << " ";
-    }
-    cout << endl;
+    TreeNode t = BuildDemoTree(3);
+    ListDir(&t);
+}
+
+// g++ -I../include/ *.cpp -g 
+int main(){
+    TestADT();
     return 0;
 }
