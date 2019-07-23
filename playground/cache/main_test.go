@@ -14,11 +14,8 @@ func BenchmarkDoRedis(b *testing.B) {
 	cacher.Init()
 	// 插入x条记录
 	for i := 0; i < b.N; i++ {
-		_ = cacher.SetString(fmt.Sprint(i), fmt.Sprint("value", i))
-	}
-	// 读取x条记录
-	for i := 0; i < b.N; i++ {
 		key := fmt.Sprint(i)
+		_ = cacher.SetString(key, fmt.Sprint("value", i))
 		_, err := cacher.GetString(key)
 		if err != nil {
 			// log.Println(key, "empty")
@@ -33,11 +30,8 @@ func BenchmarkDoEtcd(b *testing.B) {
 	cacher.Init()
 	// 插入x条记录
 	for i := 0; i < b.N; i++ {
-		_ = cacher.SetString(fmt.Sprint(i), fmt.Sprint("value", i))
-	}
-	// 读取x条记录
-	for i := 0; i < b.N; i++ {
 		key := fmt.Sprint(i)
+		_ = cacher.SetString(key, fmt.Sprint("value", i))
 		_, err := cacher.GetString(key)
 		if err != nil {
 			// log.Println(key, "empty")

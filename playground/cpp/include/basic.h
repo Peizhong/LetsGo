@@ -20,11 +20,27 @@ struct Element
         ID = id;
         Value = value;
     }
+    
+    bool operator==(Element const& b) const
+    {
+        return this->ID==b.ID && this->Value==b.Value;
+    }
 
     bool operator!=(Element const& b) const
     {
-        return true;
+        return this->ID!=b.ID || this->Value!=b.Value;
     }
+
+    bool operator<(Element const& b) const
+    {
+        return this->Value < b.Value;
+    }
+
+    bool operator>(Element const& b) const
+    {
+        return this->Value > b.Value;
+    }
+    
     /*
     bool operator==(Element const& b) const
     {
