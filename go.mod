@@ -36,6 +36,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/smartystreets/goconvey v0.0.0-20190710185942-9d28bd7c0945 // indirect
 	github.com/soheilhy/cmux v0.1.4 // indirect
+	github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
 	github.com/stretchr/testify v1.3.0
 	github.com/tidwall/evio v1.0.2
 	github.com/tidwall/gjson v1.2.1
