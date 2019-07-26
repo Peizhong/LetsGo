@@ -44,4 +44,17 @@ Position Find(ElementType x, SearchTree t);
 Position FindMax(SearchTree t);
 Position FindMin(SearchTree t);
 
+SearchTree Insert(ElementType x, SearchTree t);
+SearchTree Delete(ElementType x, SearchTree t);
+
+// 带有平衡条件的树，深度是logN，左右高度差最多1
+struct AVLTree
+{
+
+};
+
+// 单旋转
+
+// 双旋转
+
 #endif

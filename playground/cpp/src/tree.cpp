@@ -128,3 +128,68 @@ Position FindMax(SearchTree t)
     }
     return t;
 }
+
+// 不平衡的
+SearchTree Insert(ElementType x, SearchTree t)
+{
+    if (t==NULL)
+    {
+        t = new TreeNode();
+        t->Element = x;
+        t->Left = t->Right = NULL;
+    }
+    else if (x<t->Element)
+    {
+        t->Left = Insert(x,t->Left);
+    }
+    else if (x>t->Element)
+    {
+        t->Right = Insert(x,t->Right);
+    }
+    else
+    {
+        // already in it, do nothing
+    }
+    return t;
+}
+
+SearchTree Delete(ElementType x, SearchTree t)
+{
+    if (t==NULL)
+    {
+        return NULL;
+    }
+    Position tempNode = NULL;
+    if (x<t->Element)
+    {
+        t->Left = Delete(x,t->Left);
+    }
+    else if (x>t->Element)
+    {
+        t->Right = Delete(x,t->Right);
+    }
+    // 找到要删除的值
+    else if (t->Left && t->Right)
+    {
+        // 如果有两个子节点：用右树最小数据代替该节点，然后删除原最小节点
+        tempNode = FindMin(t->Right);
+        t->Element = tempNode->Element;
+        t->Right = Delete(t->Element,t->Right);
+    }
+    else
+    {
+        // 如果是叶子节点，直接删除
+        // 如果有一个子节点，用子节点代替
+        tempNode = t;
+        if (t->Left==NULL)
+        {
+            t = t->Right;
+        }
+        else if (t->Right==NULL)
+        {
+            t = t->Left;
+        }
+        delete tempNode;
+    }
+    return t;
+}
