@@ -4,6 +4,8 @@
 
 using namespace std;
 
+namespace ADT::List{
+
 List MakeEmpty(List l)
 {
     try
@@ -40,4 +42,6 @@ Position Find(ElementType x, List l)
         p = p->Next;
     }
     return p;
+}
+
 }

@@ -3,19 +3,21 @@
 
 #include "basic.h"
 
-typedef struct Node *PtrToNode;
-typedef PtrToNode List;
-typedef PtrToNode Position;
+namespace ADT::List {
+    typedef struct Node *PtrToNode;
+    typedef PtrToNode List;
+    typedef PtrToNode Position;
 
-struct Node
-{
-    ElementType Item;
-    Position Next;
-};
+    struct Node
+    {
+        ElementType Item;
+        Position Next;
+    };
 
-List MakeEmpty(List l);
-int IsEmpty(List l);
-int IsLast(Position p);
-Position Find(ElementType x, List l);
+    List MakeEmpty(List l);
+    int IsEmpty(List l);
+    int IsLast(Position p);
+    Position Find(ElementType x, List l);
+}
 
 #endif

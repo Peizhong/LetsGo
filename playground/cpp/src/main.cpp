@@ -7,6 +7,7 @@
 #include "../include/tree.h"
 
 using namespace std;
+using namespace ADT;
 
 void Test0()
 {
@@ -27,33 +28,33 @@ void Test0()
 // abstract data type: 抽象数据类型
 void TestADT()
 {
-    List l = new Node();
+    List::List l = new List::Node();
     cout<<"list"<<l<<"list.next"<<l->Next<<endl;
     Element i= Element(1,"hello");
-    Position r = Find(i,l);
+    List:: Position r = List::Find(i,l);
     cout<<"Find Result"<<r<<endl;
     delete l;
     
-    Queue q = new QueueRecord();
-    MakeEmpty(q,10);
+    Queue::Queue q = new Queue::QueueRecord();
+    Queue::MakeEmpty(q,10);
     cout<<q->Array<<endl;
-    cout<<"queue"<<IsEmpty(q)<<endl;
+    cout<<"queue"<<Queue::IsEmpty(q)<<endl;
     for (int i=0;i<20;i++)
     {
         ElementType e = Element(i,"hello");
-        int r = Enqueue(q,e);
+        int r = Queue::Enqueue(q,e);
         cout<<r<<endl;
     }
     for (int i=0;i<20;i++)
     {
-        ElementType e = Dequeue(q);
+        ElementType e = Queue::Dequeue(q);
         cout<<e.Value<<endl;
     }
     cout<<q->Array<<endl;
-    DisposeQueue(q);
+    Queue::DisposeQueue(q);
 
-    TreeNode t = BuildDemoTree(3);
-    ListDir(&t);
+    Tree::TreeNode t = Tree::BuildDemoTree(3);
+    Tree::ListDir(&t);
 }
 
 // g++ -I../include/ *.cpp -g 

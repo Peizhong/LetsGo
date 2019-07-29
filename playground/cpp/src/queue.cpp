@@ -2,6 +2,8 @@
 
 #include "../include/queue.h"
 
+namespace ADT::Queue {
+
 bool IsEmpty(Queue q)
 {
     return q->Size==0;
@@ -62,4 +64,6 @@ int Enqueue(Queue q, ElementType e)
     q->Rear = Succ(q->Rear,q);
     q->Array[q->Rear] = e;
     return q->Size;
+}
+
 }

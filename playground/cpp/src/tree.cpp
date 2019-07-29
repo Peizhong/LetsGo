@@ -6,6 +6,8 @@
 
 using namespace std;
 
+namespace ADT::Tree{
+
 void ListDir(PtrToTreeNode tree)
 {
     cout<<"Id:"<<tree->Element.ID<<"value:"<<tree->Element.Value<<endl;
@@ -129,7 +131,7 @@ Position FindMax(SearchTree t)
     return t;
 }
 
-// 不平衡的
+// 不能保证是平衡的
 SearchTree Insert(ElementType x, SearchTree t)
 {
     if (t==NULL)
@@ -192,4 +194,88 @@ SearchTree Delete(ElementType x, SearchTree t)
         delete tempNode;
     }
     return t;
+}
+
+int Height(Position p)
+{
+    if (p==NULL)
+    {
+        return -1;
+    }
+    return p->AHeight;
+}
+
+AVLTree AInsert(ElementType x, AVLTree t)
+{
+    if (t==NULL)
+    {
+        // create a one-node tree
+        t = new TreeNode();
+        t->Element = x;
+        t->ALeft = 0;
+        t->ALeft = t->ARight = NULL;
+    }
+    else if (x<t->Element)
+    {
+        t->ALeft = AInsert(x,t->ALeft);
+        // 左树出现不平衡
+        if (Height(t->ALeft)-Height(t->ARight)==2)
+        {
+            // 情况1
+            if (x<t->ALeft->Element)
+            {
+                t = SingleRotateWithLeft(t);
+            }
+            // 情况2
+            else
+            {
+                t = DoubleRotateWithLeft(t);
+            }
+        }
+    }
+    else if (x>t->Element)
+    {
+        t->ARight = AInsert(x,t->ARight);
+        if (Height(t->ARight)>Height(t->ALeft)==2)
+        {
+            // 情况3
+            if (x<t->ARight->Element)
+            {
+                t = DoubleRotateWithLeft(t);
+            }
+            // 情况4
+            else
+            {
+                t = SingleRotateWithLeft(t);
+            }
+        }
+    }
+    t->AHeight = max(Height(t->ALeft),Height(t->ARight))+1;
+    return t;
+}
+
+AVLTree ADelete(ElementType x, AVLTree t)
+{
+    return t;
+}
+
+
+Position SingleRotateWithLeft(Position k2)
+{
+    Position k1;
+    k1 = k2->ALeft;
+    k2->ALeft = k1->ARight;
+    k1->ARight = k2;
+    k2->AHeight = max(Height(k2->ALeft),Height(k2->ARight))+1;
+    k1->AHeight = max(Height(k1->ALeft),k2->AHeight)+1;
+    // new root
+    return k1;
+}
+
+Position DoubleRotateWithLeft(Position k3)
+{
+    k3->Left = SingleRotateWithLeft(k3->ALeft);
+    return SingleRotateWithLeft(k3);
+}
+
 }
