@@ -5,6 +5,7 @@ import (
 	etcd "go.etcd.io/etcd/client"
 
 	"context"
+	"log"
 	"time"
 )
 
@@ -14,26 +15,32 @@ type Cacher interface {
 
 	SetString(key, value string) error
 	GetString(key string) (value string, err error)
+	// Del
 }
 
 type GoRedis struct {
-	client *redis.Client
+	client *redis.Ring
 }
 
 func (r *GoRedis) Init() error {
-	client := redis.NewClient(&redis.Options{
-		Addr:     "193.112.41.28:6379",
-		Password: "ur@hello123",
-		DB:       0,
+	// 单节点
+	/*client := redis.NewClient(&redis.Options{
+		Addr: "193.112.41.28:6379",
+		DB:   0,
 	})
-	/*
-	pong, err := client.Ping().Result()
-	if err != nil {
-		log.Panicln(err)
-	}
-	log.Println(pong)
 	*/
-	r.client = client
+	// 分区
+	ring := redis.NewRing(&redis.RingOptions{
+		Addrs:    map[string]string{"main": "193.112.41.28:6379"},
+		DB:       0,
+		Password: "ur@hello123",
+	})
+		pong, err := client.Ping().Result()
+		if err != nil {
+			log.Panicln(err)
+		}
+		log.Println(pong)
+	r.client = ring
 	return nil
 }
 
@@ -46,21 +53,20 @@ func (r *GoRedis) SetString(key, value string) error {
 	return err
 }
 
-func (r *GoRedis) GetString(key string) (string,error) {
+func (r *GoRedis) GetString(key string) (string, error) {
 	val, err := r.client.Get(key).Result()
 	if err == redis.Nil {
 		// log.Println("key does not exist")
-		return "",nil
+		return "", nil
 	} else if err != nil {
 		return "", err
 	}
 	return val, nil
 }
 
-
 type GoEtcd struct {
 	client *etcd.Client
-	kapi etcd.KeysAPI
+	kapi   etcd.KeysAPI
 }
 
 func (e *GoEtcd) Init() error {
@@ -95,7 +101,7 @@ func (e *GoEtcd) SetString(key, value string) error {
 	return nil
 }
 
-func (e *GoEtcd) GetString(key string) (string,error) {
+func (e *GoEtcd) GetString(key string) (string, error) {
 	resp, err := e.kapi.Get(context.Background(), key, nil)
 	if err != nil {
 		return "", err
