@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <sstream>
 
 #include "../include/list.h"
 #include "../include/queue.h"
@@ -57,8 +58,23 @@ void TestADT()
     Tree::ListDir(&t);
 }
 
+void TestAVLTree()
+{
+    Tree::AVLTree t = nullptr;
+    stringstream ss;
+    vector<int> data {10,6,12,3,2};
+    for (const int& d : data)
+    {
+        ss<<d;
+        ElementType e = Element(d,ss.str());
+        t = Tree::AInsert(e,t);
+        ss.str("");
+    }
+    int i = 0;
+}
+
 // g++ -I../include/ *.cpp -g 
 int main(){
-    TestADT();
+    TestAVLTree();
     return 0;
 }

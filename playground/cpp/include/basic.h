@@ -33,12 +33,12 @@ struct Element
 
     bool operator<(Element const& b) const
     {
-        return this->Value < b.Value;
+        return this->ID < b.ID;
     }
 
     bool operator>(Element const& b) const
     {
-        return this->Value > b.Value;
+        return this->ID > b.ID;
     }
     
     /*

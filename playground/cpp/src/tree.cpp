@@ -209,12 +209,13 @@ AVLTree AInsert(ElementType x, AVLTree t)
 {
     if (t==NULL)
     {
-        // create a one-node tree
+        // 空树，或新的节点
         t = new TreeNode();
         t->Element = x;
         t->ALeft = 0;
         t->ALeft = t->ARight = NULL;
     }
+    // 左树
     else if (x<t->Element)
     {
         t->ALeft = AInsert(x,t->ALeft);
@@ -241,12 +242,12 @@ AVLTree AInsert(ElementType x, AVLTree t)
             // 情况3
             if (x<t->ARight->Element)
             {
-                t = DoubleRotateWithLeft(t);
+                t = DoubleRotateWithRight(t);
             }
             // 情况4
             else
             {
-                t = SingleRotateWithLeft(t);
+                t = SingleRotateWithRight(t);
             }
         }
     }
@@ -259,8 +260,20 @@ AVLTree ADelete(ElementType x, AVLTree t)
     return t;
 }
 
-
+// if k2 has a left child, rotate between k2 and left child
 Position SingleRotateWithLeft(Position k2)
+{
+    Position k1;
+    k1 = k2->ALeft;
+    k2->ALeft = k1->ARight;
+    k1->ARight = k2;
+    k2->AHeight = max(Height(k2->ALeft),Height(k2->ARight))+1;
+    k1->AHeight = max(Height(k1->ALeft),k2->AHeight)+1;
+    // new root
+    return k1;
+}
+
+Position SingleRotateWithRight(Position k2)
 {
     Position k1;
     k1 = k2->ALeft;
@@ -274,8 +287,14 @@ Position SingleRotateWithLeft(Position k2)
 
 Position DoubleRotateWithLeft(Position k3)
 {
-    k3->Left = SingleRotateWithLeft(k3->ALeft);
+    k3->Left = SingleRotateWithRight(k3->ALeft);
     return SingleRotateWithLeft(k3);
+}
+
+Position DoubleRotateWithRight(Position k3)
+{
+    k3->Left = SingleRotateWithLeft(k3->ARight);
+    return SingleRotateWithRight(k3);
 }
 
 }

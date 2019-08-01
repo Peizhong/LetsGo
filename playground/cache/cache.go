@@ -30,17 +30,17 @@ func (r *GoRedis) Init() error {
 	})
 	*/
 	// 分区
-	ring := redis.NewRing(&redis.RingOptions{
+	client := redis.NewRing(&redis.RingOptions{
 		Addrs:    map[string]string{"main": "193.112.41.28:6379"},
 		DB:       0,
 		Password: "ur@hello123",
 	})
-		pong, err := client.Ping().Result()
-		if err != nil {
-			log.Panicln(err)
-		}
-		log.Println(pong)
-	r.client = ring
+	pong, err := client.Ping().Result()
+	if err != nil {
+		log.Panicln(err)
+	}
+	log.Println(pong)
+	r.client = client
 	return nil
 }
 

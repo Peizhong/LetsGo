@@ -67,6 +67,8 @@ namespace ADT::Tree {
     AVLTree ADelete(ElementType x, AVLTree t);
 
     Position SingleRotateWithLeft(Position p);
+    Position SingleRotateWithRight(Position p);
     Position DoubleRotateWithLeft(Position p);
+    Position DoubleRotateWithRight(Position p);
 }
 #endif
