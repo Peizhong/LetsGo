@@ -70,5 +70,7 @@ namespace ADT::Tree {
     Position SingleRotateWithRight(Position p);
     Position DoubleRotateWithLeft(Position p);
     Position DoubleRotateWithRight(Position p);
+
+    void PrintATree(AVLTree t);
 }
 #endif

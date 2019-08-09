@@ -297,4 +297,19 @@ Position DoubleRotateWithRight(Position k3)
     return SingleRotateWithRight(k3);
 }
 
+void printAElement(AVLTree t)
+{
+    cout<<t->Element.ID<<" "<<t->Element.Value<<endl;
+}
+
+void PrintATree(AVLTree t)
+{
+    if (t!=nullptr)
+    {
+        PrintATree(t->Left);
+        printAElement(t);
+        PrintATree(t->Right);
+    }
+}
+
 }

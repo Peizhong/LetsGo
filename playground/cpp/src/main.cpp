@@ -6,6 +6,7 @@
 #include "../include/list.h"
 #include "../include/queue.h"
 #include "../include/tree.h"
+#include "../include/sort.h"
 
 using namespace std;
 using namespace ADT;
@@ -73,8 +74,17 @@ void TestAVLTree()
     int i = 0;
 }
 
+void TestSort()
+{
+    int data[6] = {34,8,64,51,32,21};
+    Sort::InsertionSort(data,6);
+    int data2[12] = {3,1,21,4,8,16,7,14,6,13,41,11};
+    Sort::ShellSort(data2,12);
+    cout<<data2<<endl;
+}
+
 // g++ -I../include/ *.cpp -g 
 int main(){
-    TestAVLTree();
+    TestSort();
     return 0;
 }
