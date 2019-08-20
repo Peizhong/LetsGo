@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 
+#include "../include/basic.h"
 #include "../include/list.h"
 #include "../include/queue.h"
 #include "../include/tree.h"
@@ -83,8 +84,13 @@ void TestSort()
     cout<<data2<<endl;
 }
 
+void TestBasic()
+{
+    Hello();
+}
+
 // g++ -I../include/ *.cpp -g 
 int main(){
-    TestSort();
+    TestBasic();
     return 0;
 }
