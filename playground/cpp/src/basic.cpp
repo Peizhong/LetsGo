@@ -35,9 +35,12 @@ void doNew(int n)
 {
     try
     {
+        int **i2arr;
+        make2dArray<int>(i2arr,3,4);
+        delete2dArray<int>(i2arr,3);
+
         int* x = new int[n];
         delete x;
-        
         char (*c)[5];
         c = new char[n][5];
         delete c;
@@ -50,6 +53,9 @@ void doNew(int n)
 
 void Hello()
 {
+    int arr[] = {6,7,8,9};
+    permutations<int>(arr,0,2);
+
     int a=1;
     int& h2 = f(a);
     // 模板函数
@@ -57,9 +63,11 @@ void Hello()
     int c = 3;
     int v= abc<int>(1,b,c);
 
-    int arr[] = {1,2,3,4,5};
     c = Count<int>(arr,sizeof(arr));
     
+    currency cc = currency(sign_minus,100,1);
+    currency c2 = cc.Add(cc);
+
     doNew(100);
     
     try
@@ -70,4 +78,25 @@ void Hello()
     {
         cout<<e<<endl;
     }
+}
+
+currency::currency(signType sign,unsigned long dollar,unsigned int cent)
+{
+    Set(sign,dollar,cent);
+}
+
+void currency::Set(signType sign,unsigned long dollar,unsigned int cent)
+{
+    _sign = sign;
+    _dollar = dollar;
+    _cent = cent;
+}
+
+currency currency::Add(const currency& x) const
+{
+    currency result;
+    unsigned long d = _dollar + x._dollar;
+    unsigned int c = _cent +x._cent;
+    result.Set(sign_plus,d,c);
+    return result;
 }

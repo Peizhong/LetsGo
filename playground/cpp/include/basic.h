@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <iterator>
 
 using namespace std;
 
@@ -76,21 +77,72 @@ int Count(T arr[],int n)
 }
 
 template<class T>
-bool make2dArray(T ** &x, int row, int col)
+void make2dArray(T ** &x, int row, int col)
 {
-    try
+    // 行指针
+    // new[] 多分配4个直接保存数组大小，detele[] 配套
+    x = new T*[row];
+    // 为每行分配空间
+    for (int i=0;i<row;i++)
     {
-        // 行指针
-        x = new T*[row];
-        // 为每行分配空间
-        for (int i=0;i<row;i++)
-        {
-            x[i] = new int[col];
-        }
+        x[i] = new T[col];
     }
-    catch(bad_alloc e)
+}
+
+template<class T>
+void delete2dArray(T ** &x,int row)
+{
+    for (int i=0;i<row;i++)
     {
-        std::cerr << e.what() << '\n';
+        // 删除行空间
+        delete []x[i];
+    }
+    // 删除指针
+    delete []x;
+    x = NULL;
+}
+
+enum signType{sign_plus,sign_minus};
+
+class currency
+{
+    public:
+        // 构造
+        currency(signType sign=sign_plus,unsigned long dollar=0,unsigned int cent=0);
+        // 析构
+        ~currency(){};
+
+        void Set(signType,unsigned long,unsigned int);
+        // 函数结尾的const，表示只能读取成员变量，不能修改。能被常量对象才能调用
+        currency Add(const currency&) const;
+
+    private:
+        signType _sign;
+        unsigned long _dollar;
+        unsigned int _cent;
+};
+
+// 元素的所有排列
+template<class T>
+void permutations(T list[],int k,int m)
+{
+	if(k==m)
+	{
+		for(int i=0;i<=m;i++)
+			cout<<list[i]<<" ";
+		cout<<endl;
+		cout<<endl;
+	}
+	else
+    {
+		for(int j=k;j<=m;j++)
+		{
+            cout<<"swap"<<k<<" "<<j<<endl;
+			swap(list[k],list[j]);
+            cout<<"recur"<<endl;
+			permutations(list,k+1,m);
+			swap(list[k],list[j]);
+		}
     }
 }
 
