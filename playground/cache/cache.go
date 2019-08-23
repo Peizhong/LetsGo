@@ -31,7 +31,7 @@ func (r *GoRedis) Init() error {
 	*/
 	// 分区
 	client := redis.NewRing(&redis.RingOptions{
-		Addrs:    map[string]string{"main": "193.112.41.28:6379"},
+		Addrs:    map[string]string{"remote": "193.112.41.28:6379", "local": "localhost:3679"},
 		DB:       0,
 		Password: "ur@hello123",
 	})
