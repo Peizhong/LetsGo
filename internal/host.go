@@ -35,8 +35,9 @@ loop:
 	case <-c:
 		log.Println("force closing...")
 		cancel()
+		// 下个循环，等待app结束
 		goto loop
 	case <-exit:
-		log.Println("bye")
+		log.Println("app exit")
 	}
 }

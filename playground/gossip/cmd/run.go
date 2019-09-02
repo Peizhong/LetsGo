@@ -3,6 +3,8 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"github.com/hashicorp/memberlist"
+	"log"
 	"os"
 	"strings"
 
@@ -14,7 +16,7 @@ var (
 	port    int
 	join    string
 	storage map[string]interface{}
-	friends map[string]string
+	members *memberlist.Memberlist
 )
 
 var runCmd = &cobra.Command{
@@ -36,19 +38,31 @@ func loadRunCmd() {
 	rootCmd.AddCommand(runCmd)
 }
 
-func run() {
-	storage = make(map[string]interface{})
-	friends = map[string]string{
-		name: fmt.Sprintf(":%v", port),
+func register() {
+	var err error
+	config := memberlist.DefaultLocalConfig()
+	config.Name = name
+	config.BindPort = port
+	config.AdvertisePort = port
+	members, err = memberlist.Create(config)
+	if err != nil {
+		log.Panic(err)
 	}
-	reader := bufio.NewReader(os.Stdin)
-	for {
-		line, _, err := reader.ReadLine()
-		// 去掉换行
+	if join != "" {
+		_, err := members.Join([]string{join})
 		if err != nil {
-			fmt.Println(err)
-			return
+			log.Panic(err)
 		}
+	}
+}
+
+func run() {
+	register()
+
+	storage = make(map[string]interface{})
+	reader := bufio.NewScanner(os.Stdin)
+	for reader.Scan() {
+		line := reader.Text()
 		cmd := strings.Split(string(line), " ")
 		len := len(cmd)
 
@@ -78,8 +92,8 @@ func run() {
 			}
 			break
 		case "friends":
-			for k, v := range friends {
-				fmt.Println(fmt.Sprintf("%v:lis %v", k, v))
+			for _, member := range members.Members() {
+				fmt.Printf("Member: %s %s:%d\n", member.Name, member.Addr, member.Port)
 			}
 			break
 		case "exit":

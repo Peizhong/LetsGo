@@ -1,9 +1,10 @@
 package main
 
 import (
-	"log"
-
+	"bufio"
 	"github.com/streadway/amqp"
+	"log"
+	"os"
 )
 
 func send() {
@@ -19,7 +20,7 @@ func send() {
 	defer ch.Close()
 	q, err := ch.QueueDeclare(
 		"hello", // name
-		false,   // durable
+		true,   // durable
 		false,   // delete when unused
 		false,   // exclusive
 		false,   // no-wait
@@ -28,18 +29,26 @@ func send() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	body := "Hello World!"
-	err = ch.Publish(
-		"",     // exchange
-		q.Name, // routing key
-		false,  // mandatory
-		false,  // immediate
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(body),
-		})
-	if err != nil {
-		log.Fatal(err)
+	log.Println("online on, write something")
+	reader := bufio.NewScanner(os.Stdin)
+	for reader.Scan() {
+		text := reader.Text()
+		if text == "exit" {
+			break
+		}
+		err = ch.Publish(
+			"",     // exchange
+			q.Name, // routing key
+			false,  // mandatory
+			false,  // immediate
+			amqp.Publishing{
+				DeliveryMode: amqp.Persistent,
+				ContentType: "text/plain",
+				Body:        []byte(text),
+			})
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	log.Println("done")
 }
