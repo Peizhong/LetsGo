@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 #include "../include/basic.h"
 
 using namespace std;
@@ -78,6 +79,13 @@ void Hello()
     {
         cout<<e<<endl;
     }
+}
+
+void Performance()
+{
+    double permillis = double(CLOCKS_PER_SEC)/1000;
+    clock_t startTime = clock();
+    double elapsedMillis = (clock()-startTime)/permillis;
 }
 
 currency::currency(signType sign,unsigned long dollar,unsigned int cent)
