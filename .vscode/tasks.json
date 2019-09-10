@@ -10,7 +10,7 @@
             "args": [
                 "-g",
                 "-o",
-                "./playground/cpp/helloworld",
+                "./playground/cpp/helloworld.out",
                 "-I",
                 "./playground/cpp/include/",
                 "./playground/cpp/src/*.cpp"
