@@ -9,7 +9,8 @@ import (
 
 type Sender interface {
 	init(addr, queue string)
-	publish(text string) error
+	publish(queue, text string) error
+	call(queue, text string) (string, error)
 	close()
 }
 
@@ -29,6 +30,7 @@ func (r *rabbit) init(addr, queue string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// 如果已经有了，可以不用再Declare的
 	r.queue, err = r.channel.QueueDeclare(
 		queue, // name
 		true,  // durable
@@ -42,18 +44,36 @@ func (r *rabbit) init(addr, queue string) {
 	}
 }
 
-func (r *rabbit) publish(text string) error {
+func (r *rabbit) publish(queue, text string) error {
 	err := r.channel.Publish(
-		"",           // exchange
-		r.queue.Name, // routing key
-		false,        // mandatory
-		false,        // immediate
+		"",    // exchange
+		queue, // routing key
+		false, // mandatory
+		false, // immediate
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
 			ContentType:  "text/plain",
 			Body:         []byte(text),
 		})
 	return err
+}
+
+func (r *rabbit) call(queue, text string) (string, error) {
+	err := r.channel.Publish(
+		"",          // exchange
+		"rpc_queue", // routing key
+		false,       // mandatory
+		false,       // immediate
+		amqp.Publishing{
+			ContentType:   "text/plain",
+			CorrelationId: randomString(32),
+			ReplyTo:       queue,
+			Body:          []byte(text),
+		})
+	if err != nil {
+		return "", err
+	}
+	// 还要开个consume接收queue的数据，用CorrelationId匹配
 }
 
 func (r *rabbit) close() {
@@ -72,7 +92,7 @@ func main() {
 		if text == "exit" {
 			break
 		}
-		err := sender.publish(text)
+		err := sender.publish("hello", text)
 		if err != nil {
 			log.Fatal(err)
 		}
