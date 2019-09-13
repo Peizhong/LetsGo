@@ -2,9 +2,10 @@ package main
 
 import (
 	"bufio"
-	"github.com/streadway/amqp"
 	"log"
 	"os"
+
+	"github.com/streadway/amqp"
 )
 
 type Sender interface {
@@ -74,6 +75,7 @@ func (r *rabbit) call(queue, text string) (string, error) {
 		return "", err
 	}
 	// 还要开个consume接收queue的数据，用CorrelationId匹配
+	return "", nil
 }
 
 func (r *rabbit) close() {

@@ -12,7 +12,7 @@ func BenchmarkDoRabbit(b *testing.B) {
 	sender.init("amqp://guest:guest@193.112.41.28:5672/", "hello")
 	for i := 0; i < b.N; i++ {
 		text := fmt.Sprintf("message %d", i)
-		err := sender.publish(text)
+		err := sender.publish(text,"hello")
 		if err != nil {
 			log.Fatal(err)
 		}
