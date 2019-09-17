@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.twoway";
+option java_outer_classname = "TwoWayProto";
+
+// protoc --go_out=plugins=grpc:. pb/twoway.proto
+
+package twoway;
+
+import "../helloworld/helloworld.proto";
+
+// The greeting service definition.
+service TwoWayJob {
+    rpc DoBothWay (HelloRequest) returns (HelloReply) {}
+    // Sends a greeting
+    rpc Say2Hello (Hello2Request) returns (Hello2Reply) {}
+}
+
+// The request message containing the user's name.
+message Hello2Request {
+    string name = 1;
+}
+
+// The response message containing the greetings
+message Hello2Reply {
+    string message = 1;
+}
