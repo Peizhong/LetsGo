@@ -4,7 +4,7 @@ option java_multiple_files = true;
 option java_package = "io.grpc.examples.helloworld";
 option java_outer_classname = "HelloWorldProto";
 
-// protoc --go_out=plugins=grpc:. pb/helloworld.proto
+option go_package = "github.com/peizhong/letsgo/playground/rpc/pb/helloworld";
 
 package helloworld;
 

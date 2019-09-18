@@ -4,15 +4,17 @@ option java_multiple_files = true;
 option java_package = "io.grpc.examples.twoway";
 option java_outer_classname = "TwoWayProto";
 
-// protoc --go_out=plugins=grpc:. pb/twoway.proto
+option go_package = "github.com/peizhong/letsgo/playground/rpc/pb/twoway";
+
+// protoc  --go_out=paths=source_relative,plugins=grpc:. twoway/twoway.proto
 
 package twoway;
 
-import "../helloworld/helloworld.proto";
+import "helloworld/helloworld.proto";
 
 // The greeting service definition.
 service TwoWayJob {
-    rpc DoBothWay (HelloRequest) returns (HelloReply) {}
+    rpc DoBothWay (helloworld.HelloRequest) returns (helloworld.HelloReply) {}
     // Sends a greeting
     rpc Say2Hello (Hello2Request) returns (Hello2Reply) {}
 }
@@ -25,4 +27,10 @@ message Hello2Request {
 // The response message containing the greetings
 message Hello2Reply {
     string message = 1;
+}
+
+message Person {
+    string name = 1;
+    int32 id = 2;
+    bool has_ponycopter = 3;
 }
