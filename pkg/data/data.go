@@ -2,8 +2,10 @@ package data
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/tidwall/gjson"
+	"reflect"
 	"strconv"
 )
 
@@ -30,4 +32,46 @@ func NewGuid() string {
 func GetJsonValue(data, path string) string {
 	value := gjson.Get(data, path)
 	return value.String()
+}
+
+func GetTypeName(i interface{}) string {
+	v := reflect.ValueOf(i)
+	t := v.Type()
+	switch v.Kind() {
+	case reflect.Ptr:
+		v = v.Elem()
+		t = v.Type()
+		break
+	case reflect.Slice, reflect.Array:
+		t = t.Elem()
+		if t.Kind() == reflect.Ptr {
+			t = t.Elem()
+		}
+		break
+	}
+	return t.Name()
+}
+
+func GetMap(i interface{}) (string,map[string]interface{}) {
+	table := GetTypeName(i)
+	m := map[string]interface{}{}
+	v := reflect.ValueOf(i)
+	t := reflect.TypeOf(i)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+		t = v.Type()
+	}
+	for i := 0; i < v.NumField(); i++ {
+		f := v.Field(i)
+		m[t.Field(i).Name] = f.Interface()
+	}
+	return table, m
+}
+
+func GetMapAsJson(i interface{}) (string,map[string]interface{}) {
+	table := GetTypeName(i)
+	m := map[string]interface{}{}
+	data, _ := json.Marshal(i)
+	json.Unmarshal(data, &m)
+	return table, m
 }

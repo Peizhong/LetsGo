@@ -6,7 +6,7 @@ option java_outer_classname = "TwoWayProto";
 
 option go_package = "github.com/peizhong/letsgo/playground/rpc/pb/twoway";
 
-// protoc  --go_out=paths=source_relative,plugins=grpc:. twoway/twoway.proto
+// protoc --go_out=paths=source_relative,plugins=grpc:. twoway/twoway.proto
 
 package twoway;
 
@@ -14,23 +14,59 @@ import "helloworld/helloworld.proto";
 
 // The greeting service definition.
 service TwoWayJob {
-    rpc DoBothWay (helloworld.HelloRequest) returns (helloworld.HelloReply) {}
-    // Sends a greeting
-    rpc Say2Hello (Hello2Request) returns (Hello2Reply) {}
+    // a simple rpc, import from other package
+    rpc Simple (helloworld.HelloRequest) returns (helloworld.HelloReply) {}
+    rpc GetFeature(Point) returns (Feature) {}
+
+    // server-side streaming RPC where the client sends a request to the server and gets a stream to read a sequence of messages back
+    rpc ListFeatures(Rectangle) returns (stream Feature) {}
+
+    // client-side streaming RPC where the client writes a sequence of messages and sends them to the server
+    rpc RecordRoute(stream Point) returns (RouteSummary) {}
+
+    // bidirectional streaming RPC where both sides send a sequence of messages using a read-write stream
+    rpc RouteChat(stream RouteNote) returns (stream RouteNote) {}
 }
 
-// The request message containing the user's name.
-message Hello2Request {
+message Point {
+    int32 latitude = 1;
+    int32 longitude = 2;
+}
+
+message Rectangle {
+    // One corner of the rectangle.
+    Point lo = 1;
+
+    // The other corner of the rectangle.
+    Point hi = 2;
+}
+
+message RouteNote {
+    // The location from which the message is sent.
+    Point location = 1;
+
+    // The message to be sent.
+    string message = 2;
+}
+
+message Feature {
+    // The name of the feature.
     string name = 1;
+
+    // The point where the feature is detected.
+    Point location = 2;
 }
 
-// The response message containing the greetings
-message Hello2Reply {
-    string message = 1;
-}
+message RouteSummary {
+    // The number of points received.
+    int32 point_count = 1;
 
-message Person {
-    string name = 1;
-    int32 id = 2;
-    bool has_ponycopter = 3;
+    // The number of known features passed while traversing the route.
+    int32 feature_count = 2;
+
+    // The distance covered in metres.
+    int32 distance = 3;
+
+    // The duration of the traversal in seconds.
+    int32 elapsed_time = 4;
 }

@@ -25,171 +25,310 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-// The request message containing the user's name.
-type Hello2Request struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+type Point struct {
+	Latitude             int32    `protobuf:"varint,1,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	Longitude            int32    `protobuf:"varint,2,opt,name=longitude,proto3" json:"longitude,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Hello2Request) Reset()         { *m = Hello2Request{} }
-func (m *Hello2Request) String() string { return proto.CompactTextString(m) }
-func (*Hello2Request) ProtoMessage()    {}
-func (*Hello2Request) Descriptor() ([]byte, []int) {
+func (m *Point) Reset()         { *m = Point{} }
+func (m *Point) String() string { return proto.CompactTextString(m) }
+func (*Point) ProtoMessage()    {}
+func (*Point) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b76fcd9484938dcc, []int{0}
 }
 
-func (m *Hello2Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Hello2Request.Unmarshal(m, b)
+func (m *Point) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Point.Unmarshal(m, b)
 }
-func (m *Hello2Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Hello2Request.Marshal(b, m, deterministic)
+func (m *Point) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Point.Marshal(b, m, deterministic)
 }
-func (m *Hello2Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Hello2Request.Merge(m, src)
+func (m *Point) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Point.Merge(m, src)
 }
-func (m *Hello2Request) XXX_Size() int {
-	return xxx_messageInfo_Hello2Request.Size(m)
+func (m *Point) XXX_Size() int {
+	return xxx_messageInfo_Point.Size(m)
 }
-func (m *Hello2Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_Hello2Request.DiscardUnknown(m)
+func (m *Point) XXX_DiscardUnknown() {
+	xxx_messageInfo_Point.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Hello2Request proto.InternalMessageInfo
+var xxx_messageInfo_Point proto.InternalMessageInfo
 
-func (m *Hello2Request) GetName() string {
+func (m *Point) GetLatitude() int32 {
 	if m != nil {
-		return m.Name
+		return m.Latitude
 	}
-	return ""
+	return 0
 }
 
-// The response message containing the greetings
-type Hello2Reply struct {
-	Message              string   `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+func (m *Point) GetLongitude() int32 {
+	if m != nil {
+		return m.Longitude
+	}
+	return 0
+}
+
+type Rectangle struct {
+	// One corner of the rectangle.
+	Lo *Point `protobuf:"bytes,1,opt,name=lo,proto3" json:"lo,omitempty"`
+	// The other corner of the rectangle.
+	Hi                   *Point   `protobuf:"bytes,2,opt,name=hi,proto3" json:"hi,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Hello2Reply) Reset()         { *m = Hello2Reply{} }
-func (m *Hello2Reply) String() string { return proto.CompactTextString(m) }
-func (*Hello2Reply) ProtoMessage()    {}
-func (*Hello2Reply) Descriptor() ([]byte, []int) {
+func (m *Rectangle) Reset()         { *m = Rectangle{} }
+func (m *Rectangle) String() string { return proto.CompactTextString(m) }
+func (*Rectangle) ProtoMessage()    {}
+func (*Rectangle) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b76fcd9484938dcc, []int{1}
 }
 
-func (m *Hello2Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Hello2Reply.Unmarshal(m, b)
+func (m *Rectangle) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Rectangle.Unmarshal(m, b)
 }
-func (m *Hello2Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Hello2Reply.Marshal(b, m, deterministic)
+func (m *Rectangle) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Rectangle.Marshal(b, m, deterministic)
 }
-func (m *Hello2Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Hello2Reply.Merge(m, src)
+func (m *Rectangle) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Rectangle.Merge(m, src)
 }
-func (m *Hello2Reply) XXX_Size() int {
-	return xxx_messageInfo_Hello2Reply.Size(m)
+func (m *Rectangle) XXX_Size() int {
+	return xxx_messageInfo_Rectangle.Size(m)
 }
-func (m *Hello2Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_Hello2Reply.DiscardUnknown(m)
+func (m *Rectangle) XXX_DiscardUnknown() {
+	xxx_messageInfo_Rectangle.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Hello2Reply proto.InternalMessageInfo
+var xxx_messageInfo_Rectangle proto.InternalMessageInfo
 
-func (m *Hello2Reply) GetMessage() string {
+func (m *Rectangle) GetLo() *Point {
+	if m != nil {
+		return m.Lo
+	}
+	return nil
+}
+
+func (m *Rectangle) GetHi() *Point {
+	if m != nil {
+		return m.Hi
+	}
+	return nil
+}
+
+type RouteNote struct {
+	// The location from which the message is sent.
+	Location *Point `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`
+	// The message to be sent.
+	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RouteNote) Reset()         { *m = RouteNote{} }
+func (m *RouteNote) String() string { return proto.CompactTextString(m) }
+func (*RouteNote) ProtoMessage()    {}
+func (*RouteNote) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b76fcd9484938dcc, []int{2}
+}
+
+func (m *RouteNote) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RouteNote.Unmarshal(m, b)
+}
+func (m *RouteNote) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RouteNote.Marshal(b, m, deterministic)
+}
+func (m *RouteNote) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RouteNote.Merge(m, src)
+}
+func (m *RouteNote) XXX_Size() int {
+	return xxx_messageInfo_RouteNote.Size(m)
+}
+func (m *RouteNote) XXX_DiscardUnknown() {
+	xxx_messageInfo_RouteNote.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RouteNote proto.InternalMessageInfo
+
+func (m *RouteNote) GetLocation() *Point {
+	if m != nil {
+		return m.Location
+	}
+	return nil
+}
+
+func (m *RouteNote) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
 	return ""
 }
 
-type Person struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Id                   int32    `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
-	HasPonycopter        bool     `protobuf:"varint,3,opt,name=has_ponycopter,json=hasPonycopter,proto3" json:"has_ponycopter,omitempty"`
+type Feature struct {
+	// The name of the feature.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The point where the feature is detected.
+	Location             *Point   `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Person) Reset()         { *m = Person{} }
-func (m *Person) String() string { return proto.CompactTextString(m) }
-func (*Person) ProtoMessage()    {}
-func (*Person) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b76fcd9484938dcc, []int{2}
+func (m *Feature) Reset()         { *m = Feature{} }
+func (m *Feature) String() string { return proto.CompactTextString(m) }
+func (*Feature) ProtoMessage()    {}
+func (*Feature) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b76fcd9484938dcc, []int{3}
 }
 
-func (m *Person) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Person.Unmarshal(m, b)
+func (m *Feature) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Feature.Unmarshal(m, b)
 }
-func (m *Person) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Person.Marshal(b, m, deterministic)
+func (m *Feature) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Feature.Marshal(b, m, deterministic)
 }
-func (m *Person) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Person.Merge(m, src)
+func (m *Feature) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Feature.Merge(m, src)
 }
-func (m *Person) XXX_Size() int {
-	return xxx_messageInfo_Person.Size(m)
+func (m *Feature) XXX_Size() int {
+	return xxx_messageInfo_Feature.Size(m)
 }
-func (m *Person) XXX_DiscardUnknown() {
-	xxx_messageInfo_Person.DiscardUnknown(m)
+func (m *Feature) XXX_DiscardUnknown() {
+	xxx_messageInfo_Feature.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Person proto.InternalMessageInfo
+var xxx_messageInfo_Feature proto.InternalMessageInfo
 
-func (m *Person) GetName() string {
+func (m *Feature) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *Person) GetId() int32 {
+func (m *Feature) GetLocation() *Point {
 	if m != nil {
-		return m.Id
+		return m.Location
+	}
+	return nil
+}
+
+type RouteSummary struct {
+	// The number of points received.
+	PointCount int32 `protobuf:"varint,1,opt,name=point_count,json=pointCount,proto3" json:"point_count,omitempty"`
+	// The number of known features passed while traversing the route.
+	FeatureCount int32 `protobuf:"varint,2,opt,name=feature_count,json=featureCount,proto3" json:"feature_count,omitempty"`
+	// The distance covered in metres.
+	Distance int32 `protobuf:"varint,3,opt,name=distance,proto3" json:"distance,omitempty"`
+	// The duration of the traversal in seconds.
+	ElapsedTime          int32    `protobuf:"varint,4,opt,name=elapsed_time,json=elapsedTime,proto3" json:"elapsed_time,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RouteSummary) Reset()         { *m = RouteSummary{} }
+func (m *RouteSummary) String() string { return proto.CompactTextString(m) }
+func (*RouteSummary) ProtoMessage()    {}
+func (*RouteSummary) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b76fcd9484938dcc, []int{4}
+}
+
+func (m *RouteSummary) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RouteSummary.Unmarshal(m, b)
+}
+func (m *RouteSummary) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RouteSummary.Marshal(b, m, deterministic)
+}
+func (m *RouteSummary) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RouteSummary.Merge(m, src)
+}
+func (m *RouteSummary) XXX_Size() int {
+	return xxx_messageInfo_RouteSummary.Size(m)
+}
+func (m *RouteSummary) XXX_DiscardUnknown() {
+	xxx_messageInfo_RouteSummary.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RouteSummary proto.InternalMessageInfo
+
+func (m *RouteSummary) GetPointCount() int32 {
+	if m != nil {
+		return m.PointCount
 	}
 	return 0
 }
 
-func (m *Person) GetHasPonycopter() bool {
+func (m *RouteSummary) GetFeatureCount() int32 {
 	if m != nil {
-		return m.HasPonycopter
+		return m.FeatureCount
 	}
-	return false
+	return 0
+}
+
+func (m *RouteSummary) GetDistance() int32 {
+	if m != nil {
+		return m.Distance
+	}
+	return 0
+}
+
+func (m *RouteSummary) GetElapsedTime() int32 {
+	if m != nil {
+		return m.ElapsedTime
+	}
+	return 0
 }
 
 func init() {
-	proto.RegisterType((*Hello2Request)(nil), "twoway.Hello2Request")
-	proto.RegisterType((*Hello2Reply)(nil), "twoway.Hello2Reply")
-	proto.RegisterType((*Person)(nil), "twoway.Person")
+	proto.RegisterType((*Point)(nil), "twoway.Point")
+	proto.RegisterType((*Rectangle)(nil), "twoway.Rectangle")
+	proto.RegisterType((*RouteNote)(nil), "twoway.RouteNote")
+	proto.RegisterType((*Feature)(nil), "twoway.Feature")
+	proto.RegisterType((*RouteSummary)(nil), "twoway.RouteSummary")
 }
 
 func init() { proto.RegisterFile("twoway/twoway.proto", fileDescriptor_b76fcd9484938dcc) }
 
 var fileDescriptor_b76fcd9484938dcc = []byte{
-	// 314 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x91, 0xcf, 0x4b, 0xc3, 0x30,
-	0x14, 0xc7, 0xed, 0xd4, 0x69, 0xdf, 0xd8, 0x0e, 0x19, 0x6a, 0x99, 0x97, 0x51, 0x11, 0x77, 0x6a,
-	0x60, 0x3b, 0x79, 0x12, 0x86, 0x07, 0xf1, 0x54, 0x3a, 0x61, 0x20, 0x88, 0xa4, 0x6d, 0x68, 0x0b,
-	0x69, 0x5f, 0x4c, 0x32, 0x6a, 0xfc, 0x07, 0xfc, 0xb7, 0x65, 0x6d, 0xe7, 0x2f, 0x76, 0xca, 0x7b,
-	0xdf, 0x7c, 0x12, 0xde, 0xfb, 0x7e, 0x61, 0x6c, 0x6a, 0xac, 0x99, 0xa5, 0xed, 0x11, 0x48, 0x85,
-	0x06, 0x49, 0xbf, 0xed, 0x26, 0x97, 0x39, 0x17, 0x02, 0x6b, 0x54, 0x22, 0xa5, 0x3f, 0x65, 0x0b,
-	0xf9, 0x57, 0x30, 0x7c, 0xd8, 0x6a, 0xf3, 0x88, 0xbf, 0x6d, 0xb8, 0x36, 0x84, 0xc0, 0x51, 0xc5,
-	0x4a, 0xee, 0x39, 0x53, 0x67, 0xe6, 0x46, 0x4d, 0xed, 0xdf, 0xc0, 0x60, 0x07, 0x49, 0x61, 0x89,
-	0x07, 0x27, 0x25, 0xd7, 0x9a, 0x65, 0x3b, 0x6a, 0xd7, 0xfa, 0x2b, 0xe8, 0x87, 0x5c, 0x69, 0xac,
-	0xf6, 0x7d, 0x43, 0x46, 0xd0, 0x2b, 0x52, 0xaf, 0x37, 0x75, 0x66, 0xc7, 0x51, 0xaf, 0x48, 0xc9,
-	0x35, 0x8c, 0x72, 0xa6, 0x5f, 0x25, 0x56, 0x36, 0x41, 0x69, 0xb8, 0xf2, 0x0e, 0xa7, 0xce, 0xec,
-	0x34, 0x1a, 0xe6, 0x4c, 0x87, 0xdf, 0xe2, 0xfc, 0xd3, 0x01, 0xf7, 0xa9, 0xc6, 0x35, 0xb3, 0x8f,
-	0x18, 0x93, 0x3b, 0x70, 0xef, 0x71, 0x89, 0x26, 0x5f, 0x33, 0x4b, 0xbc, 0xe0, 0xd7, 0x42, 0xcd,
-	0x88, 0xdd, 0x1a, 0x93, 0xf3, 0x3d, 0x37, 0x52, 0x58, 0xff, 0x80, 0xdc, 0x82, 0xbb, 0x62, 0x76,
-	0xde, 0x68, 0xe4, 0x2c, 0xe8, 0x2c, 0xfb, 0x63, 0xc2, 0x64, 0xfc, 0x5f, 0x6e, 0x9e, 0x2e, 0x5f,
-	0xe0, 0xa2, 0xc0, 0x20, 0x53, 0x32, 0x09, 0xf8, 0x3b, 0x2b, 0xa5, 0xe0, 0xba, 0x03, 0x97, 0x83,
-	0x76, 0xc2, 0x70, 0x6b, 0x6a, 0xe8, 0x3c, 0x2f, 0xb2, 0xc2, 0xe4, 0x9b, 0x38, 0x48, 0xb0, 0xa4,
-	0x92, 0x17, 0x1f, 0x39, 0x56, 0x19, 0x15, 0xdc, 0xe8, 0x0c, 0xa9, 0x14, 0xcc, 0x66, 0x0a, 0x37,
-	0x55, 0x4a, 0x95, 0x4c, 0xa8, 0x8c, 0xbb, 0xd8, 0xe2, 0x7e, 0x13, 0xc9, 0xe2, 0x2b, 0x00, 0x00,
-	0xff, 0xff, 0x2a, 0xba, 0x01, 0xe7, 0xce, 0x01, 0x00, 0x00,
+	// 488 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x53, 0xd1, 0x6a, 0xd4, 0x40,
+	0x14, 0xdd, 0xac, 0xed, 0x76, 0x73, 0x77, 0x8b, 0x38, 0x8a, 0x86, 0xa8, 0xa8, 0xf1, 0xa5, 0xbe,
+	0x24, 0xa5, 0x85, 0xfa, 0xe2, 0x8b, 0x2d, 0x68, 0x15, 0x91, 0x25, 0x2d, 0x08, 0x82, 0x94, 0xd9,
+	0xe4, 0x9a, 0x0c, 0x4c, 0x72, 0xc7, 0x64, 0xc2, 0x1a, 0x7f, 0xc3, 0x3f, 0xf0, 0x4b, 0x25, 0x33,
+	0xc9, 0x76, 0x6b, 0x17, 0x9f, 0x76, 0xee, 0x39, 0x67, 0xee, 0x99, 0x3d, 0xb9, 0x17, 0xee, 0xeb,
+	0x15, 0xad, 0x78, 0x1b, 0xd9, 0x9f, 0x50, 0x55, 0xa4, 0x89, 0x4d, 0x6c, 0xe5, 0x3f, 0xce, 0x51,
+	0x4a, 0x5a, 0x51, 0x25, 0xd3, 0xe8, 0xfa, 0x68, 0x45, 0xc1, 0x5b, 0xd8, 0x5d, 0x90, 0x28, 0x35,
+	0xf3, 0x61, 0x2a, 0xb9, 0x16, 0xba, 0x49, 0xd1, 0x73, 0x9e, 0x3b, 0x07, 0xbb, 0xf1, 0xba, 0x66,
+	0x4f, 0xc0, 0x95, 0x54, 0x66, 0x96, 0x1c, 0x1b, 0xf2, 0x1a, 0x08, 0x3e, 0x80, 0x1b, 0x63, 0xa2,
+	0x79, 0x99, 0x49, 0x64, 0x4f, 0x61, 0x2c, 0xc9, 0x34, 0x98, 0x1d, 0xed, 0x87, 0xfd, 0x7b, 0x8c,
+	0x43, 0x3c, 0x96, 0xd4, 0xd1, 0xb9, 0x30, 0x2d, 0x6e, 0xd3, 0xb9, 0x08, 0x16, 0xe0, 0xc6, 0xd4,
+	0x68, 0xfc, 0x4c, 0x1a, 0xd9, 0x2b, 0x98, 0x4a, 0x4a, 0xb8, 0x16, 0x54, 0x6e, 0x6f, 0xb8, 0xa6,
+	0x99, 0x07, 0x7b, 0x05, 0xd6, 0x35, 0xcf, 0xec, 0xf3, 0xdc, 0x78, 0x28, 0x83, 0x73, 0xd8, 0x7b,
+	0x87, 0x5c, 0x37, 0x15, 0x32, 0x06, 0x3b, 0x25, 0x2f, 0xec, 0xbf, 0x73, 0x63, 0x73, 0xbe, 0xe1,
+	0x31, 0xfe, 0xaf, 0x47, 0xf0, 0xdb, 0x81, 0xb9, 0x79, 0xdc, 0x45, 0x53, 0x14, 0xbc, 0x6a, 0xd9,
+	0x33, 0x98, 0xa9, 0x4e, 0x73, 0x95, 0x50, 0x53, 0xea, 0x3e, 0x34, 0x30, 0xd0, 0x59, 0x87, 0xb0,
+	0x97, 0xb0, 0xff, 0xdd, 0x7a, 0xf7, 0x12, 0x1b, 0xdd, 0xbc, 0x07, 0xad, 0xc8, 0x87, 0x69, 0x2a,
+	0x6a, 0xcd, 0xcb, 0x04, 0xbd, 0x3b, 0x36, 0xf7, 0xa1, 0x66, 0x2f, 0x60, 0x8e, 0x92, 0xab, 0x1a,
+	0xd3, 0x2b, 0x2d, 0x0a, 0xf4, 0x76, 0x0c, 0x3f, 0xeb, 0xb1, 0x4b, 0x51, 0xe0, 0xd1, 0x9f, 0x31,
+	0xb8, 0x97, 0x2b, 0xfa, 0xc2, 0xdb, 0x8f, 0xb4, 0x64, 0x6f, 0x60, 0x72, 0x21, 0x0a, 0x25, 0x91,
+	0x79, 0xe1, 0xc6, 0xa7, 0x3e, 0xef, 0x8e, 0x31, 0xfe, 0x68, 0xb0, 0xd6, 0xfe, 0xc3, 0x2d, 0x8c,
+	0x92, 0x6d, 0x30, 0x62, 0x21, 0xc0, 0x7b, 0xd4, 0x43, 0x5c, 0x37, 0x83, 0xf0, 0xef, 0x0e, 0x65,
+	0xcf, 0x07, 0x23, 0x76, 0x02, 0xf3, 0x4f, 0xa2, 0x1e, 0x2e, 0xd4, 0xec, 0xde, 0x20, 0x59, 0x8f,
+	0xc3, 0x96, 0x5b, 0x87, 0x0e, 0x3b, 0x81, 0x59, 0x8c, 0x09, 0x55, 0xa9, 0x89, 0xf3, 0x5f, 0xa3,
+	0x07, 0xeb, 0x2e, 0x1b, 0x61, 0x07, 0xa3, 0x03, 0x87, 0xbd, 0xee, 0xa7, 0xe3, 0x2c, 0xe7, 0x7a,
+	0xc3, 0x6c, 0x18, 0x18, 0xff, 0x36, 0xd4, 0x5d, 0x3b, 0x74, 0x4e, 0xbf, 0xc1, 0x23, 0x41, 0x61,
+	0x56, 0xa9, 0x24, 0xc4, 0x9f, 0xbc, 0xcb, 0xa7, 0xee, 0xa5, 0xa7, 0x33, 0x1b, 0xde, 0xa2, 0x5b,
+	0x86, 0x85, 0xf3, 0xf5, 0x38, 0x13, 0x3a, 0x6f, 0x96, 0x61, 0x42, 0x45, 0xa4, 0x50, 0xfc, 0xca,
+	0xa9, 0xcc, 0x22, 0x89, 0xba, 0xce, 0x28, 0x52, 0x92, 0xb7, 0x59, 0x45, 0x4d, 0x99, 0x46, 0x95,
+	0x4a, 0x22, 0xb5, 0xec, 0xd7, 0x6d, 0x39, 0x31, 0xab, 0x74, 0xfc, 0x37, 0x00, 0x00, 0xff, 0xff,
+	0x5f, 0x6c, 0x15, 0xe6, 0x86, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -204,9 +343,15 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type TwoWayJobClient interface {
-	DoBothWay(ctx context.Context, in *helloworld.HelloRequest, opts ...grpc.CallOption) (*helloworld.HelloReply, error)
-	// Sends a greeting
-	Say2Hello(ctx context.Context, in *Hello2Request, opts ...grpc.CallOption) (*Hello2Reply, error)
+	// a simple rpc, import from other package
+	Simple(ctx context.Context, in *helloworld.HelloRequest, opts ...grpc.CallOption) (*helloworld.HelloReply, error)
+	GetFeature(ctx context.Context, in *Point, opts ...grpc.CallOption) (*Feature, error)
+	// server-side streaming RPC where the client sends a request to the server and gets a stream to read a sequence of messages back
+	ListFeatures(ctx context.Context, in *Rectangle, opts ...grpc.CallOption) (TwoWayJob_ListFeaturesClient, error)
+	// client-side streaming RPC where the client writes a sequence of messages and sends them to the server
+	RecordRoute(ctx context.Context, opts ...grpc.CallOption) (TwoWayJob_RecordRouteClient, error)
+	// bidirectional streaming RPC where both sides send a sequence of messages using a read-write stream
+	RouteChat(ctx context.Context, opts ...grpc.CallOption) (TwoWayJob_RouteChatClient, error)
 }
 
 type twoWayJobClient struct {
@@ -217,80 +362,265 @@ func NewTwoWayJobClient(cc *grpc.ClientConn) TwoWayJobClient {
 	return &twoWayJobClient{cc}
 }
 
-func (c *twoWayJobClient) DoBothWay(ctx context.Context, in *helloworld.HelloRequest, opts ...grpc.CallOption) (*helloworld.HelloReply, error) {
+func (c *twoWayJobClient) Simple(ctx context.Context, in *helloworld.HelloRequest, opts ...grpc.CallOption) (*helloworld.HelloReply, error) {
 	out := new(helloworld.HelloReply)
-	err := c.cc.Invoke(ctx, "/twoway.TwoWayJob/DoBothWay", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/twoway.TwoWayJob/Simple", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *twoWayJobClient) Say2Hello(ctx context.Context, in *Hello2Request, opts ...grpc.CallOption) (*Hello2Reply, error) {
-	out := new(Hello2Reply)
-	err := c.cc.Invoke(ctx, "/twoway.TwoWayJob/Say2Hello", in, out, opts...)
+func (c *twoWayJobClient) GetFeature(ctx context.Context, in *Point, opts ...grpc.CallOption) (*Feature, error) {
+	out := new(Feature)
+	err := c.cc.Invoke(ctx, "/twoway.TwoWayJob/GetFeature", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
+}
+
+func (c *twoWayJobClient) ListFeatures(ctx context.Context, in *Rectangle, opts ...grpc.CallOption) (TwoWayJob_ListFeaturesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_TwoWayJob_serviceDesc.Streams[0], "/twoway.TwoWayJob/ListFeatures", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &twoWayJobListFeaturesClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type TwoWayJob_ListFeaturesClient interface {
+	Recv() (*Feature, error)
+	grpc.ClientStream
+}
+
+type twoWayJobListFeaturesClient struct {
+	grpc.ClientStream
+}
+
+func (x *twoWayJobListFeaturesClient) Recv() (*Feature, error) {
+	m := new(Feature)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *twoWayJobClient) RecordRoute(ctx context.Context, opts ...grpc.CallOption) (TwoWayJob_RecordRouteClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_TwoWayJob_serviceDesc.Streams[1], "/twoway.TwoWayJob/RecordRoute", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &twoWayJobRecordRouteClient{stream}
+	return x, nil
+}
+
+type TwoWayJob_RecordRouteClient interface {
+	Send(*Point) error
+	CloseAndRecv() (*RouteSummary, error)
+	grpc.ClientStream
+}
+
+type twoWayJobRecordRouteClient struct {
+	grpc.ClientStream
+}
+
+func (x *twoWayJobRecordRouteClient) Send(m *Point) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *twoWayJobRecordRouteClient) CloseAndRecv() (*RouteSummary, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(RouteSummary)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *twoWayJobClient) RouteChat(ctx context.Context, opts ...grpc.CallOption) (TwoWayJob_RouteChatClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_TwoWayJob_serviceDesc.Streams[2], "/twoway.TwoWayJob/RouteChat", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &twoWayJobRouteChatClient{stream}
+	return x, nil
+}
+
+type TwoWayJob_RouteChatClient interface {
+	Send(*RouteNote) error
+	Recv() (*RouteNote, error)
+	grpc.ClientStream
+}
+
+type twoWayJobRouteChatClient struct {
+	grpc.ClientStream
+}
+
+func (x *twoWayJobRouteChatClient) Send(m *RouteNote) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *twoWayJobRouteChatClient) Recv() (*RouteNote, error) {
+	m := new(RouteNote)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // TwoWayJobServer is the server API for TwoWayJob service.
 type TwoWayJobServer interface {
-	DoBothWay(context.Context, *helloworld.HelloRequest) (*helloworld.HelloReply, error)
-	// Sends a greeting
-	Say2Hello(context.Context, *Hello2Request) (*Hello2Reply, error)
+	// a simple rpc, import from other package
+	Simple(context.Context, *helloworld.HelloRequest) (*helloworld.HelloReply, error)
+	GetFeature(context.Context, *Point) (*Feature, error)
+	// server-side streaming RPC where the client sends a request to the server and gets a stream to read a sequence of messages back
+	ListFeatures(*Rectangle, TwoWayJob_ListFeaturesServer) error
+	// client-side streaming RPC where the client writes a sequence of messages and sends them to the server
+	RecordRoute(TwoWayJob_RecordRouteServer) error
+	// bidirectional streaming RPC where both sides send a sequence of messages using a read-write stream
+	RouteChat(TwoWayJob_RouteChatServer) error
 }
 
 // UnimplementedTwoWayJobServer can be embedded to have forward compatible implementations.
 type UnimplementedTwoWayJobServer struct {
 }
 
-func (*UnimplementedTwoWayJobServer) DoBothWay(ctx context.Context, req *helloworld.HelloRequest) (*helloworld.HelloReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DoBothWay not implemented")
+func (*UnimplementedTwoWayJobServer) Simple(ctx context.Context, req *helloworld.HelloRequest) (*helloworld.HelloReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Simple not implemented")
 }
-func (*UnimplementedTwoWayJobServer) Say2Hello(ctx context.Context, req *Hello2Request) (*Hello2Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Say2Hello not implemented")
+func (*UnimplementedTwoWayJobServer) GetFeature(ctx context.Context, req *Point) (*Feature, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFeature not implemented")
+}
+func (*UnimplementedTwoWayJobServer) ListFeatures(req *Rectangle, srv TwoWayJob_ListFeaturesServer) error {
+	return status.Errorf(codes.Unimplemented, "method ListFeatures not implemented")
+}
+func (*UnimplementedTwoWayJobServer) RecordRoute(srv TwoWayJob_RecordRouteServer) error {
+	return status.Errorf(codes.Unimplemented, "method RecordRoute not implemented")
+}
+func (*UnimplementedTwoWayJobServer) RouteChat(srv TwoWayJob_RouteChatServer) error {
+	return status.Errorf(codes.Unimplemented, "method RouteChat not implemented")
 }
 
 func RegisterTwoWayJobServer(s *grpc.Server, srv TwoWayJobServer) {
 	s.RegisterService(&_TwoWayJob_serviceDesc, srv)
 }
 
-func _TwoWayJob_DoBothWay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _TwoWayJob_Simple_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(helloworld.HelloRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TwoWayJobServer).DoBothWay(ctx, in)
+		return srv.(TwoWayJobServer).Simple(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/twoway.TwoWayJob/DoBothWay",
+		FullMethod: "/twoway.TwoWayJob/Simple",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TwoWayJobServer).DoBothWay(ctx, req.(*helloworld.HelloRequest))
+		return srv.(TwoWayJobServer).Simple(ctx, req.(*helloworld.HelloRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TwoWayJob_Say2Hello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Hello2Request)
+func _TwoWayJob_GetFeature_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Point)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TwoWayJobServer).Say2Hello(ctx, in)
+		return srv.(TwoWayJobServer).GetFeature(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/twoway.TwoWayJob/Say2Hello",
+		FullMethod: "/twoway.TwoWayJob/GetFeature",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TwoWayJobServer).Say2Hello(ctx, req.(*Hello2Request))
+		return srv.(TwoWayJobServer).GetFeature(ctx, req.(*Point))
 	}
 	return interceptor(ctx, in, info, handler)
+}
+
+func _TwoWayJob_ListFeatures_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Rectangle)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(TwoWayJobServer).ListFeatures(m, &twoWayJobListFeaturesServer{stream})
+}
+
+type TwoWayJob_ListFeaturesServer interface {
+	Send(*Feature) error
+	grpc.ServerStream
+}
+
+type twoWayJobListFeaturesServer struct {
+	grpc.ServerStream
+}
+
+func (x *twoWayJobListFeaturesServer) Send(m *Feature) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _TwoWayJob_RecordRoute_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(TwoWayJobServer).RecordRoute(&twoWayJobRecordRouteServer{stream})
+}
+
+type TwoWayJob_RecordRouteServer interface {
+	SendAndClose(*RouteSummary) error
+	Recv() (*Point, error)
+	grpc.ServerStream
+}
+
+type twoWayJobRecordRouteServer struct {
+	grpc.ServerStream
+}
+
+func (x *twoWayJobRecordRouteServer) SendAndClose(m *RouteSummary) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *twoWayJobRecordRouteServer) Recv() (*Point, error) {
+	m := new(Point)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _TwoWayJob_RouteChat_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(TwoWayJobServer).RouteChat(&twoWayJobRouteChatServer{stream})
+}
+
+type TwoWayJob_RouteChatServer interface {
+	Send(*RouteNote) error
+	Recv() (*RouteNote, error)
+	grpc.ServerStream
+}
+
+type twoWayJobRouteChatServer struct {
+	grpc.ServerStream
+}
+
+func (x *twoWayJobRouteChatServer) Send(m *RouteNote) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *twoWayJobRouteChatServer) Recv() (*RouteNote, error) {
+	m := new(RouteNote)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 var _TwoWayJob_serviceDesc = grpc.ServiceDesc{
@@ -298,14 +628,31 @@ var _TwoWayJob_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*TwoWayJobServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "DoBothWay",
-			Handler:    _TwoWayJob_DoBothWay_Handler,
+			MethodName: "Simple",
+			Handler:    _TwoWayJob_Simple_Handler,
 		},
 		{
-			MethodName: "Say2Hello",
-			Handler:    _TwoWayJob_Say2Hello_Handler,
+			MethodName: "GetFeature",
+			Handler:    _TwoWayJob_GetFeature_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ListFeatures",
+			Handler:       _TwoWayJob_ListFeatures_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "RecordRoute",
+			Handler:       _TwoWayJob_RecordRoute_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "RouteChat",
+			Handler:       _TwoWayJob_RouteChat_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "twoway/twoway.proto",
 }

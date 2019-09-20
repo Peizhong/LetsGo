@@ -13,11 +13,3 @@ export interface TODO{
     completed: boolean;
     date: Date;
 }
-
-export interface TODOSTATE{
-    todos: TODO[];
-}
-
-export interface VIEWSTATE{
-    filter: string;
-}

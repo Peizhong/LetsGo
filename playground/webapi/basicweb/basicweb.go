@@ -3,8 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/peizhong/letsgo/pkg/config"
 	"log"
+	"net"
 	"net/http"
+	"strconv"
 
 	"github.com/peizhong/letsgo/internal"
 )
@@ -26,11 +29,11 @@ func Start() {
 	mux.Handle("/", &basicHandler{responseText: "hello world"})
 	mux.Handle("/help", &basicHandler{responseText: "help me"})
 	srv = &http.Server{
-		Addr:    fmt.Sprintf(":%d", 8001),
+		Addr:    net.JoinHostPort("", strconv.Itoa(config.HTTPApp1Port)),
 		Handler: mux,
 	}
-	log.Println("basic web service is on")
-	if err := srv.ListenAndServe(); err != nil {
+	log.Println("basic web service is on", config.HTTPApp1Port)
+	if err := srv.ListenAndServeTLS(config.CertCrt, config.CertKey); err != nil {
 		log.Println(err.Error())
 	}
 }

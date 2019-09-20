@@ -1,14 +1,15 @@
 import { ModifyAction } from "../actions"
-import { TODOSTATE } from "../constants"
+import { ADDTODO, TOGGLETODO } from "../constants"
+import { TODOSTATE } from "."
 
-const initialState: TODOSTATE = {
+const initialTodoState: TODOSTATE = {
   todos: []
 }
 
-export default function todos(state=initialState, action: ModifyAction): TODOSTATE
+const todos = (state=initialTodoState, action: ModifyAction):TODOSTATE =>
 {
   switch (action.type) {
-    case 'ADD_TODO':
+    case ADDTODO:
       return {
         todos:[
         ...state.todos,
@@ -19,7 +20,7 @@ export default function todos(state=initialState, action: ModifyAction): TODOSTA
           date: new Date()
         }]
       }
-    case 'TOGGLE_TODO':
+    case TOGGLETODO:
       return {
         todos: state.todos.map((todo: any) => todo.id === action.id ? { ...todo, completed: !todo.completed } : todo)
       }
@@ -27,3 +28,5 @@ export default function todos(state=initialState, action: ModifyAction): TODOSTA
       return state
   }
 }
+
+export default todos

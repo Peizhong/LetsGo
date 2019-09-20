@@ -21,18 +21,18 @@ export interface ITOGGLEAction{
 export type ModifyAction = IADDTODOAction | ITOGGLEAction | ISETVISIBILITYFILTERAction;
 
 export const addTodo = (text: string) => ({
-  type: 'ADD_TODO',
+  type: ADDTODO,
   id: nextTodoId++,
   text
 })
 
 export const setVisibilityFilter = (filter: string) => ({
-  type: 'SET_VISIBILITY_FILTER',
+  type: SETVISIBILITYFILTER,
   filter
 })
 
 export const toggleTodo = (id: number) => ({
-  type: 'TOGGLE_TODO',
+  type: TOGGLETODO,
   id
 })
 
