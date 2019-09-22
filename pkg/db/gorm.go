@@ -40,7 +40,7 @@ func (g *GormHandler) Create(i interface{}) error {
 	return err
 }
 
-func (g *GormHandler) Get(i interface{}) error {
+func (g *GormHandler) Get(i interface{}, q ...Query) error {
 	_, err := g.Do(func(db *gorm.DB) (interface{}, error) {
 		db.First(i)
 		return nil, nil
@@ -48,10 +48,10 @@ func (g *GormHandler) Get(i interface{}) error {
 	return err
 }
 
-func (g *GormHandler) Gets(i interface{}) error {
+func (g *GormHandler) Gets(i interface{}, q ...Query) (int, error) {
 	_, err := g.Do(func(db *gorm.DB) (interface{}, error) {
 		db.Find(i)
 		return nil, nil
 	})
-	return err
+	return 0, err
 }

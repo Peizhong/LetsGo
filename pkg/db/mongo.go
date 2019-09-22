@@ -2,22 +2,57 @@ package db
 
 import (
 	"context"
+	"errors"
 	"github.com/peizhong/letsgo/pkg/config"
 	"github.com/peizhong/letsgo/pkg/data"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"log"
+	"reflect"
 	"time"
-	"unsafe"
 )
 
 type MongoHandler struct {
 	connStr string
 }
 
+func mapTobsonM(m map[string]interface{}) bson.M {
+	// b := (*bson.M)(unsafe.Pointer(&m))
+	b := bson.M{}
+	for k, v := range m {
+		b[k] = v
+	}
+	return b
+}
 
-func (m *MongoHandler) Do(f func(client *mongo.Client) (interface{}, error)) (interface{}, error) {
+func queryTobsonD(m []Query) bson.D {
+	d := bson.D{}
+	for _, v := range m {
+		d = append(d, bson.E{
+			Key:   v.Key,
+			Value: v.Value,
+		})
+	}
+	return d
+}
+
+func mapTobsonD(m map[string]interface{}) bson.D {
+	d := bson.D{}
+	for k, i := range m {
+		t := reflect.TypeOf(i)
+		if i != reflect.Zero(t).Interface() {
+			d = append(d, bson.E{
+				Key:   k,
+				Value: i,
+			})
+		}
+	}
+	return d
+}
+
+func (m *MongoHandler) do(f func(client *mongo.Client) (interface{}, error)) (interface{}, error) {
 	_, m.connStr = GetDBConnString("mongo")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(m.connStr))
@@ -27,8 +62,20 @@ func (m *MongoHandler) Do(f func(client *mongo.Client) (interface{}, error)) (in
 	return f(client)
 }
 
+func (m *MongoHandler) colletion(i interface{}, f func(*mongo.Collection) (int, error)) (int, error) {
+	_, m.connStr = GetDBConnString("mongo")
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(m.connStr))
+	if err != nil {
+		return 0, err
+	}
+	table := data.GetTypeName(i)
+	collection := client.Database(config.DBName).Collection(table)
+	return f(collection)
+}
+
 func (m *MongoHandler) Ping() error {
-	_, err := m.Do(func(client *mongo.Client) (interface{}, error) {
+	_, err := m.do(func(client *mongo.Client) (interface{}, error) {
 		ctx, _ := context.WithTimeout(context.Background(), 2*time.Second)
 		err := client.Ping(ctx, readpref.Primary())
 		return nil, err
@@ -37,13 +84,57 @@ func (m *MongoHandler) Ping() error {
 }
 
 func (m *MongoHandler) Create(i interface{}) error {
-	_, err := m.Do(func(client *mongo.Client) (interface{}, error) {
-		t, m := data.GetMapAsJson(i)
-		collection := client.Database(config.DBName).Collection(t)
+	_, err := m.colletion(i, func(collection *mongo.Collection) (int, error) {
+		_, m := data.GetMapAsJson(i)
 		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-		b := (*bson.M)(unsafe.Pointer(&m))
-		res, err := collection.InsertOne(ctx, *b)
-		return res.InsertedID, err
+		b := mapTobsonM(m)
+		res, err := collection.InsertOne(ctx, b)
+		log.Println("insert", res.InsertedID)
+		return 1, err
 	})
 	return err
+}
+
+func (m *MongoHandler) Get(i interface{}, q ...Query) error {
+	_, err := m.colletion(i, func(collection *mongo.Collection) (int, error) {
+		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+		_, m := data.GetMapAsJson(i)
+		d := mapTobsonD(m)
+		err := collection.FindOne(ctx, d).Decode(i)
+		return 0, err
+	})
+	return err
+}
+
+func (m *MongoHandler) Gets(i interface{}, q ...Query) (int, error) {
+	cnt, err := m.colletion(i, func(collection *mongo.Collection) (int, error) {
+		t := reflect.TypeOf(i)
+		if t.Kind() != reflect.Ptr {
+			log.Println(t.Kind())
+			return 0, errors.New("not ptr")
+		}
+		t = t.Elem()
+		if t.Kind() != reflect.Slice {
+			log.Println(t.Kind())
+			return 0, errors.New("not slice")
+		}
+		t = t.Elem().Elem()
+		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+		// todo: how to query slice
+		query := queryTobsonD(q)
+		cur, err := collection.Find(ctx, query)
+		if err != nil {
+			return 0, err
+		}
+		defer cur.Close(ctx)
+		var cnt int
+		for cur.Next(ctx) {
+			n := reflect.New(t)
+			cur := cur.Decode(n.Interface())
+			log.Println(cur)
+			cnt++
+		}
+		return cnt, nil
+	})
+	return cnt, err
 }

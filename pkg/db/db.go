@@ -36,7 +36,13 @@ func DBFactory(db string) ORMHandler {
 	return nil
 }
 
+type Query struct {
+	Key, Value string
+}
+
 type ORMHandler interface {
 	Ping() error
 	Create(interface{}) error
+	Get(interface{}, ...Query) error
+	Gets(interface{}, ...Query) (int, error)
 }

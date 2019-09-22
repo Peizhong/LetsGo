@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/golang/protobuf/proto"
 	"github.com/peizhong/letsgo/pkg/config"
 	"github.com/peizhong/letsgo/pkg/db"
 	"github.com/peizhong/letsgo/playground/rpc/pb/helloworld"
 	pb "github.com/peizhong/letsgo/playground/rpc/pb/twoway"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"github.com/golang/protobuf/proto"
 	"io"
 	"io/ioutil"
 	"log"
@@ -24,8 +24,8 @@ import (
 
 type server struct {
 	savedFeatures []*pb.Feature // read-only after initialized
-	mu         sync.Mutex // protects routeNotes
-	routeNotes map[string][]*pb.RouteNote
+	mu            sync.Mutex    // protects routeNotes
+	routeNotes    map[string][]*pb.RouteNote
 }
 
 func (s *server) Simple(context.Context, *helloworld.HelloRequest) (*helloworld.HelloReply, error) {
@@ -183,8 +183,12 @@ func main() {
 	if err != nil {
 		return
 	}
-	for _,i := range gServer.savedFeatures {
-		// storage.Create(i)
+	q := pb.Feature{}
+	ex, err := storage.Gets(&q)
+	if ex < 1 {
+		for _, i := range gServer.savedFeatures {
+			storage.Create(i)
+		}
 	}
 	pb.RegisterTwoWayJobServer(s, gServer)
 	if err := s.Serve(lis); err != nil {
