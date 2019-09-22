@@ -46,7 +46,7 @@ func TestMongoHandler_Get(t *testing.T) {
 }
 
 func TestMongoHandler_Gets(t *testing.T) {
-	r := []demo{}
+	r := []*demo{}
 	storage := DBFactory("mongo")
 	_, err := storage.Gets(&r)
 	assert.NoError(t, err)

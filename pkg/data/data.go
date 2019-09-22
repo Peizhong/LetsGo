@@ -35,19 +35,15 @@ func GetJsonValue(data, path string) string {
 }
 
 func GetTypeName(i interface{}) string {
-	v := reflect.ValueOf(i)
-	t := v.Type()
-	switch v.Kind() {
-	case reflect.Ptr:
-		v = v.Elem()
-		t = v.Type()
-		break
-	case reflect.Slice, reflect.Array:
+	t := reflect.TypeOf(i)
+	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
-		if t.Kind() == reflect.Ptr {
-			t = t.Elem()
-		}
-		break
+	}
+	if t.Kind() == reflect.Slice || t.Kind() == reflect.Array {
+		t = t.Elem()
+	}
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
 	}
 	return t.Name()
 }

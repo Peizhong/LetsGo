@@ -116,9 +116,18 @@ func (m *MongoHandler) Gets(i interface{}, q ...Query) (int, error) {
 		t = t.Elem()
 		if t.Kind() != reflect.Slice {
 			log.Println(t.Kind())
-			return 0, errors.New("not slice")
+			return 0, errors.New("ptr not to slice")
 		}
-		t = t.Elem().Elem()
+		t = t.Elem()
+		if t.Kind()!=reflect.Ptr{
+			log.Println(t.Kind())
+			return 0, errors.New("slice item not ptr")
+		}
+		t= t.Elem()
+		if t.Kind()!=reflect.Struct {
+			log.Println(t.Kind())
+			return 0, errors.New("prt not to struct")
+		}
 		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 		// todo: how to query slice
 		query := queryTobsonD(q)
@@ -130,8 +139,12 @@ func (m *MongoHandler) Gets(i interface{}, q ...Query) (int, error) {
 		var cnt int
 		for cur.Next(ctx) {
 			n := reflect.New(t)
-			cur := cur.Decode(n.Interface())
-			log.Println(cur)
+			// prt to stuct
+			err = cur.Decode(n.Interface())
+			if err != nil {
+				return cnt, err
+			}
+			log.Println(n.Interface())
 			cnt++
 		}
 		return cnt, nil
