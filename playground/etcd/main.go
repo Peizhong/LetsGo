@@ -86,7 +86,7 @@ func app(ctx context.Context, exit chan struct{}) {
 	case <-ctx.Done():
 	}
 	// todo: 没有等待watching结束
-	exit <- struct{}{}
+
 }
 
 func main() {
