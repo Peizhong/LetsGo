@@ -1,76 +1,62 @@
 #ifndef _TREE_H
 #define _TREE_H
 
-#include "basic.h"
-
 namespace ADT::Tree {
-    typedef struct TreeNode *PtrToTreeNode;
-    typedef struct TreeNode *Position;
-    typedef struct TreeNode *SearchTree;
-    typedef struct TreeNode *AVLTree;
+    void Hi();
 
-    // 实现树：每个节点除了数据本身，还有一些指针。
-    // 每个节点的子节点数量可以变化，不直接保存全部，而是将其放到链表
+    // 二叉树，插入、删除、搜索、遍历(前序、中序、后序)
+    // AVL树
+    // 红黑树
+    // B树
     struct TreeNode
     {
-        ElementType Element;
-        
-        // 不固定数量的子节点
-        PtrToTreeNode FirstChild;
-        // 兄弟节点
-        PtrToTreeNode NextSibling;
-        
-        // 二叉树的
-        SearchTree Left;
-        SearchTree Right;
-
-        // AVL树，平衡的，深度logN
-        // 左右子树高度差最多1
-        // 插入、删除后，旋转树，保持平衡
-        // 单旋转 左儿子的左树插入，右儿子的右树插入
-        // 双旋转 左儿子的右树插入，右儿子的左树插入
-        // 带有平衡条件的树，深度是logN，左右高度差最多1
-        // 插入节点时，导致不平衡的4种情况：
-        // 1. 左儿子的左子树多了
-        // 2. 左儿子的右树多了
-        // 3. 右儿子的左树多了
-        // 4. 右儿子的右树多了
-        // 1,4 单旋转
-        // 2,3 双 旋转
-        AVLTree ALeft;
-        AVLTree ARight;
-        int AHeight;
+        // Left
+        // Right
+        // Node
+        // Parent.. 
+        int Index;
+        char Value[20];
     };
 
-    // 遍历
-    void ListDir(PtrToTreeNode tree);
+    template <class T>
+    struct BinaryTreeNode
+    {
+        T element;
 
-    // 没有子节点
-    bool IsLeaf(PtrToTreeNode node);
+        BinaryTreeNode<T> *leftChild, *rightChild;
 
-    // 造模拟数据
-    TreeNode BuildDemoTree(int depth);
+        BinaryTreeNode()
+        {
+            leftChild = rightChild = nullptr;
+        }
 
-    // 初始化二叉树
-    SearchTree MakeEmpty(SearchTree t);
+        BinaryTreeNode(const T& e)
+        {
+            element = e;
+            leftChild = rightChild = nullptr;
+        }
 
-    Position Find(ElementType x, SearchTree t);
-    Position FindMax(SearchTree t);
-    Position FindMin(SearchTree t);
+        BinaryTreeNode(const T e, BinaryTreeNode *left, BinaryTreeNode *right)
+        {
+            element = e;
+            leftChild = left;
+            rightChild = rightChild;
+        }
+    };
 
-    SearchTree Insert(ElementType x, SearchTree t);
-    SearchTree Delete(ElementType x, SearchTree t);
+    template <class T>
+    void InsertBinaryTree(BinaryTreeNode<T> *t, const T& e);
 
-    // 计算树的高度
-    int Height(Position p);
-    AVLTree AInsert(ElementType x, AVLTree t);
-    AVLTree ADelete(ElementType x, AVLTree t);
+    // 前序遍历：先访问节点，然后访问左右树
+    template <class T>
+    void PreOrderBinaryTree(BinaryTreeNode<T> *t);
 
-    Position SingleRotateWithLeft(Position p);
-    Position SingleRotateWithRight(Position p);
-    Position DoubleRotateWithLeft(Position p);
-    Position DoubleRotateWithRight(Position p);
-
-    void PrintATree(AVLTree t);
+    // 中序遍历，按大小输出
+    template <class T>
+    void InOrderBinaryTree(BinaryTreeNode<T> *t);
+    
+    // 后序遍历
+    template <class T>
+    void PostOrderBinaryTree(BinaryTreeNode<T> *t);
 }
 #endif
