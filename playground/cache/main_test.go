@@ -21,6 +21,11 @@ func BenchmarkDoRedis(b *testing.B) {
 			// log.Println(key, "empty")
 		}
 	}
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next(){
+
+		}
+	})
 	// 检查内存
 }
 
