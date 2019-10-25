@@ -6,6 +6,11 @@ import (
 	"unsafe"
 )
 
+// go test -gcflags "-N -l" -bench .
+
+// go test -run TestPubMessage -trace=trace.out
+// go tool trace trace.out
+
 func BenchmarkNoPad_Increase(b *testing.B) {
 	nopad := &NoPad{}
 	b.RunParallel(func(pb *testing.PB) {
@@ -41,6 +46,15 @@ func BenchmarkSysPad_Increase(b *testing.B) {
 			syspad.Increase()
 		}
 	})
+}
+
+func TestPubMessage(t *testing.T) {
+	const msgCount= 1000000
+	var b buffer
+	for i := 0; i < msgCount; i++ {
+		PubMessage(&b, i)
+	}
+	log.Println("Worst push time: ", worst)
 }
 
 func TestSize(t *testing.T) {

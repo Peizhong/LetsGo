@@ -1,8 +1,10 @@
 package main
 
 import (
+	"golang.org/x/sync/singleflight"
 	"golang.org/x/sys/cpu"
 	"sync/atomic"
+	"time"
 )
 
 type NoPad struct {
@@ -63,4 +65,34 @@ func (sp *SysPad) Increase() {
 	atomic.AddUint64(&sp.a,1)
 	atomic.AddUint64(&sp.b,1)
 	atomic.AddUint64(&sp.c,1)
+}
+
+const (
+	windowSize = 200000
+)
+
+type (
+	message []byte
+	buffer [windowSize]message
+)
+
+var worst time.Duration
+
+func makeMessage(n int) message {
+	m := make(message, 1024)
+	for i := range m {
+		m[i] = byte(i)
+	}
+	return m
+}
+
+func PubMessage(b *buffer, highID int){
+	flight := singleflight.Group{}
+	start:=time.Now()
+	m := makeMessage(highID)
+	(*b)[highID%windowSize] = m
+	elapsed := time.Since(start)
+	if elapsed > worst {
+		worst = elapsed
+	}
 }
