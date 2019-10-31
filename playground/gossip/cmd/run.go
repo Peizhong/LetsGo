@@ -15,7 +15,6 @@ var (
 	name    string
 	port    int
 	join    string
-	storage map[string]interface{}
 	members *memberlist.Memberlist
 )
 
@@ -59,7 +58,7 @@ func register() {
 func run() {
 	register()
 
-	storage = make(map[string]interface{})
+	store := NewStorage()
 	reader := bufio.NewScanner(os.Stdin)
 	for reader.Scan() {
 		line := reader.Text()
@@ -69,17 +68,12 @@ func run() {
 		switch cmd[0] {
 		case "set":
 			if len >= 3 {
-				if _, ok := storage[cmd[1]]; ok {
-					fmt.Println(0)
-				} else {
-					fmt.Println(1)
-				}
-				storage[cmd[1]] = cmd[2]
+				store.Set(cmd[1], cmd[2])
 			}
 			break
 		case "get":
 			if len >= 2 {
-				if v, ok := storage[cmd[1]]; ok {
+				if v, ok := store.Get(cmd[1]); ok {
 					fmt.Println(v)
 				} else {
 					fmt.Println("not found")
@@ -87,8 +81,8 @@ func run() {
 			}
 			break
 		case "list":
-			for k, v := range storage {
-				fmt.Println(fmt.Sprintf("%v:lis %v", k, v))
+			for k := range store.Gets() {
+				fmt.Println(fmt.Sprintf("%v", k))
 			}
 			break
 		case "friends":
