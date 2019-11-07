@@ -3,7 +3,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"github.com/hashicorp/memberlist"
+	"github.com/peizhong/letsgo/playground/gossip/app"
 	"log"
 	"os"
 	"strings"
@@ -12,10 +12,9 @@ import (
 )
 
 var (
-	name    string
-	port    int
-	join    string
-	members *memberlist.Memberlist
+	name string
+	port int
+	join string
 )
 
 var runCmd = &cobra.Command{
@@ -24,55 +23,42 @@ var runCmd = &cobra.Command{
 	Long: `run is for printing anything back to the screen.
 For many years people have printed back to the screen.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(fmt.Sprintf("run: at :%v, join to  %v", port, join))
 		run()
 	},
 }
 
-func loadRunCmd() {
-	runCmd.Flags().StringVarP(&name, "name", "n", "default", "service name")
-	runCmd.Flags().IntVarP(&port, "port", "p", 1, "port to serve")
+func addRunCmd() {
+	runCmd.Flags().StringVarP(&name, "name", "n", "", "service name")
+	runCmd.Flags().IntVarP(&port, "port", "p", 8080, "port to serve")
 	runCmd.Flags().StringVarP(&join, "join", "j", "", "host to join")
 
 	rootCmd.AddCommand(runCmd)
 }
 
-func register() {
-	var err error
-	config := memberlist.DefaultLocalConfig()
-	config.Name = name
-	config.BindPort = port
-	config.AdvertisePort = port
-	members, err = memberlist.Create(config)
-	if err != nil {
-		log.Panic(err)
-	}
-	if join != "" {
-		_, err := members.Join([]string{join})
-		if err != nil {
-			log.Panic(err)
-		}
-	}
-}
-
 func run() {
-	register()
-
-	store := NewStorage()
+	store := app.NewStorage(name, port, join)
+	if err := store.Load(); err != nil {
+		log.Println(err.Error())
+		return
+	}
 	reader := bufio.NewScanner(os.Stdin)
 	for reader.Scan() {
 		line := reader.Text()
 		cmd := strings.Split(string(line), " ")
-		len := len(cmd)
-
+		l := len(cmd)
 		switch cmd[0] {
 		case "set":
-			if len >= 3 {
+			if l >= 3 {
 				store.Set(cmd[1], cmd[2])
 			}
 			break
+		case "del":
+			if l >= 2 {
+				store.Delete(cmd[1])
+			}
+			break
 		case "get":
-			if len >= 2 {
+			if l >= 2 {
 				if v, ok := store.Get(cmd[1]); ok {
 					fmt.Println(v)
 				} else {
@@ -80,18 +66,21 @@ func run() {
 				}
 			}
 			break
-		case "list":
-			for k := range store.Gets() {
-				fmt.Println(fmt.Sprintf("%v", k))
+		case "gets":
+			for _, v := range store.Gets() {
+				fmt.Println(v)
 			}
 			break
-		case "friends":
-			for _, member := range members.Members() {
-				fmt.Printf("Member: %s %s:%d\n", member.Name, member.Addr, member.Port)
+		case "members":
+			for _, member := range store.Members() {
+				fmt.Println(member)
 			}
 			break
 		case "exit":
 			fmt.Println("bye")
+			if err := store.Save(); err != nil {
+				log.Println(err.Error())
+			}
 			return
 		default:
 			fmt.Println("I don't know", cmd[0])

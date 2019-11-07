@@ -8,10 +8,8 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "gossip",
-	Short: "gossip is a very fast static site generator",
-	Long: `A Fast and Flexible Static Site Generator built with
-                love by spf13 and friends in Go.
-                Complete documentation is available at http://hugo.spf13.com`,
+	Short: "A demo",
+	Long:  `A gossip demo`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
 	},
@@ -28,7 +26,7 @@ var versionCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
-	loadRunCmd()
+	addRunCmd()
 }
 
 func Execute() {
