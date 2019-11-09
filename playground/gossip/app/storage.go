@@ -50,17 +50,15 @@ func NewStorage(name string, port int, join string) *storage {
 		ch:     make(chan *update, 100),
 	}
 	if name == "" {
-		name = AutoNodeName()
+		// auto name
+		name = func() string {
+			host, _ := os.Hostname()
+			name := fmt.Sprintf("%s@%s", uuid.New().String()[:7], host)
+			return name
+		}()
 	}
 	s.RegisterMember(name, port, join)
-	go s.updateHandler()
 	return s
-}
-
-func AutoNodeName() string {
-	host, _ := os.Hostname()
-	name := fmt.Sprintf("%s@%s", uuid.New().String()[:7], host)
-	return name
 }
 
 func (s *storage) RegisterMember(name string, port int, join string) {
@@ -86,7 +84,7 @@ func (s *storage) RegisterMember(name string, port int, join string) {
 	s.Members = func() []string {
 		var resp []string
 		for _, m := range member.Members() {
-			resp = append(resp, fmt.Sprintf("%s %s %d", m.Name, m.Addr, m.Port))
+			resp = append(resp, fmt.Sprintf("%s@%s:%d", m.Name, m.Addr, m.Port))
 		}
 		return resp
 	}
@@ -96,6 +94,8 @@ func (s *storage) RegisterMember(name string, port int, join string) {
 			log.Panic(err)
 		}
 	}
+	// delegate 收到的消息发送到ch
+	go s.updateHandler()
 }
 
 func (s *storage) Get(key string) (interface{}, bool) {
@@ -214,7 +214,7 @@ func (s *storage) Load() (err error) {
 
 func (s *storage) UnpackNotify(b []byte) {
 	var updates []*update
-	if err := json.Unmarshal(b[1:], &updates); err != nil {
+	if err := json.Unmarshal(b, &updates); err != nil {
 		return
 	}
 	for _, u := range updates {
@@ -241,4 +241,17 @@ func (s *storage) updateHandler() {
 		}
 		s.lock.Unlock()
 	}
+}
+
+func (s *storage) Benchmark(n int) {
+	testData := make([]string, n)
+	for i := 0; i < n; i++ {
+		testData[i] = uuid.New().String()
+	}
+	start := time.Now()
+	for _, k := range testData {
+		s.Set(k, "")
+		s.Delete(k)
+	}
+	log.Println("benchmark:", time.Since(start))
 }

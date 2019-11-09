@@ -37,7 +37,12 @@ func (d *delegate) NotifyMsg(b []byte) {
 // the limit. Care should be taken that this method does not block,
 // since doing so would block the entire UDP packet receive loop.
 func (d *delegate) GetBroadcasts(overhead, limit int) [][]byte {
-	return d.storage.broadcasts.GetBroadcasts(overhead, limit)
+	b := d.storage.broadcasts.GetBroadcasts(overhead, limit)
+	l := len(b)
+	if l > 0 {
+		println("GetBroadcasts", len(b))
+	}
+	return b
 }
 
 // LocalState is used for a TCP Push/Pull. This is sent to
@@ -45,6 +50,7 @@ func (d *delegate) GetBroadcasts(overhead, limit int) [][]byte {
 // data can be sent here. See MergeRemoteState as well. The `join`
 // boolean indicates this is for a join instead of a push/pull.
 func (d *delegate) LocalState(join bool) []byte {
+	println("LocalState")
 	d.storage.lock.RLock()
 	m := d.storage.data
 	d.storage.lock.RUnlock()

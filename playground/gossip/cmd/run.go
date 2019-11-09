@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"github.com/peizhong/letsgo/pkg/data"
 	"github.com/peizhong/letsgo/playground/gossip/app"
 	"log"
 	"os"
@@ -74,6 +75,13 @@ func run() {
 		case "members":
 			for _, member := range store.Members() {
 				fmt.Println(member)
+			}
+			break
+		case "bench":
+			if l >= 3 {
+				if count, ok := data.IntTryParse(cmd[2]); ok {
+					store.Benchmark(count)
+				}
 			}
 			break
 		case "exit":
