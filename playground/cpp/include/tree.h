@@ -25,22 +25,40 @@ namespace ADT::Tree {
 
         BinaryTreeNode<T> *leftChild, *rightChild;
 
+        int height;
+
         BinaryTreeNode()
         {
             leftChild = rightChild = nullptr;
+            height = 0;
         }
 
         BinaryTreeNode(const T& e)
         {
+            const char *p0 = "Hello world!";
+            //p[3] = '3';  //error C3892: “p”: 不能给常量赋值
+	        p0 = "Hi!";
+
+            char *const p1 = "Hello world!";
+            p1[3] = '3';
+	        //p = "Hi!";  error C3892: “p”: 不能给常量赋值
+
+            const char *const p2 = "Hello world!";
+            //p[3] = '3';  //error C3892: “p”: 不能给常量赋值
+	        //p = "Hi!";   //error C3892: “p”: 不能给常量赋值
+
+            // const T& e，不能在函数里修改
             element = e;
             leftChild = rightChild = nullptr;
+            height = 1;
         }
 
-        BinaryTreeNode(const T e, BinaryTreeNode *left, BinaryTreeNode *right)
+        BinaryTreeNode(const T& e, BinaryTreeNode *left, BinaryTreeNode *right)
         {
             element = e;
+            height = 1;
             leftChild = left;
-            rightChild = rightChild;
+            rightChild = right;
         }
     };
 
@@ -55,8 +73,16 @@ namespace ADT::Tree {
     template <class T>
     void InOrderBinaryTree(BinaryTreeNode<T> *t);
     
-    // 后序遍历
+    // 后序遍历，表达式，操作符在操作数后
     template <class T>
     void PostOrderBinaryTree(BinaryTreeNode<T> *t);
+
+    // 层级
+    template <class T>
+    void LevelOrderBinaryTree(BinaryTreeNode<T> *t);
+
+    // AVL树
+    template <class T>
+    void InsertAVLTree(BinaryTreeNode<T> *t, const T& e);
 }
 #endif
