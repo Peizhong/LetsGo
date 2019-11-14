@@ -1,6 +1,7 @@
 package main
 
-// #include <stdio.h>
+// #cgo CFLAGS: -I../cpp/include
+// #cgo LDFLAGS: -L../cpp -lbridge
 // #include <stdlib.h>
 // #include "bridge.h"
 import "C"
@@ -10,11 +11,11 @@ import (
 	"unsafe"
 )
 
+// export LD_LIBRARY_PATH=../cpp
 func main() {
-	// load c++
-	// wrap c++ code with a c interface
 	cs := C.CString("Hello from stdio")
 	v := C.Hello(11)
+	v = C.SocketClient()
 	fmt.Println(v)
 	C.free(unsafe.Pointer(cs))
 }
