@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -53,8 +54,16 @@ func race(){
 	go add()
 }
 
-func copy(){
-	io.Copy(ioutil.Discard,)
+func copy() {
+	// https://blog.go-zh.org/race-detector
+	// If the given Writer implements a ReadFrom method, call writer.ReadFrom(reader)
+	// Discard has an internal buffer that is shared
+	// race detector flagged this racy. a non-racy version when the race detector is running.
+	io.Copy(ioutil.Discard, bytes.NewReader([]byte{}))
+}
+
+func channel(){
+	ctx,cancel:=context.
 }
 
 func main() {

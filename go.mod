@@ -34,7 +34,6 @@ require (
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	github.com/hashicorp/memberlist v0.1.4
 	github.com/jinzhu/gorm v1.9.10
-	github.com/jinzhu/now v1.0.1
 	github.com/jonboulle/clockwork v0.1.0 // indirect
 	github.com/kavu/go_reuseport v1.4.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
