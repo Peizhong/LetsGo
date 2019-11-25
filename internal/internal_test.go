@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"log"
 	"testing"
 )
@@ -73,4 +74,21 @@ func TestChan(t *testing.T) {
 
 	}
 	log.Println(s)
+}
+
+func w(s []int )[]int {
+	fmt.Printf("in w %v %#v ", s, &s[0])
+	//append后s指定新复制的内存指针了，不再指向原来的内存
+	s = append(s, 0)
+	fmt.Printf("after append w %v %#v ", s, &s[0])
+	return s
+}
+
+func TestAppend(t *testing.T){
+	// https://www.cnblogs.com/sunsky303/p/11807281.html
+	s:=[]int{1}
+	fmt.Printf("out of w %v %#v ",s ,&s[0] )
+	s2:=w(s)
+	s = append(s, 1)
+	fmt.Printf("after w %v %#v %v %#v ",s ,&s[0],s2 ,&s2[0] )
 }

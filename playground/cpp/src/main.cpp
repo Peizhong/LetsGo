@@ -7,8 +7,9 @@
 
 using namespace std;
 
-// g++ -I../include/ *.cpp -g 
+// g++ -I./include/ ./src/*.cpp -g 
 int main(){
-    SocketClient();
+    WrapClient client = WrapClientInit();
+    Connect(client,"127.0.0.1",8081);
     return 0;
 }
