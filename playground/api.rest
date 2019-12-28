@@ -5,3 +5,156 @@ access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIzZWMzYzczZC1mZjA4L
 ###
 http://scoring.appapi.lingcb.cn/coupon_item/GetsByMember?MemberId=36c0ab1a-ca4b-11e9-a684-0e9c9907ed8c&Status=0&PageIndex=1&PageSize=4&CouponType=0
 access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIzZWMzYzczZC1mZjA4LTQwOTktODJkZS0xNmIxMWZkOTk3MTUiLCJjcGMiOiJxcTEiLCJlcWkiOiIiLCJzdWIiOiJxcTEwMSIsImV4cCI6MTU2ODczODE2Mi4wMTE0MjQ4LCJpYXQiOjE1Njg2NTE3NjIuMDExNDI0OH0.ODliNDNhOTU0YzBlNzI0YjkwOWFhNjBkNTk3MDQzODI3NWZmZGQxNDdlMzc4YWYzNjlkYmIzYjYzYTY0YTRjZGU5NjNkY2E0YWE1MzQ0OGQzZmQ5ZmNiYTU0ZmI0ODdmMzdiOWZjYmY5OTE0YzBmZDQ4Y2FkYzQ1ZGZkNGE1MTE
+
+###
+POST http://localhost:11551/retail_order_master/CreateBySelf
+Access-Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJkNThmMzY2NC0yZmQzLTQ3NzAtYWFlMC0yZDM4ZTg5NjFmM2YiLCJjcGMiOiJ4YyIsImVxaSI6IiIsInN1YiI6InhjNyIsImV4cCI6MTU3MTE0MDEyNi44OTYyNjI2LCJpYXQiOjE1NzEwNTM3MjYuODk2MjYyNn0.YzIzMmZlN2U1ZjA0Mzc4Y2UxYzA5MjUxZmFlM2I2N2U5MGY1ZGQ3MTdhM2E0OTQ0ODdmMzVmZTBkOTY1MjE4ODFlNjYzMzNjMmUyZTk5Y2Q2ZjgxMWZkODQxYzE0MzNlZTMwODQxNmI1YTYwMTQ5NDU5MWY2MzlkYjUwYTQyMzM
+
+{"MemberId":"e3a38c4c-a2ba-11e9-8568-fe8877d89737","MemberOpenId":"oCIOsxJORpDWKI5GTOmMmp8hFklA","MemberAccountID":"oCIOsxJORpDWKI5GTOmMmp8hFklA","AssistUserId":0,"AssistUser":"","QualityNote":"","ValidPrice":700000,"TicketType":1,"CouponType":1,"Orders":[{"MaterialType":1,"ProductNO":"12312312","ProductTitle":"123123123","MarproId":4,"GoldType":1005,"GoldPrice":100000,"ProductPrice":10000000,"JunkGoldPrice":100000,"JunkProductPrice":1000000,"Discount":0,"RecyclePrice":10000000000,"NewGprice":100000,"TicketType":1,"CouponId":"KQ1910141427090105","CouponType":1,"ValidPrice":7000000000,"GoldWeight":0,"WorkPrice":0,"CouponPrice":7000000000,"CpfeePrice":0,"CashPrice":8300000,"CategoryType":9,"JunkCashPrice":10000000000,"JunkStyleCode":"ls","JPrice":2200000000,"MarketGprice":230000,"Junk":{"SellId":7047693,"MasterId":6910289,"SellCode":"XF1910141427090059","SourceType":5,"ProductTitle":"passwd","ProductNO":"pwd","CertSeriesID":"","SpecTitle":"","GoodsId":"063ce2f0-d837-4d84-925b-ba44634b342c","BarCode":"","StyleCode":"ls","GoodsName":"passwd","ImageUrl":"/default/goods/1080x0.jpg","FinanceType":1,"GoodsType":3,"RetailType":1,"CategoryType":9,"CostPrice":11110000,"Weight":100000,"StoneWeight1":0,"StoneColor1":0,"StoneClarity1":0,"StoneCut1":0,"RetailPrice":7000000,"MaterialType":1,"GoldType":1005,"GoldWeight":100000,"PGoldPrice":100000,"WorkPrice":0,"LabelPrice":10000000,"DiscPrice":0,"Discount":7000,"ProductPrice":7000000},"JunkPrice":1000000000,"GoodsName":"123123123","LabelPrice":0,"CostPrice":0,"RetailPrice":0,"Weight":0,"SourceType":3,"SellType":1,"BriefNote":""}],"Payments":[{"CategoryName":"现金","PayPrice":8300000,"PaymentType":9}],"Junks":[{"SequentialId":0,"SourceType":1,"JunkCode":"pwd","JunkName":"passwd","MarproId":1,"MarproTitle":"金利来","PrevOrderId":"XF1910141427090059","ProductPrice":7000000,"StoreBarCode":"XC7-7","IsGold":3,"IsOurStore":1,"GoodsId":"063ce2f0-d837-4d84-925b-ba44634b342c","ImageUrl":"/default/goods/1080x0.jpg","MaterialType":1,"GoldType":1005,"GoldWeight":100000,"StoneWeight":0,"Weight":100000,"RecallGoldPrice":100000,"RecallPrice":9300000,"RecallFee":0,"CpfeePrice":0,"StoneColor":0,"StoneClarity":0,"StoneCut":0,"Quantity":1,"Note":"","NewGoodsName":"123123123","JunkStyleCode":"ls","JunkType":1,"TagDk":0,"TagDV":"","NewMaterialType":1,"RecallGoldWeight":100000,"NewGoldWeight":100000,"MarketGprice":230000,"MarketFee":2300000,"DeductFee":9300000}],"TerminalType":3,"CashierUserId":0,"CashierUser":"","ActionType":3}
+
+
+###
+POST http://localhost:11551/retail_order_master/Calc
+Access-Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhNzQ2MmMyZC1iNDFjLTRlM2YtYjU1ZC02ZjE0MzM4YTVkNWIiLCJjcGMiOiJ4YyIsImVxaSI6IiIsInN1YiI6InhjNyIsImV4cCI6MTU3MTE2OTU5Ni43OTM5NDI3LCJpYXQiOjE1NzEwODMxOTYuNzkzOTQyN30.MjYxNTg5OTczNzVmOTVkMzFhMTQyNGYxNjBlMTA3NjE1MTM2OWUzZDkyM2Y0NWRiM2E4ODYxYjY2ZjA5OWY2MWIwZDcyZGMwYjY2M2YxMzMyMTAxNjAxYzg3MmJiNTkyZTBlNzdhMjFkZDk3ODRhNDJiZTAzN2E4YjI0MzM1YTA
+
+{"RecyclePrice":3440000,"NewGprice":0,"GoldPrice":100000,"TicketType":1,"CouponId":"KQ1910141414170020","CouponType":3,"ValidPrice":34400,"MaterialType":1,"GoldType":1005,"GoldWeight":100000,"WorkPrice":0,"ProductPrice":1230000,"CouponPrice":0}
+
+###
+http://localhost:11585/expend/Detail?MasterCode=LS1910142004190019‘
+
+
+###
+POST http://localhost:11585/expend/Create
+
+{"Items":[{"Isjunk":1,"MaterialType":1,"GoldType":0,"Discount":10000,"ProductId":"","ProductNO":"","Diamond":"","CertSeriesID":"","ProductTitle":"3412","GoldWeight":0,"GoldPrice":0,"WorkPrice":0,"LabelPrice":2340000,"ProductPrice":2340000,"CouponTypesTpr":[{"MarproId":4,"MarproTitle":"超值购","MaterialTypes":"1,2,4,5,7,9,11,13,15,16,17,18,19,21,23,25,99","CouponTypes":"5"}],"MarproId":4,"CouponPrice":0,"CashPrice":2340000,"SpecTitle":"","IsManual":3,"RetailType":0,"isRecorded":true,"SourceType":3,"IsGold":3,"NewGoodsIndex":1571108960992,"expendType":true,"CouponTypes":0,"ItemId":0,"IsRedemption":true,"RecallGoldPrice":0,"RecallPrice":0,"RecallFee":0,"NewGoldWeight":0,"RecallGoldWeight":0,"Weight":0,"StoneWeight":0,"OldGoldPrice":0,"RecyclePrice":0,"CostPrice":0,"CategoryType":null,"CpfeePrice":0,"StoneWeight1":0,"MarketGprice":0,"MarketFee":0,"DeductFee":0},{"NewGoodsIndex":1571108960992,"TagDk":0,"TagDV":"","JunkType":1,"NewGoodsName":"3412","NewGoodsId":"","NewProductMaterial":"黄金","NewMaterialType":1,"Isjunk":3,"IsOur":1,"IsGold":3,"BarCode":"","MaterialType":1,"CategoryType":0,"JunkStyleCode":"","GoldType":1010,"JunkName":"足金AU99.99","GoldWeight":0,"NewGoldWeight":2340000,"RecallGoldWeight":2340000,"Weight":0,"StoneWeight":0,"StoneColor":0,"StoneClarity":0,"StoneCut":0,"RecallGoldPrice":40000,"MarketGprice":120000,"RecallPrice":9360000,"MarketFee":28030000,"DeductFee":9310000,"QualityNote":"","CashPrice":9310000,"RecallFeeUnit":"5.00","RecallFee":50000,"RecallManner":1,"SourceType":3,"NewBarCode":"","JunkChangoSwithType":1,"ProductPrice":0,"expendType":false,"MarproId":null,"IsManual":1,"ProductNO":"","tprUrl":"","ImageUrl":"","IsRedemption":true,"GoldPrice":0,"CouponPrice":0,"LabelPrice":0,"Discount":0,"WorkPrice":0,"OldGoldPrice":0,"RecyclePrice":0,"CostPrice":0,"CpfeePrice":0,"StoneWeight1":0}],"CreateTime":"","MainUser":"sdf","MainUserId":283498,"ActionType":3,"Note":"","MemberId":"f5fbd64b-c8bb-11e9-8c1e-de8bd0f50271","Member":{"MemberId":"f5fbd64b-c8bb-11e9-8c1e-de8bd0f50271","VipCardNo":"333","AliasName":"Sss","TrueName":"ss","Mobile":"18320920941","ImageUrl":"http://thirdwx.qlogo.cn/mmopen/WD4FduqfeKIv78zhMIPt40E54sPFe61RqF0kNt4BRtLr7B6DwrWWkBb4L3bPHOD4OBIHyYCClWvUEwlMxJdeR0GOTHaGL5DB/132"}}
+
+
+###
+POST http://localhost:12502/retail_order_master/CreateByERPSelf
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhZTE2NDkzYi03OWJkLTQzYjMtOWE3ZS01MWE4YTE2MmY1NTQiLCJjcGMiOiJjIiwiZXFpIjoiIiwic3ViIjoiYzAxIiwiZXhwIjoxNTcxMzMyMDUyLjI2NjI4MSwiaWF0IjoxNTcxMjQ1NjUyLjI2NjI4MX0.ZGJjNGUwY2EzNzA1ZDA1YmM3OTg5NzVjNDhhNjI1MDk1Y2EyMmRlNDQ3NWNmMzYzODY3ZTU3YzFkNzViYWY0ZTRiNzFmYTY1N2Q1YjNhMmNiMmE5YWNkYzEyODQxOWJkZmY3MTRkYjY4OTg4ZDNjODg1NTkxNDczMmU1NWZhNDg
+
+{"MemberId":"11","ProductPrice":225500,"CashPrice":225500,"RecallPrice":0,"AwaitPrice":225500,"PayPrice":225500,"RemainPrice":225500,"PayState":5,"CashierUserId":282632,"CashierUser":"超级管理员姓名","MainUserId":282657,"MainUser":"kelly姓名修改","AssistUserId":0,"AssistUser":"","Orders":[{"NewGoodsIndex":5534513,"SellType":1,"OldImageUrl":"/image/Stocking/ProductStorage/20191014/a6409357-56d8-4f5f-b469-142971284cf9.png","GiftType":3,"ClassifyId":0,"Brand":"gaooed","DeskId":121891,"DeskName":"仓库","SourceType":5,"CertSeriesID":"","SpecTitlestring":"","GoodsId":"260aba59-991e-4f51-94d6-31d73450b9e7","GoodsName":"new002货品","BarCode":"new002","StyleCode":"kuanhao002","ImageUrl":"/image/Stocking/ProductStorage/20191014/a6409357-56d8-4f5f-b469-142971284cf9.png","FinanceType":1,"GoodsType":3,"RetailType":1,"IsGold":1,"CategoryType":5,"PartnerId":341600,"PartnerType":5,"PartnerCode":"","PartnerName":"新建供应商修改","SeriesTypeEk":1,"SeriesTypeEv":"系列1","StoneClassTypeEk":147,"StoneClassTypeEv":"打雷1","LargeClassTypeEk":0,"LargeClassTypeEv":"","SmallClassTypeEk":0,"SmallClassTypeEv":"","FinanceClassTypeEk":0,"FinanceClassTypeEv":"","CostPrice":116600,"Weight":36600,"StoneWeight1":0,"StoneColor1":0,"StoneClarity1":0,"StoneCut1":0,"RetailPrice":225500,"MaterialType":7,"GoldType":1015,"GoldWeight":36660,"GoldPrice":150000,"WorkPrice":0,"LabelPrice":115800,"Discount":19473,"MarproId":1,"MarproData":[{"MarproId":1,"MarproTitle":"金利来","MaterialTypes":"1,2,3,4,7,9","CouponTypes":"1"},{"MarproId":2,"MarproTitle":"随心换","MaterialTypes":"5,7,9,11,13,15,16,17,18,19","CouponTypes":"3"},{"MarproId":4,"MarproTitle":"超值购","MaterialTypes":"1,2,3,4,5,7,9,11,13,15,16,17,18,19,21,23,25,27,97,99","CouponTypes":"5"}],"ProductPrice":225500,"AchievePrice":225500,"GongPrice":0,"RecallFee":0,"RecallPrice":0,"RecyclePrice":0,"CpfeePrice":0}],"Junks":[],"Payments":[{"PaymentType":9,"CategoryName":"现金","PayPrice":225500}]}
+
+
+###
+POST http://localhost:11551/retail_order_master/CreateBySelf
+Access-Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhM2M3ZDEyNy1hYzI5LTRlNGMtYTc1MC1lYzM2MjlhZmE1NmQiLCJjcGMiOiJ4YyIsImVxaSI6IiIsInN1YiI6InhjNyIsImV4cCI6MTU3MTM0MTE2MC4xNjY0ODIyLCJpYXQiOjE1NzEyNTQ3NjAuMTY2NDgyMn0.MjI0YjQ4MjczZTgxMDRiOGY5ZmE3ZmE2ZTg4ZTc0N2YwZmIzOWNhNzQ5NDc0NmE2ZDZjNGRmMmY2YmQwYjRmOGY1OTg5ZjgzZTU2NTIwNjNiZDVlYjAyZDhmYjljNzVkZTAwMGUzODAxMWMwMGMwY2YyZTcxODc3OThkYjViNWY
+
+{"MemberId":"f69808df-eccc-11e9-8a8f-7a1ee3ed5005","MemberOpenId":"oCIOsxIm-wLRkqOgwucidkNZxQ4Q","MemberAccountID":"oCIOsxIm-wLRkqOgwucidkNZxQ4Q","AssistUserId":0,"AssistUser":"","QualityNote":"","ValidPrice":26640000,"TicketType":1,"CouponType":1,"Orders":[{"MaterialType":1,"ProductNO":"abc","ProductPrice":211110000,"GoldPrice":100000,"MarproId":4,"ProductTitle":"def","GoldType":1005,"JunkGoldPrice":1200000,"JunkProductPrice":133200000,"Discount":0,"RecyclePrice":1332000000000,"NewGprice":1200000,"TicketType":1,"CouponId":"KQ1910151438330029","CouponType":1,"ValidPrice":266400000000,"GoldWeight":0,"WorkPrice":0,"CouponPrice":266400000000,"CpfeePrice":0,"CashPrice":51270000,"CategoryType":0,"JunkCashPrice":1332000000000,"JunkStyleCode":"2少时诵诗书","JPrice":23000000000,"MarketGprice":1100000,"Junk":{"SellId":7049366,"MasterId":6911900,"SellCode":"XF1910151438320026","SourceType":5,"ProductTitle":"2132","ProductNO":"123233333","CertSeriesID":"","SpecTitle":"","GoodsId":"d33446e1-edaa-477a-9909-8a3c449b280d","BarCode":"123233333","StyleCode":"2少时诵诗书","GoodsName":"2132","ImageUrl":"/default/goods/1080x0.jpg","FinanceType":1,"GoodsType":0,"RetailType":1,"CategoryType":0,"CostPrice":1110000,"Weight":120000,"StoneWeight1":0,"StoneColor1":0,"StoneClarity1":0,"StoneCut1":0,"RetailPrice":0,"MaterialType":1,"GoldType":1010,"GoldWeight":1110000,"PGoldPrice":1200000,"WorkPrice":0,"LabelPrice":1220000,"DiscPrice":0,"Discount":1091803,"ProductPrice":133200000},"JunkPrice":12000000000,"GoodsName":"def","LabelPrice":0,"CostPrice":0,"RetailPrice":0,"Weight":0,"SourceType":3,"SellType":1,"BriefNote":""}],"Payments":[{"CategoryName":"现金","PayPrice":51270000,"PaymentType":9}],"Junks":[{"SequentialId":0,"SourceType":1,"JunkCode":"123233333","JunkName":"2132","MarproId":1,"MarproTitle":"金利来","PrevOrderId":"XF1910151438320026","ProductPrice":133200000,"BarCode":"xcmdxc1门店名门店名称门店名称门店名称门店名称门店名称门店名称门店名称门店名称门店名称门店名称","IsGold":3,"IsOur":3,"GoodsId":"d33446e1-edaa-477a-9909-8a3c449b280d","ImageUrl":"/default/goods/1080x0.jpg","MaterialType":1,"GoldType":1010,"GoldWeight":1110000,"StoneWeight":0,"Weight":1110000,"RecallGoldPrice":1200000,"RecallPrice":133200000,"RecallFee":0,"CpfeePrice":0,"StoneColor":0,"StoneClarity":0,"StoneCut":0,"Quantity":1,"Note":"","NewGoodsName":"def","JunkStyleCode":"2少时诵诗书","JunkChangoSwithType":1,"JunkType":1,"TagDk":0,"TagDV":"","NewGoodsId":"","NewBarCode":"abc","NewMaterialType":1,"RecallGoldWeight":1110000,"NewGoldWeight":1110000,"MarketGprice":1100000,"MarketFee":122100000,"DeductFee":133200000}],"TerminalType":3,"CashierUserId":0,"CashierUser":"","ActionType":3}
+
+###
+http://localhost:11551/retail_order_master/Gets?TerminalType=0&UniteNote=&ProductNO=&ProductTitle=&MemberId=&Mobile=&CashierUserId=0&MainUserId=0&AssistUserId=0&PaymentType=0&OrderTime1=&OrderTime2=&ReturnState=0&State=0&IsJunk=0&PageIndex=1&PageSize=20&CreateTime1=&CreateTime2=
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIwZDgyMWYxNC1hZjkyLTRjMjYtYWY5My00Y2ZkNjQyYzMyNzAiLCJjcGMiOiJ4YyIsImVxaSI6IiIsInN1YiI6InhjNyIsImV4cCI6MTU3MTQ4MTI3Ni42ODM2NTA3LCJpYXQiOjE1NzEzOTQ4NzYuNjgzNjUwN30.ZTZhMGE5NDU0ZDA2YjdlNjA0ZGI4Mjc2ZDdmOWQ5ZGNiMTlhZGNiNmIyYzVmMGNkOTY4OTQzYWQ3ZTA2MjdlZDdkMzUzMGQzYWYzZDZmYjYyNTk4NmRkYjlkM2I2OWUxMjU2NzFlZTNmOGZjZTk1YWVmMzg4OTJjYTkyNzE1OWM
+
+###
+http://localhost:11569/wallet_coupon/OrderDetail?AuthorizerId=19082820100673731&OpenId=o1B-Gwu_uAg8tzf8hAlHQxmUfP8k&OrderId=XF1910231129500028
+
+###
+https://scoring.appapi.lingcb.net/coupon_basic/Get?CouponId=C1909061526130011
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIwYjZjYWFjMC01Yzc2LTQ3YzMtYmU5NS0xYzAxNDE2NDE4MTIiLCJjcGMiOiJ4YyIsImVxaSI6IiIsInN1YiI6InhjIiwiZXhwIjoxNTcyMTA3MDI4LjU3MDY2MzIsImlhdCI6MTU3MjAyMDYyOC41NzA2NjMyfQ.YjQyNDgwYmM5MDJlMzFiMzdkZTVkNjY0ODkxYjg1ODFkODAwZjNmMGIyOGZiZmZhNjhjYjI5OTkzNjg3YjA2MDQzMjM4MGQzMjQxODZmZDQzNDk5MmQ4ODQzZmMyNjUxMmJjNTU2OTZmMzYzMmMxYWVkYTJhMmMyM2I2NGU2NWI
+
+###
+http://localhost:11585/expend/SettingParameter
+
+###
+https://order.appapi.lingcb.net/retail_order_master/GetsByCRM?MemberId=4bd163d2-f7a3-11e9-b719-c6954971adf1&State=5&PageIndex=1&PageSize=1000
+access-token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJkMDY3ZjM2ZC0yOTQ0LTRiM2QtOGI1Yi00ZDA0ZGMwNzAxNWUiLCJjcGMiOiJ4YyIsImVxaSI6IiIsInN1YiI6InFocSIsImV4cCI6MTU3MjM3OTMyNC40NTQ3NTU1LCJpYXQiOjE1NzIyOTI5MjQuNDU0NzU1NX0.M2MyZjg1YzU4MDFjMzIxMjQ1YjY1OTA2Y2M0MzQ1MjhmNjc2NmVlZjJiYWRlYzg5NTliMTNlNmM2ZGFlYzYzYWM2OTEwMmUyMjNlNmZlNTZiZTY3NWRhMjk3NmZhNDkwNTg3YWY1YjZlZjcxNzRkZDg5ODg1MTIzNjVhMDYzM2M
+
+###
+http://localhost:15505/coupon_item/GetsByMember?MemberId=31149cf0-f7b7-11e9-b719-c6954971adf1&Status=0&CouponType=1&PageIndex=1&PageSize=200
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJiYmE3YzhiOC01ZmZhLTRkYTctODVlZC00NjNmMTgzZmMyYjQiLCJjcGMiOiIzcSIsImVxaSI6IiIsInN1YiI6IjNxMSIsImV4cCI6MTU3Mjk2NTE5My44NzkzMzAyLCJpYXQiOjE1NzI4Nzg3OTMuODc5MzMwMn0.OGJlMDg4NzVmZTdkMzU4NWI0NzZkZmQxMjNlYzExMDljMTAwYzdmYTYzNDdkY2E4MDEyYzA3MmE0NDhjM2VhNzgwYjk0MTJhNGY2ZGQ0NmFmYjg0MTNjN2JlOTlmMGJmYTlhYjY2YjlhMWNhZDUwNjcwMjEwMGNkMmMxN2M1ZWM
+
+###
+http://localhost:11512/order_quality/CreateImage?OrderId=ZB1911121401390047
+
+###
+http://localhost:12520/retail_order_sell_basic/Gets?CreateTime1=1900-01-01&CreateTime2=1900-01-01&SellCode=&ProductNO=&CouponType=0&TerminalType=0&SourceType=0&MainUser=&AssistUser=&OrderBy=0&IsAsced=1&PageIndex=1&PageSize=20&State=0
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIwZjlkOWM5ZC1kNmNlLTQ3MzAtODRmOS05ZmIzZDc5MWE2OGYiLCJjcGMiOiJsY2IiLCJlcWkiOiIiLCJzdWIiOiIwMDAzIiwiZXhwIjoxNTczODI5MDQ1LjgzNDU2MjUsImlhdCI6MTU3Mzc0MjY0NS44MzQ1NjI1fQ.OGIxZmYxMmE0YzkyNzA4OWUxODkxMDQ4OTcyODZmMWE3ODdiZTgxYjc5Njg5NTYxYzIwNjczNDMwZDRkYmU2ZDEyOTIwYmI1YzA0NTBlYjRiYzRkNjJkMWJhZDg3MjVmYjFkZTJjNWEyMDQ0ZDgzM2NlMDM1MDYwMjRiYzc2MWI
+
+###
+http://localhost:15520/coupon_basic/GetsBySale?CharacterId=124944&CouponSaleType=1&UserId=285737&OrderBy=0&IsAsced=1&PageIndex=1&PageSize=10
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIzNTI2ZWQzOC1iODhjLTRkNTItOWM2Mi1lYTMxYTNmN2RjN2UiLCJjcGMiOiJ4YyIsImVxaSI6IiIsInN1YiI6InRxbCIsImV4cCI6MTU3NDE2MjI5My4xNzk5NTY3LCJpYXQiOjE1NzQwNzU4OTMuMTc5OTU2N30.MTYyZmU3YWRmN2MwOGRkYmVmMjg5N2VmNjBjYTBkNTZkZjQxODc0OTYzOTNiNWUzNDE1MzI0YjE3NmY1OWE3NjJkYjEzOTZjMDUxNTEzMzc4MDE4OWMyNTg3ZTU3MDAxMmI3MWMyOTljMDdhNmZlMWMxNTJkMDJlMmVhYzIwZTU
+
+###
+http://scoring.appapi.lingcb.net/coupon_order/GetsSaleOfflineByUser
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJkNTgzOTA3MC1lOTAxLTRjY2YtYWFlNi0yMTA3ODkyN2I2NjkiLCJjcGMiOiJ4YyIsImVxaSI6IiIsInN1YiI6InR1cWlsaSIsImV4cCI6MTU3NDE3Nzk3Ny41MjY1MTU1LCJpYXQiOjE1NzQwOTE1NzcuNTI2NTE1NX0.ODYxYmZkZTQ1ODM1ZjVlYzVkZDBhYTNhMjliOGEzNWQ0M2U0MjIwMzlkMWQzYjMzNmNkZmVkOTk4NzA0MzA2Yzg2NGRkY2MwOTUwNzM1OWFiOGNkZTJhOGU3MTZkMDMzNTg0Yjk1MjcyMjQ0ZGFhN2MwNzVlYmM2MmI3OWE5NTM
+
+###
+http://order.webapi.lingcb.net/retail_order_disclog/Gets
+
+
+###
+http://order.webapi.lingcb.net/setting_disc_appoint/Get
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIwZGMzYWUyNC0yYWUwLTRmNWYtOWQyZC0yZDFiYWQwYmU1NjMiLCJjcGMiOiJoaGgiLCJlcWkiOiIiLCJzdWIiOiJoaGgwMSIsImV4cCI6MTU3NDUxOTg1OS4xMjIyMDg0LCJpYXQiOjE1NzQ0MzM0NTkuMTIyMjA4NH0.ZDBkNjA5YzA3NjVkNjU4OGEyYWVmNzc2MjRmZjQxYTJiZDIyNjI1NWZiYjU5MTYyODE3Njg2YzM0ZTdiMTM3YjdlMGI2MzNjMzkxMDYxZGQwNjNmYzEzYmE0NmNjNzA1ZDEzZmFiNTBiMDE2ZDZkNTdkYzJjZTI1YWQ0MTM3ODQ
+
+
+
+###
+http://order.webapi.lingcb.net/setting_disc_position/Get
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIwZGMzYWUyNC0yYWUwLTRmNWYtOWQyZC0yZDFiYWQwYmU1NjMiLCJjcGMiOiJoaGgiLCJlcWkiOiIiLCJzdWIiOiJoaGgwMSIsImV4cCI6MTU3NDUxOTg1OS4xMjIyMDg0LCJpYXQiOjE1NzQ0MzM0NTkuMTIyMjA4NH0.ZDBkNjA5YzA3NjVkNjU4OGEyYWVmNzc2MjRmZjQxYTJiZDIyNjI1NWZiYjU5MTYyODE3Njg2YzM0ZTdiMTM3YjdlMGI2MzNjMzkxMDYxZGQwNjNmYzEzYmE0NmNjNzA1ZDEzZmFiNTBiMDE2ZDZkNTdkYzJjZTI1YWQ0MTM3ODQ
+
+
+
+###
+http://localhost:12512/setting_disc_position/Get
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIwZGMzYWUyNC0yYWUwLTRmNWYtOWQyZC0yZDFiYWQwYmU1NjMiLCJjcGMiOiJoaGgiLCJlcWkiOiIiLCJzdWIiOiJoaGgwMSIsImV4cCI6MTU3NDUxOTg1OS4xMjIyMDg0LCJpYXQiOjE1NzQ0MzM0NTkuMTIyMjA4NH0.ZDBkNjA5YzA3NjVkNjU4OGEyYWVmNzc2MjRmZjQxYTJiZDIyNjI1NWZiYjU5MTYyODE3Njg2YzM0ZTdiMTM3YjdlMGI2MzNjMzkxMDYxZGQwNjNmYzEzYmE0NmNjNzA1ZDEzZmFiNTBiMDE2ZDZkNTdkYzJjZTI1YWQ0MTM3ODQ
+
+###
+http://order.webapi.lingcb.net/retail_order_disclog/Gets?CreateTime1=&CreateTime2=&CheckTime1=&CheckTime2=&State=0&ApplyUser=&CheckUser=&BarCode=&GoodsName=&DiscType=0&CheckType=0&PageIndex=1&PageSize=20
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI1ODMxM2UxNS1iYTYyLTQwMmItODU0MS0yOWE0MjFkNTVlODMiLCJjcGMiOiJ4YyIsImVxaSI6IiIsInN1YiI6InhjNyIsImV4cCI6MTU3NDc2MzY5My4zMzcxNTkyLCJpYXQiOjE1NzQ2NzcyOTMuMzM3MTU5Mn0.NTMwZTg5NGE1ODZiNTYwNjQ4YTMwMmI3YWQwMzhkMWU4MTA2NTExZGVkYzdkYjhhOGM4MDEzMjNkZDdhYzQ1OTBjYWNiZTNhM2MwZjVmNWYwMDlhNWVmYzIyMTMxNjA5M2FhNzFjYTIyMDljOTIwODE5MDZhMGZjMjI5ZjAxYjU
+
+###
+http://localhost:12512/setting_disc_position/Get
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIwMTc5MDRkYy01N2Q2LTQzYTAtODZhNC1kMmJiODE5NDIyNmYiLCJjcGMiOiJoaGgiLCJlcWkiOiIiLCJzdWIiOiJoaGgwMSIsImV4cCI6MTU3NDc2MjA2NS44ODc4MTE0LCJpYXQiOjE1NzQ2NzU2NjUuODg3ODExNH0.NmNjYzUxNWI0ZjY2ZmZiMjVkYWVkZjVhNWRhZjMwMzZhZjZiMjU4ZDg2MDYzNmEyZjc3YzU2MjQwYTBiYjQ1ODhiMmJmYWI5YTU0OTExNTA0YmM4NWFkN2I3NWFlNDViZTBiMmEwZDMxMWQ2MDIyMjRkNDY1YzMyMzIyZDMyMzM
+
+###
+POST http://localhost:11585/expend/ValidateSellPriceDiscount
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJlNmYwZGFjNS1iNzlkLTQ3ZTktOWM0OC0xYzA0MDkyOGFiY2YiLCJjcGMiOiJ4YyIsImVxaSI6Ijg0ZGRhNDU3LTJmYjEtNGRkNS1iZDYyLWUwOWU2YzM2OWEyMSIsInN1YiI6Inhpb25nIiwiZXhwIjoxNTc1NDc0MzkwLjA3NTA0OTQsImlhdCI6MTU3NTM4Nzk5MC4wNzUwNDk0fQ.ZTA3MTNhNTE5NzY1NTUyOTk3NTYyNTQwY2M3ZDZjY2JiZGMwOTkzYjg1ZjgyZjJlNmE1NTZhNTYxM2JlZGEzYjgyNmQ4MTRlZjUxNTcyMzQzOGMyM2M2NjJkYWJmNjAxOTliYzg1MzBlODBkMjcxN2NmYWRlYWI3OTJlNjgzMTY
+OffworkId: JJB1911270948290014
+
+{
+"DiscType":3,
+"MaterialType":2,
+"Pratee":10000   
+}
+
+###
+http://order.webapi.lingcb.net/retail_order_sell_basic/GetByStore?SellCode=XF1912031007590025
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI4OTI2ZmFjNi1mMjE5LTRjNjAtOWY4ZC0wNWU0MzE3Y2NlYzQiLCJjcGMiOiIzcSIsImVxaSI6IiIsInN1YiI6IjNxIiwiZXhwIjoxNTc1NDU0NzU5LjU2NzI1MiwiaWF0IjoxNTc1MzY4MzU5LjU2NzI1Mn0.MTZmMTMxMmYxMDkzMWYyNzBhYjU3NzZiMTM0ZGIxMzMxNzlhOWQzYTA1ZGRmNTczYWVkYTIyNDRiNTcwYzA3MWQ5NGRkNjg0MjhkOWZmNjEzNDBhNzY1ZWM1NWM5NGQ2NTI0YTQzYTgxYTA4YWJiNzE2ZTgwMmQ1M2FjZGZiZDk
+
+###
+http://marketing.appapi.lingcb.net/wallet_coupon/Gets2?MemberId=455647a7-f7b8-11e9-b719-c6954971adf1&MarproId=3&MaterialType=1&NewMaterialType=1&CouponStatus=5&IsAsced=1&OrderBy=1&PageSize=10&PageIndex=1
+
+###
+http://marketing.appapi.lingcb.net/setting_note/Gets?CharacterId=124945&NoteType=1&PageIndex=1&PageSize=10000
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIwZmE2YjM4Zi1mNzI1LTQ4OGMtOWVlZi04NTE1YjQ2NTMxYTMiLCJjcGMiOiJ4YyIsImVxaSI6IiIsInN1YiI6InhjNyIsImV4cCI6MTU3NTcxMjI5Mi40MDI1NjA3LCJpYXQiOjE1NzU2MjU4OTIuNDAyNTYwN30.NjJjNWE4OGNkNTdmYzRjYmU3ZGViNjc2MDE3MDRlODRjNTM0NzZlYTcwYTZmMmQzOWMyNGIwMzc5ZTQwYWJkZmE2M2I5Nzc3MGQ1OGVmYzBlNTgyZjM4ZWIxMTk0ZDk2YWIxZmU1MDA3YzkwZGIwMDlhNzcyY2RmNjQ2MzFhYTA
+
+###
+http://order.appapi.lingcb.net/retail_order_sell_basic/OnlineCashiers
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJiYmQ1MGI1Ni1kNGM5LTRiYWUtOWZkMy0zOTY1OWRiMTMwMjkiLCJjcGMiOiJ4YyIsImVxaSI6IiIsInN1YiI6InhjNzAxIiwiZXhwIjoxNTc1OTg4ODY3LjI2MjQxODcsImlhdCI6MTU3NTkwMjQ2Ny4yNjI0MTg3fQ.ZTBhNDVkMThkMjM5MWY4M2FhYmY4YjdlZmZiMGVmNGI5YTZiZTU2MmNlNTFhZTBlZDc3OTNiODE2ZWQ4YzBkYmRlZjYxMTMyMzcxYTNmOGFiNDUyMjQxN2QwZGU0M2Y5NGViMDlhMWY3NmJiYTEyNWU0MTc5MjdkMGIxNWNhMzg
+
+###
+https://marketing.cashierapi.lingcb.net/expend/DiscountCheckUsers?MaterialType=3&DiscType=1&Pratee=8000
+OffworkId: JJB1912120943430017
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJmNDYwMjAzNS01Nzk4LTQ4YTQtOWMzZS1kN2ZjMWUyYTFiNGIiLCJjcGMiOiJ4YyIsImVxaSI6ImY1MGQ1YmFhLWU1MDEtNGY2OC04MjljLTY1MTY4MzQyYzJkNCIsInN1YiI6IndqYyIsImV4cCI6MTU3NjIzMDIxOS4zMjg0NjM4LCJpYXQiOjE1NzYxNDM4MTkuMzI4NDYzOH0.MTM1NGJhOTcyNDc0NjJkMzc4MDQ1YzBmYWIzMTZkNWRkMTYwNzRlYmFlMjQ0ZGJjZGFmZGY2NmEzODFkY2Q1YmUwYjFhZDFjZDgwZmU4N2VjODc3NDAzMDgxZTQzNTdlZDRkZDhhM2U3MzljNDExMDQ0M2E2NDRiYzc5YWZhNjI
+
+###
+http://localhost:15514/coupon_basic/GetsBySale?CouponSaleType=3&PageIndex=1&PageSize=10
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI4NTk1MDNkMy05ZTU2LTQ4MWQtOWU5OC1kOTNlZGE3MDEzMjkiLCJjcGMiOiJmdDIiLCJlcWkiOiIiLCJzdWIiOiJmdDIwMSIsImV4cCI6MTU3NjU3Njk4OC4xODkyNjI2LCJpYXQiOjE1NzY0OTA1ODguMTg5MjYyNn0.MDI5YWIxYjYzNGE2MDE4NjUwZWQ0YjhlNDhjNDY2MDFiYzYxNmRjNDExZDFjYTkxMmU3ZDI3YmQwNjhkODYyMTIzZDdmY2Y2NWRhYTU0YTBkYjRmNzMyM2JjOTU0MTcyNWE4YzEyMzkwMzEzZmI5ZWEyNTMwODY5MjYyMGMyNGI
+###
+http://localhost:12509/printing/ElectronicQualityPrinting?OrderId=ZB1912121944410026&CharacterId=124945&TrueName=
+
+###
+http://localhost:15513/coupon_item/GetsSaleOnlineByUser?CouponId=C1912101853320019&PageSize=10
+
+###
+POST http://localhost:11585/expend/ApplyDiscount
+
+{
+    "DiscType":"a"
+}
+
+
+###
+http://localhost:12005/retail_order_return/GetsByERP?SourceType=&ReturnCode=&MasterCode=&SellCode=&Mobile=&MemberId=&BarCode=&GoodsName=&CreateTime1=&CreateTime2=&CheckTime1=&CheckTime2=&OrderBy=0&IsAsced=1&PageIndex=1&PageSize=20
+access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIzMzgyNWYwNC1lMTA4LTRlN2YtYTY2Zi1lYzY3YjBiMzU0NmYiLCJjcGMiOiJmdDQiLCJlcWkiOiIiLCJzdWIiOiJmdDQwMSIsImV4cCI6MTU3NjYxNDMzNC4yOTcyNTU1LCJpYXQiOjE1NzY1Mjc5MzQuMjk3MjU1NX0.MTA1ZWZkNjNkNjA3NDJiZGNmODU2YjJhOTljMTUxNDQ4M2E1MTI4NGJlMzRhMmU2YzA5ZjJkNGExNjQ1MGY5YTQ3ZTQ4NjBkZjIzOGI4M2ViYzFiODI1NDQ0MWRhNmU4M2I1NjAyNDAxMTZkNjk3ZDVlZmM3NTZiYThjZGFjMWE

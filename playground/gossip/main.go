@@ -2,12 +2,18 @@ package main
 
 import (
 	"github.com/peizhong/letsgo/playground/gossip/cmd"
+	"log"
 	"os"
+	"runtime/pprof"
 )
 
 var (
 	// go build -ldflags "-X 'main.Version=0.0.1'"
 	Version string
+	// pprof
+	// go tool pprof -http=:8080 -no_browser gossip.exe cpu.prof
+	cpuprofile = "cpu.prof"
+	memprofile = "memprofile"
 )
 
 func info() string {
@@ -21,10 +27,22 @@ all distributed systems require membership, and memberlist is a re-usable soluti
 }
 
 func main() {
+	if cpuprofile != "" {
+		f, err := os.OpenFile(cpuprofile, os.O_RDWR|os.O_CREATE, 0644)
+		if err != nil {
+			log.Fatal("could not create CPU profile: ", err)
+		}
+		defer f.Close()
+		if err := pprof.StartCPUProfile(f); err != nil {
+			log.Fatal("could not start CPU profile: ", err)
+		}
+		defer pprof.StopCPUProfile()
+	}
 	if len(os.Args) < 2 {
 		// 默认启动
-		os.Args = append(os.Args, []string{"run", "-n", "node1", "-p", "8081", "-j", "localhost:8080"}...)
+		os.Args = append(os.Args, []string{"run", "-n", "node0", "-p", "8081"}...)
 	}
 	println("version:", Version)
 	cmd.Execute()
+	println("bye")
 }

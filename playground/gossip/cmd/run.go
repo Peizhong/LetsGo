@@ -78,8 +78,8 @@ func run() {
 			}
 			break
 		case "bench":
-			if l >= 3 {
-				if count, ok := data.IntTryParse(cmd[2]); ok {
+			if l >= 2 {
+				if count, ok := data.IntTryParse(cmd[1]); ok {
 					store.Benchmark(count)
 				}
 			}

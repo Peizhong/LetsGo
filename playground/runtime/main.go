@@ -6,6 +6,8 @@ import (
 	"io"
 	"io/ioutil"
 	"runtime"
+	// 宿主的cpu和容器实际cpu
+	_ "go.uber.org/automaxprocs"
 )
 
 // go build -gcflags -m
@@ -18,7 +20,7 @@ func simple(n int) {
 	fmt.Println(n)
 }
 
-func other(){
+func other() {
 	// nosplit: 跳过栈溢出检测
 	// noescape: 不做逃逸分析。指示一个没有主体的函数
 }
@@ -43,13 +45,13 @@ func oneP() {
 var sum int
 
 //go:norace
-func add(){
+func add() {
 	// 跳过竞态检测
 	// go run -race, go build -race
 	sum++
 }
 
-func race(){
+func race() {
 	go add()
 	go add()
 }
@@ -62,8 +64,8 @@ func copy() {
 	io.Copy(ioutil.Discard, bytes.NewReader([]byte{}))
 }
 
-func channel(){
-	ctx,cancel:=context.
+func channel() {
+
 }
 
 func main() {

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/coreos/etcd/pkg/fileutil"
 	"github.com/google/uuid"
 	"github.com/hashicorp/memberlist"
 	"go.uber.org/atomic"
@@ -68,6 +67,9 @@ func (s *storage) RegisterMember(name string, port int, join string) {
 	config.BindPort = port
 	config.Events = &event{}
 	config.Delegate = &delegate{storage: s}
+	config.Alive = &alive{}
+	// config.EnableCompression = true
+	// config.Logger = log.New(os.Stderr, "", log.LstdFlags)
 	member, err := memberlist.Create(config)
 	if err != nil {
 		log.Panic(err)
@@ -193,25 +195,24 @@ func (s *storage) Save() (err error) {
 // Load: 启动时加载
 func (s *storage) Load() (err error) {
 	fileName := s.LocalNode().Name
-	if !fileutil.Exist(fileName) {
-		return
-	}
 	data, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		return err
-	}
-	if len(data) > 0 {
+	if err == nil && len(data) > 0 {
 		s.lock.Lock()
 		err = json.Unmarshal(data, &s.data)
-		// todo 本地数据与网络数据合并
+		// todo: 本地数据与网络数据合并
 		if err == nil {
 			log.Println(fmt.Sprintf("recover %d data", len(s.data)))
 		}
 		s.lock.Unlock()
 	}
-	return
+	// 如果是文件不存在，忽略
+	if _, ok := err.(*os.PathError); ok {
+		return nil
+	}
+	return err
 }
 
+// UnpackNotify: 二次解析，发送到ch
 func (s *storage) UnpackNotify(b []byte) {
 	var updates []*update
 	if err := json.Unmarshal(b, &updates); err != nil {
@@ -222,6 +223,7 @@ func (s *storage) UnpackNotify(b []byte) {
 	}
 }
 
+// updateHandler: 处理管道
 func (s *storage) updateHandler() {
 	for u := range s.ch {
 		s.lock.Lock()
