@@ -22,6 +22,7 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/btree v1.0.0
 	github.com/google/go-cmp v0.3.1 // indirect
+	github.com/google/gopacket v1.1.17
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/mux v1.7.3
 	github.com/gorilla/websocket v1.4.0 // indirect
