@@ -9,4 +9,8 @@ void InsertionSort(int *p,int len);
 void ShellSort(int *p,int len);
 void MergeSort(int *p,int len);
 void QuickSort(int *p,int len);
+
+
+void Knapsack(int capacity);
+void Broadcasts();
 #endif

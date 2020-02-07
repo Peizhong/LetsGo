@@ -1,8 +1,12 @@
 #include <iostream>
 #include <cstring>
+#include <set> 
+#include <map> 
 
 #include "../include/sort.h"
 #include "../include/common.h"
+
+#define GOODS 5
 
 using namespace std;
 
@@ -216,7 +220,7 @@ void MergeSort(int *p, int len)
     delete p2;
 }
 
-void quickAdjust(int start,int end,int *p)
+void quickAdjust(int start, int end, int *p)
 {
     if (start < end)
     {
@@ -260,5 +264,136 @@ void quickAdjust(int start,int end,int *p)
 // 快速排序：大块排序分区后，再小块排序
 void QuickSort(int *p, int len)
 {
-    quickAdjust(0,len,p);
+    quickAdjust(0, len, p);
+}
+
+void printTable(int **p, int rows, int columns)
+{
+    for (int c = 0; c < columns; c++)
+    {
+        cout << c << '\t';
+    }
+    cout << endl;
+    cout << "----------" << endl;
+    for (int r = 0; r < rows; r++)
+    {
+        for (int c = 0; c < columns; c++)
+        {
+            cout << p[r][c] << '\t';
+        }
+        cout << endl;
+    }
+}
+
+int goodsWeight[GOODS] = {1, 2, 9, 10, 11};
+int goodsValue[GOODS] = {6, 7, 10, 11, 12};
+
+void resolve(int **p, int *r ,int cap,int n)
+{
+    if (n>0)
+    {
+        // 如果前后2行的差等于n的价格，说明使用了
+        if ((cap>=goodsWeight[n-1]) && (p[n][cap]==p[n-1][cap-goodsWeight[n-1]]+goodsValue[n-1]))
+        {
+            r[n-1] = 1;
+            resolve(p,r,cap-goodsWeight[n-1],n-1);
+        }
+        // 如果值相等，表示没有使用第n个
+        else // if (p[n][cap]==p[n-1][cap])
+        {
+            // 没有增加
+            r[n-1] = 0;
+            resolve(p,r,cap,n-1);
+        }
+    }
+}
+
+// 最背包解
+void resolveKnap(int **p, int cap,int n)
+{
+    int *r = new int[n];
+    resolve(p,r,cap,n);
+    printArray(r,n);
+    delete r;
+}
+
+// 动态规划
+void Knapsack(int capacity)
+{
+    int colums = capacity + 1;
+    int rows = GOODS + 1;
+    // 初始化数据
+    int **table = new int *[rows];
+    for (int i = 0; i < rows; i++)
+    {
+        table[i] = new int[colums];
+        memset(table[i], 0, colums * sizeof(int));
+    }
+    // 填充数据，从1开始
+    for (int r = 1; r < rows; r++)
+    {
+        for (int c = 1; c < colums; c++)
+        {
+            // 没有容量或不使用
+            int value = table[r - 1][c];
+            // 如果每个商品可以选择多个
+            if (c >= goodsWeight[r - 1])
+            {
+                int maxCap = c / goodsWeight[r-1];
+                maxCap =1;
+                // 用n个
+                for (int n = 1; n <= maxCap; n++)
+                {
+                    int value1 = goodsValue[r - 1] * n + table[r - 1][c - goodsWeight[r - 1] * n];
+                    value = max(value, value1);
+                }
+            }
+            table[r][c] = value;
+        }
+    }
+    printTable(table, rows, colums);
+    resolveKnap(table,capacity,GOODS);
+    // 释放资源
+    for (int i = 0; i < rows; i++)
+    {
+        delete table[i];
+    }
+    delete table;
+
+    int *dp = new int[colums];
+    memset(dp, 0, colums * sizeof(int));
+    for (int i = 0; i < GOODS; i++)
+    {
+        for (int v = capacity; v >= goodsWeight[i]; v--)
+        {
+            int maxCap = v / goodsWeight[i];
+            for (int n = 1; n <= maxCap; n++)
+            {
+                dp[v] = max(dp[v], dp[v - goodsWeight[i] * n] + goodsValue[i] * n);
+            }
+        }
+    }
+    printArray(dp, colums);
+}
+
+// 贪心算法
+void Broadcasts()
+{
+    string s[8] = {"ID","NV","UT","WA","MT","OR","CA","AZ"};
+    set<string> st;
+    for (int i =0;i<8;i++)
+    {
+        st.insert(s[i]);
+    }
+    map<string,string*> station0;
+    string k0[3] = {"ID","NV","UT"};
+    string k1[3] = {"WA","ID","MT"};
+    string k2[3] = {"OR","NV","CA"};
+    string k3[2] = {"NV","UT"};
+    string k4[2] = {"CA","AZ"};
+    station0["k0"] = k0;
+    station0["k1"] = k1;
+    station0["k2"] = k2;
+    station0["k3"] = k3;
+    station0["k4"] = k4;
 }
