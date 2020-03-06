@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/peizhong/letsgo/playground/gossip/cmd"
 	"log"
 	"os"
 	"runtime/pprof"
+
+	"github.com/peizhong/letsgo/playground/gossip/cmd"
 )
 
 var (

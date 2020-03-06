@@ -1,11 +1,14 @@
 package main
 
 import (
-	"golang.org/x/sync/singleflight"
-	"golang.org/x/sys/cpu"
 	"log"
 	"sync/atomic"
 	"time"
+
+	"golang.org/x/sync/singleflight"
+	"golang.org/x/sys/cpu"
+
+	_ "go.uber.org/automaxprocs"
 )
 
 type NoPad struct {
@@ -100,4 +103,8 @@ func PubMessage(b *buffer, highID int) {
 	if elapsed > worst {
 		worst = elapsed
 	}
+}
+
+func main() {
+
 }
