@@ -7,7 +7,7 @@ import (
 const (
 	UseTcp = true
 
-	IP = "localhost"
+	IP = ""
 	// 客户端访问的端口
 	GatewayPort = 8080
 	// 实际服务的端口

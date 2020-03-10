@@ -45,12 +45,21 @@ func (t *tcpRedirect) start() {
 	addConnMathAccept := func(accept *net.TCPConn) {
 		recordGeo(accept.RemoteAddr().String())
 		key := getIP(accept.RemoteAddr().String())
+		var limit bool
 		t.m.Lock()
 		if v, ok := t.connMap[key]; ok {
 			v.count++
+			if v.count > 10 {
+				limit = true
+			}
 			v.inside.Close()
 		}
 		t.m.Unlock()
+		if limit {
+			log.Println("byb bye", accept.RemoteAddr().String())
+			accept.Close()
+			return
+		}
 		inside, err := net.DialTCP("tcp", nil, realAddr)
 		if internal.CheckError(err, "DialTCP") != nil {
 			return
@@ -70,7 +79,9 @@ func (t *tcpRedirect) start() {
 	// 开启监听
 	t.connMap = make(map[string]*connMatch)
 	t.listener, err = net.ListenTCP("tcp", gatewayAddr)
-	internal.CheckError(err, "ListenTCP")
+	if internal.CheckError(err, "ListenTCP"); err != nil {
+		return
+	}
 	for {
 		// 与客户端建立连接，然后realport建立连接
 		tcpConn, err := t.listener.AcceptTCP()
