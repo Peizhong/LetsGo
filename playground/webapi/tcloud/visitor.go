@@ -15,7 +15,7 @@ type Geo struct {
 }
 
 func (g *Geo) load(file string) (err error) {
-	g.reader, err = geoip2.Open("misc/GeoLite2-City.mmdb")
+	g.reader, err = geoip2.Open(file)
 	return
 }
 
@@ -26,20 +26,26 @@ func (g *Geo) unload() (err error) {
 	return
 }
 
-func (g *Geo) info(addr string) error {
+func getIP(addr string) (r string) {
 	i := strings.LastIndex(addr, ":")
 	if i > 0 {
-		addr = addr[:i]
+		r = addr[:i]
 	}
-	ip := net.ParseIP("182.61.200.6")
+	return
+}
+
+func (g *Geo) info(addr string) (err error) {
+	ip := net.ParseIP(getIP(addr))
 	if ip != nil {
 		if city, err := g.reader.City(ip); err == nil {
-			log.Println(city.Country.Names["en"], city.Country.Names["zh-CN"])
-		} else {
-			return err
+			if en, ok := city.Country.Names["en"]; ok {
+				log.Println(en, city.Country.Names["zh-CN"])
+				return nil
+			}
 		}
 	}
-	return nil
+	log.Println("unknow ip", addr)
+	return err
 }
 
 var (
@@ -47,7 +53,7 @@ var (
 )
 
 func prepareGeo() error {
-	err := geo.load("misc/GeoLite2-City.mmdb")
+	err := geo.load("playground/webapi/tcloud/misc/GeoLite2-City.mmdb")
 	return err
 }
 

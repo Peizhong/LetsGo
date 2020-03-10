@@ -30,6 +30,7 @@ func Host(start, stop func()) {
 	signal.Notify(c, os.Interrupt, os.Kill)
 	_, file, _, _ := runtime.Caller(1)
 	log.Println("start ", file)
+	// start是个循环
 	go start()
 	<-c
 	log.Println("closing...")
@@ -86,7 +87,7 @@ func CheckError(err error, msg string) error {
 	if err == nil {
 		return nil
 	}
-	err = fmt.Errorf("%s: [%v]", msg, err)
+	err = fmt.Errorf("%s err: [%v]", msg, err)
 	log.Println(err.Error())
 	return err
 }
