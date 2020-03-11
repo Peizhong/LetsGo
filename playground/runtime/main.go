@@ -6,6 +6,8 @@ import (
 	"io"
 	"io/ioutil"
 	"runtime"
+	"testing"
+
 	// 宿主的cpu和容器实际cpu
 	_ "go.uber.org/automaxprocs"
 )
@@ -30,9 +32,6 @@ func oneP() {
 
 	go func() {
 		simple(0)
-		for {
-
-		}
 	}()
 
 	go simple(1)
@@ -66,6 +65,33 @@ func copy() {
 
 func channel() {
 
+}
+
+func cal(index string, a, b int) int {
+	ret := a + b
+	println(index, a, b, ret)
+	return ret
+}
+
+func TestCal1(t *testing.T) {
+	a := 1
+	b := 2
+	defer cal("1", a, cal("10", a, b))
+	a = 0
+	defer cal("2", a, cal("20", a, b))
+	b = 1
+}
+func TestCal2(t *testing.T) {
+	a := 1
+	b := 2
+	defer func() {
+		cal("1", a, cal("10", a, b))
+	}()
+	a = 0
+	defer func() {
+		cal("2", a, cal("20", a, b))
+	}()
+	b = 1
 }
 
 func main() {

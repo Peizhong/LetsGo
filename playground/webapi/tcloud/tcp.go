@@ -46,12 +46,14 @@ func (t *tcpRedirect) start() {
 		recordGeo(accept.RemoteAddr().String())
 		key := getIP(accept.RemoteAddr().String())
 		var limit bool
+		var cnt int
 		t.m.Lock()
 		if v, ok := t.connMap[key]; ok {
-			v.count++
-			if v.count > 10 {
+			cnt = v.count + 1
+			if cnt > 10 {
 				limit = true
 			}
+			v.outside.Close()
 			v.inside.Close()
 		}
 		t.m.Unlock()
@@ -68,6 +70,7 @@ func (t *tcpRedirect) start() {
 			outside:       accept,
 			inside:        inside,
 			acceptAddTime: time.Now().Unix(),
+			count:         cnt,
 		}
 		t.m.Lock()
 		t.connMap[key] = match
