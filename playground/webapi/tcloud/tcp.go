@@ -30,21 +30,22 @@ type connMatch struct {
 
 func (t *tcpRedirect) start() {
 	joinConn := func(conn1 *net.TCPConn, conn2 *net.TCPConn) {
-		f := func(local *net.TCPConn, remote *net.TCPConn) {
+		f := func(tag string, local *net.TCPConn, remote *net.TCPConn) {
 			//defer保证close
 			defer local.Close()
 			defer remote.Close()
+			log.Println("establish", tag)
 			//使用io.Copy传输两个tcp连接
 			io.Copy(local, remote)
 			// internal.CheckError(err, "io.Copy")
 			log.Println("conn end", local.LocalAddr(), local.RemoteAddr(), remote.LocalAddr(), remote.RemoteAddr())
 		}
-		go f(conn2, conn1)
-		go f(conn1, conn2)
+		go f("out->in", conn2, conn1)
+		go f("in->out", conn1, conn2)
 	}
 	addConnMathAccept := func(accept *net.TCPConn) {
-		recordGeo(accept.RemoteAddr().String())
 		key := getIP(accept.RemoteAddr().String())
+		recordGeo(key)
 		var limit bool
 		var cnt int
 		t.m.Lock()
@@ -77,6 +78,7 @@ func (t *tcpRedirect) start() {
 		t.m.Unlock()
 		joinConn(match.inside, match.outside)
 	}
+
 	err := prepareGeo()
 	internal.CheckError(err, "prepareGeo")
 	// 开启监听

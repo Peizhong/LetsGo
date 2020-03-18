@@ -35,7 +35,7 @@ func getIP(addr string) (r string) {
 }
 
 func (g *Geo) info(addr string) (err error) {
-	ip := net.ParseIP(getIP(addr))
+	ip := net.ParseIP(addr)
 	if ip != nil {
 		if city, err := g.reader.City(ip); err == nil {
 			if en, ok := city.Country.Names["en"]; ok {
