@@ -3,11 +3,19 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/peizhong/letsgo/pkg/config"
 	"log"
 	"net"
 	"net/http"
 	"strconv"
+
+	"github.com/opentracing/opentracing-go"
+	tracinglog "github.com/opentracing/opentracing-go/log"
+	"github.com/peizhong/letsgo/pkg/config"
+	"github.com/uber/jaeger-client-go"
+	"github.com/uber/jaeger-lib/metrics"
+
+	jaegercfg "github.com/uber/jaeger-client-go/config"
+	jaegerlog "github.com/uber/jaeger-client-go/log"
 
 	"github.com/peizhong/letsgo/internal"
 )
@@ -21,6 +29,11 @@ type basicHandler struct {
 }
 
 func (th *basicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	span := opentracing.StartSpan("Hi")
+	defer span.Finish()
+	// span is too large
+	big := make([]byte, 1024*1024*1024)
+	span.LogFields(tracinglog.String("wa", string(big)))
 	fmt.Fprintf(w, th.responseText)
 }
 
@@ -44,6 +57,36 @@ func Stop() {
 	}
 }
 
+func configTracing() func() {
+	cfg := jaegercfg.Configuration{
+		Sampler: &jaegercfg.SamplerConfig{
+			Type:  jaeger.SamplerTypeConst,
+			Param: 1,
+		},
+		Reporter: &jaegercfg.ReporterConfig{
+			LogSpans: true,
+			LocalAgentHostPort:"",
+		},
+	}
+	jLogger := jaegerlog.StdLogger
+	jMetricsFactory := metrics.NullFactory
+	closer, err := cfg.InitGlobalTracer(
+		"serviceName",
+		jaegercfg.Logger(jLogger),
+		jaegercfg.Metrics(jMetricsFactory),
+	)
+	if err != nil {
+		log.Printf("Could not initialize jaeger tracer: %s", err.Error())
+		return nil
+	}
+	return func() {
+		closer.Close()
+	}
+}
+
 func main() {
+	closer := configTracing()
+	defer closer()
+
 	internal.Host(Start, Stop)
 }

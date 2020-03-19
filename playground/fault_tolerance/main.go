@@ -2,8 +2,6 @@ package main
 
 import (
 	"errors"
-	"github.com/afex/hystrix-go/hystrix"
-	"github.com/sirupsen/logrus"
 	"log"
 	"net"
 	"net/http"
@@ -11,6 +9,8 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/afex/hystrix-go/hystrix"
 )
 
 var actualJob int64
@@ -91,9 +91,6 @@ func main() {
 		ErrorPercentThreshold: 10,
 		SleepWindow:           1000,
 	})
-	logger := logrus.New()
-	logger.SetFormatter(&logrus.JSONFormatter{})
-	hystrix.SetLogger(logger)
 	breaker, ok, err := hystrix.GetCircuit("my_command")
 	hystrixStreamHandler := hystrix.NewStreamHandler()
 	hystrixStreamHandler.Start()
