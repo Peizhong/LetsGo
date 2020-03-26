@@ -1,11 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"github.com/peizhong/letsgo/internal"
 	"math/rand"
-	"os"
-	"strconv"
 )
 
 var (
@@ -24,21 +21,22 @@ func init() {
 
 func main() {
 	ch := make(chan int)
-	go func() {
-		// get input
-		reader := bufio.NewScanner(os.Stdin)
-		for reader.Scan() {
-			mv, err := strconv.Atoi(reader.Text())
-			if err == nil {
-				ch <- mv
-			}
-		}
-	}()
+	manplay(ch)
 	internal.Host(func() {
+		next()
 		show()
 		for mv := range ch {
 			move(mv)
-			show()
+			if addItem(mv) {
+				next()
+				show()
+			} else {
+				println("no new item")
+				if !canMove() {
+					println("game over")
+					return
+				}
+			}
 		}
 	}, nil)
 }
