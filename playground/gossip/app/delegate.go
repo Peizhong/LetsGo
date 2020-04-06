@@ -7,7 +7,7 @@ import (
 )
 
 type delegate struct {
-	storage *storage
+	storage *Storage
 }
 
 // NodeMeta is used to retrieve meta-data about the current node

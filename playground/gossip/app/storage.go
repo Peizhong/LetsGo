@@ -29,7 +29,7 @@ type update struct {
 	Data   dataStore
 }
 
-type storage struct {
+type Storage struct {
 	flight     *singleflight.Group
 	data       dataStore
 	count      atomic.Int32
@@ -42,8 +42,8 @@ type storage struct {
 	Members   func() []string
 }
 
-func NewStorage(name string, port int, join string) *storage {
-	s := &storage{
+func NewStorage(name string, port int, join string) *Storage {
+	s := &Storage{
 		flight: &singleflight.Group{},
 		data:   make(dataStore),
 		ch:     make(chan *update, 100),
@@ -60,7 +60,7 @@ func NewStorage(name string, port int, join string) *storage {
 	return s
 }
 
-func (s *storage) RegisterMember(name string, port int, join string) {
+func (s *Storage) RegisterMember(name string, port int, join string) {
 	s.Name = name
 	config := memberlist.DefaultLocalConfig()
 	config.Name = s.Name
@@ -100,7 +100,7 @@ func (s *storage) RegisterMember(name string, port int, join string) {
 	go s.updateHandler()
 }
 
-func (s *storage) Get(key string) (interface{}, bool) {
+func (s *Storage) Get(key string) (interface{}, bool) {
 	// suppress duplicate requests with singleflight)
 	v, err, _ := s.flight.Do(key, func() (i interface{}, e error) {
 		s.lock.Lock()
@@ -116,7 +116,7 @@ func (s *storage) Get(key string) (interface{}, bool) {
 	return v, true
 }
 
-func (s *storage) Set(key string, value interface{}) {
+func (s *Storage) Set(key string, value interface{}) {
 	s.lock.Lock()
 	if _, ok := s.data[key]; !ok {
 		s.count.Inc()
@@ -143,7 +143,7 @@ func (s *storage) Set(key string, value interface{}) {
 	}
 }
 
-func (s *storage) Delete(key string) {
+func (s *Storage) Delete(key string) {
 	s.flight.Do(key, func() (i interface{}, e error) {
 		s.lock.Lock()
 		if _, ok := s.data[key]; ok {
@@ -168,7 +168,7 @@ func (s *storage) Delete(key string) {
 	})
 }
 
-func (s *storage) Gets() []string {
+func (s *Storage) Gets() []string {
 	s.lock.RLock()
 	var r []string
 	for k, v := range s.data {
@@ -179,7 +179,7 @@ func (s *storage) Gets() []string {
 }
 
 // Save: 退出时保存
-func (s *storage) Save() (err error) {
+func (s *Storage) Save() (err error) {
 	s.lock.Lock()
 	l := len(s.data)
 	data, err := json.Marshal(s.data)
@@ -193,7 +193,7 @@ func (s *storage) Save() (err error) {
 }
 
 // Load: 启动时加载
-func (s *storage) Load() (err error) {
+func (s *Storage) Load() (err error) {
 	fileName := s.LocalNode().Name
 	data, err := ioutil.ReadFile(fileName)
 	if err == nil && len(data) > 0 {
@@ -213,7 +213,7 @@ func (s *storage) Load() (err error) {
 }
 
 // UnpackNotify: 二次解析，发送到ch
-func (s *storage) UnpackNotify(b []byte) {
+func (s *Storage) UnpackNotify(b []byte) {
 	var updates []*update
 	if err := json.Unmarshal(b, &updates); err != nil {
 		return
@@ -224,7 +224,7 @@ func (s *storage) UnpackNotify(b []byte) {
 }
 
 // updateHandler: 处理管道
-func (s *storage) updateHandler() {
+func (s *Storage) updateHandler() {
 	for u := range s.ch {
 		s.lock.Lock()
 		for k, v := range u.Data {
@@ -245,7 +245,7 @@ func (s *storage) updateHandler() {
 	}
 }
 
-func (s *storage) Benchmark(n int) {
+func (s *Storage) Benchmark(n int) {
 	testData := make([]string, n)
 	for i := 0; i < n; i++ {
 		testData[i] = uuid.New().String()
