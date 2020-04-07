@@ -4,30 +4,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/hashicorp/memberlist"
-	"go.uber.org/atomic"
-	"golang.org/x/sync/singleflight"
 	"io/ioutil"
 	"log"
 	"os"
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/hashicorp/memberlist"
+	"go.uber.org/atomic"
+	"golang.org/x/sync/singleflight"
 )
-
-type dataType struct {
-	Id    []byte
-	Value interface{}
-	Time  int64
-}
-
-type dataStore map[string]dataType
-
-// kv变更的记录，附载在broadcast中传输
-type update struct {
-	Action string // add, del
-	Data   dataStore
-}
 
 type Storage struct {
 	flight     *singleflight.Group
@@ -39,7 +26,7 @@ type Storage struct {
 
 	Name      string
 	LocalNode func() *memberlist.Node
-	Members   func() []string
+	Members   func() ([]*MemberInfo, error)
 }
 
 func NewStorage(name string, port int, join string) *Storage {
@@ -57,6 +44,17 @@ func NewStorage(name string, port int, join string) *Storage {
 		}()
 	}
 	s.RegisterMember(name, port, join)
+	// gossip收到的消息发送到ch处理
+	go s.updateHandler()
+	// 定时保存数据到硬盘
+	go func() {
+		for {
+			select {
+			case <-time.After(time.Minute):
+				s.Save("")
+			}
+		}
+	}()
 	return s
 }
 
@@ -83,12 +81,15 @@ func (s *Storage) RegisterMember(name string, port int, join string) {
 	s.LocalNode = func() *memberlist.Node {
 		return member.LocalNode()
 	}
-	s.Members = func() []string {
-		var resp []string
+	s.Members = func() ([]*MemberInfo, error) {
+		var resp []*MemberInfo
 		for _, m := range member.Members() {
-			resp = append(resp, fmt.Sprintf("%s@%s:%d", m.Name, m.Addr, m.Port))
+			resp = append(resp, &MemberInfo{
+				Name: m.Name,
+				Addr: fmt.Sprintf("%s:%d", m.Addr, m.Port),
+			})
 		}
-		return resp
+		return resp, nil
 	}
 	if join != "" {
 		_, err := member.Join([]string{join})
@@ -96,11 +97,9 @@ func (s *Storage) RegisterMember(name string, port int, join string) {
 			log.Panic(err)
 		}
 	}
-	// delegate 收到的消息发送到ch
-	go s.updateHandler()
 }
 
-func (s *Storage) Get(key string) (interface{}, bool) {
+func (s *Storage) Get(key string) (interface{}, error) {
 	// suppress duplicate requests with singleflight)
 	v, err, _ := s.flight.Do(key, func() (i interface{}, e error) {
 		s.lock.Lock()
@@ -111,12 +110,12 @@ func (s *Storage) Get(key string) (interface{}, bool) {
 		return nil, errors.New(key)
 	})
 	if err != nil {
-		return nil, false
+		return nil, err
 	}
-	return v, true
+	return v, nil
 }
 
-func (s *Storage) Set(key string, value interface{}) {
+func (s *Storage) Set(key string, value interface{}) error {
 	s.lock.Lock()
 	if _, ok := s.data[key]; !ok {
 		s.count.Inc()
@@ -130,7 +129,7 @@ func (s *Storage) Set(key string, value interface{}) {
 	s.lock.Unlock()
 	if b, err := json.Marshal([]*update{
 		{
-			Action: "add",
+			Action: ActionAdd,
 			Data: dataStore{
 				key: data,
 			},
@@ -141,9 +140,10 @@ func (s *Storage) Set(key string, value interface{}) {
 			notify: nil,
 		})
 	}
+	return nil
 }
 
-func (s *Storage) Delete(key string) {
+func (s *Storage) Delete(key string) error {
 	s.flight.Do(key, func() (i interface{}, e error) {
 		s.lock.Lock()
 		if _, ok := s.data[key]; ok {
@@ -153,7 +153,7 @@ func (s *Storage) Delete(key string) {
 		s.lock.Unlock()
 		if b, err := json.Marshal([]*update{
 			{
-				Action: "del",
+				Action: ActionDel,
 				Data: dataStore{
 					key: dataType{},
 				},
@@ -166,20 +166,11 @@ func (s *Storage) Delete(key string) {
 		}
 		return nil, nil
 	})
-}
-
-func (s *Storage) Gets() []string {
-	s.lock.RLock()
-	var r []string
-	for k, v := range s.data {
-		r = append(r, fmt.Sprintf("%v_%v", k, v.Value))
-	}
-	s.lock.RUnlock()
-	return r
+	return nil
 }
 
 // Save: 退出时保存
-func (s *Storage) Save() (err error) {
+func (s *Storage) Save(path string) (err error) {
 	s.lock.Lock()
 	l := len(s.data)
 	data, err := json.Marshal(s.data)
@@ -193,7 +184,7 @@ func (s *Storage) Save() (err error) {
 }
 
 // Load: 启动时加载
-func (s *Storage) Load() (err error) {
+func (s *Storage) Load(path string) (err error) {
 	fileName := s.LocalNode().Name
 	data, err := ioutil.ReadFile(fileName)
 	if err == nil && len(data) > 0 {
@@ -235,9 +226,9 @@ func (s *Storage) updateHandler() {
 				}
 			}
 			switch u.Action {
-			case "add":
+			case ActionAdd:
 				s.data[k] = v
-			case "del":
+			case ActionDel:
 				delete(s.data, k)
 			}
 		}
@@ -245,7 +236,11 @@ func (s *Storage) updateHandler() {
 	}
 }
 
-func (s *Storage) Benchmark(n int) {
+func (s *Storage) Info() ([]*MemberInfo, error) {
+	return s.Members()
+}
+
+func (s *Storage) Benchmark(n int) error {
 	testData := make([]string, n)
 	for i := 0; i < n; i++ {
 		testData[i] = uuid.New().String()
@@ -256,4 +251,5 @@ func (s *Storage) Benchmark(n int) {
 		s.Delete(k)
 	}
 	log.Println("benchmark:", time.Since(start))
+	return nil
 }

@@ -2,8 +2,9 @@ package app
 
 import (
 	"encoding/json"
-	"github.com/hashicorp/memberlist"
 	"log"
+
+	"github.com/hashicorp/memberlist"
 )
 
 type delegate struct {
@@ -39,8 +40,7 @@ func (d *delegate) NotifyMsg(b []byte) {
 // since doing so would block the entire UDP packet receive loop.
 func (d *delegate) GetBroadcasts(overhead, limit int) [][]byte {
 	// QueueBroadcast的数据再取出来
-	// b := d.storage.broadcasts.GetBroadcasts(overhead, limit)
-	b := [][]byte{}
+	b := d.storage.broadcasts.GetBroadcasts(overhead, limit)
 	return b
 }
 
@@ -86,6 +86,6 @@ func (a *alive) NotifyAlive(peer *memberlist.Node) error {
 	// NotifyAlive is invoked when a message about a live
 	// node is received from the network.  Returning a non-nil
 	// error prevents the node from being considered a peer.
-	log.Println("alive", peer.Name)
+	log.Println(peer.Name, "is alive")
 	return nil
 }

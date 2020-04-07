@@ -1,8 +1,9 @@
 package app
 
 import (
-	"github.com/hashicorp/memberlist"
 	"log"
+
+	"github.com/hashicorp/memberlist"
 )
 
 // 节点变化的事件

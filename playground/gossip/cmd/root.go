@@ -27,6 +27,7 @@ var versionCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(versionCmd)
 	addRunCmd()
+	addRunRaftCmd()
 }
 
 func Execute() {

@@ -1,3 +1,7 @@
-gossip1: ./gossip run -n node1 -p $PORT -b 8000
-gossip2: ./gossip run -n node2 -p $PORT -j localhost:5000
-gossip3: ./gossip run -n node3 -p $PORT -j localhost:5000
+#gossip1: ./gossip run -n node1 -p $PORT -b 8000
+#gossip2: ./gossip run -n node2 -p $PORT -j localhost:5000
+#gossip3: ./gossip run -n node3 -p $PORT -j localhost:5000
+
+gossip1: ./gossip raft -i 1
+gossip2: ./gossip raft -i 2 -j 1
+gossip3: ./gossip raft -i 3 -j 1,2

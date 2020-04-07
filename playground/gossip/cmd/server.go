@@ -3,9 +3,11 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	"net"
 	"net/http"
+
+	"github.com/gorilla/mux"
+	"github.com/peizhong/letsgo/playground/gossip/app"
 )
 
 func whatip() error {
@@ -47,7 +49,10 @@ func setHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Set error:%s", err.Error())
 		return
 	}
-	store.Set(req.Key, req.Value)
+	err = ui.iCloud.Set(req.Key, req.Value)
+	if !ui.CheckError("Set", err, w) {
+		return
+	}
 	w.Write([]byte("OK"))
 }
 
@@ -58,12 +63,35 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func infoHandler(w http.ResponseWriter, r *http.Request) {
-	for _, member := range store.Members() {
+	members, err := ui.iCloud.Info()
+	if !ui.CheckError("Info", err, w) {
+		return
+	}
+	for _, member := range members {
 		fmt.Fprintln(w, member)
 	}
 }
 
-func serve(port int) error {
+type uiServer struct {
+	iCloud app.ICloud
+}
+
+func (uiServer) CheckError(operation string, err error, w http.ResponseWriter) bool {
+	if err != nil {
+		w.WriteHeader(http.StatusForbidden)
+		fmt.Fprintf(w, "%s: %s", operation, err.Error())
+		return false
+	}
+	return true
+}
+
+var ui *uiServer
+
+func serve(port int, icloud app.ICloud) error {
+	if icloud == nil {
+		panic("no iCloud")
+	}
+	ui = &uiServer{iCloud: icloud}
 	println("start server", port)
 	r := mux.NewRouter()
 	r.HandleFunc("/set", setHandler).Methods("PUT", "POST", "DELETE")
