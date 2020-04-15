@@ -2,22 +2,20 @@ package db
 
 import (
 	"fmt"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/peizhong/letsgo/pkg/config"
 )
 
-func GetDBConnString(db string) (dbType, connStr string) {
+func getDBConnString(db string) (dbType, connStr string) {
 	dbType = db
-	if dbType == "" {
-		dbType = config.DBType
-	}
-	switch dbType {
+	switch db {
 	case "mysql":
 		connStr = fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True", config.DBUser, config.DBPassword, config.DBHost, config.DBName)
 	case "sqlite3":
 		connStr = "letsgo.db"
 	case "mongo":
 		connStr = fmt.Sprintf("mongodb://%s:27017", config.DBHost)
+	default:
+		panic("no database")
 	}
 	return
 }
@@ -29,7 +27,7 @@ func DBFactory(db string) ORMHandler {
 	}
 	switch dbType {
 	case "mysql", "sqlite3":
-		return &GormHandler{}
+		return &GormHandler{dBType: dbType}
 	case "mongo":
 		return &MongoHandler{}
 	}
@@ -37,7 +35,9 @@ func DBFactory(db string) ORMHandler {
 }
 
 type Query struct {
-	Key, Value string
+	Key string
+	Op string
+	Value interface{}
 }
 
 type ORMHandler interface {

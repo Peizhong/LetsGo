@@ -38,6 +38,15 @@ func main() {
 			log.Fatal("could not start CPU profile: ", err)
 		}
 		defer pprof.StopCPUProfile()
+		mf, err := os.OpenFile(memprofile, os.O_RDWR|os.O_CREATE, 0644)
+		if err != nil {
+			log.Fatal("could not create Mem profile: ", err)
+		}
+		defer mf.Close()
+		if err := pprof.WriteHeapProfile(mf); err != nil {
+			log.Fatal("could not start Mem profile: ", err)
+		}
+		defer pprof.StopCPUProfile()
 	}
 	if len(os.Args) < 2 {
 		// 默认启动

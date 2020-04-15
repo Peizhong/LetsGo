@@ -25,6 +25,14 @@ func TestGetTableName(t *testing.T) {
 	assert.Equal(t, n1, n2, n3, n4)
 }
 
+func TestGormHandler_Get(t *testing.T) {
+	db := DBFactory("mysql")
+	s := struct {
+	}{}
+	db.Ping()
+	db.Gets(&s)
+}
+
 func TestMongoHandler_Create(t *testing.T) {
 	storage := DBFactory("mongo")
 	err := storage.Ping()

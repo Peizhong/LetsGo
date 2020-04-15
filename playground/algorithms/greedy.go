@@ -78,7 +78,7 @@ func Prim() {
 		{2, 3, 8},
 	}
 	mark := map[int]struct{}{
-		1: struct{}{},
+		1: {},
 	}
 	unmark := []int{2, 3, 4, 5}
 	var res []*route

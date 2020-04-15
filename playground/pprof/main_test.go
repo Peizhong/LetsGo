@@ -48,20 +48,11 @@ func BenchmarkSysPad_Increase(b *testing.B) {
 	})
 }
 
-func TestPubMessage(t *testing.T) {
-	const msgCount= 1000000
-	var b buffer
-	for i := 0; i < msgCount; i++ {
-		PubMessage(&b, i)
-	}
-	log.Println("Worst push time: ", worst)
-}
-
 func TestSize(t *testing.T) {
-	nopad:=NoPad{}
-	pad:=Pad{}
-	mpad:=MPad{}
-	syspad:=SysPad{}
+	nopad := NoPad{}
+	pad := Pad{}
+	mpad := MPad{}
+	syspad := SysPad{}
 	log.Println(unsafe.Sizeof(nopad))
 	log.Println(unsafe.Sizeof(pad))
 	log.Println(unsafe.Sizeof(mpad))

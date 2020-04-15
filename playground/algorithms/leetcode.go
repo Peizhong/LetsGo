@@ -72,9 +72,9 @@ func p23() {
 	// build data
 	{
 		nums := [][]int{
-			[]int{1, 4, 5},
-			[]int{1, 3, 4},
-			[]int{2, 6},
+			{1, 4, 5},
+			{1, 3, 4},
+			{2, 6},
 		}
 		for _, nl := range nums {
 			root := &ListNode{}

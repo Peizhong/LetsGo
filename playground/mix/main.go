@@ -12,11 +12,13 @@ import (
 	"unsafe"
 )
 
-type goClient struct{
+type goClient struct {
 	client C.WrapClient
 }
 
-func NewGoClient() goClient{
+// https://www.cntofu.com/book/73/ch2-cgo/readme.md
+
+func NewGoClient() goClient {
 	var ret goClient
 	ret.client = C.WrapClientInit()
 	return ret
@@ -25,7 +27,7 @@ func NewGoClient() goClient{
 func (g goClient) SendMessage(message string) string {
 	msg := C.CString(message)
 	defer C.free(unsafe.Pointer(msg))
-	r := C.WrapClientSendMessage(unsafe.Pointer(g.client),msg)
+	r := C.WrapClientSendMessage(unsafe.Pointer(g.client), msg)
 	resp := C.GoString(r)
 	fmt.Println(resp)
 	return resp

@@ -53,7 +53,7 @@ func mapTobsonD(m map[string]interface{}) bson.D {
 }
 
 func (m *MongoHandler) do(f func(client *mongo.Client) (interface{}, error)) (interface{}, error) {
-	_, m.connStr = GetDBConnString("mongo")
+	_, m.connStr = getDBConnString("mongo")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(m.connStr))
 	if err != nil {
@@ -63,7 +63,7 @@ func (m *MongoHandler) do(f func(client *mongo.Client) (interface{}, error)) (in
 }
 
 func (m *MongoHandler) colletion(i interface{}, f func(*mongo.Collection) (int, error)) (int, error) {
-	_, m.connStr = GetDBConnString("mongo")
+	_, m.connStr = getDBConnString("mongo")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(m.connStr))
 	if err != nil {
@@ -119,12 +119,12 @@ func (m *MongoHandler) Gets(i interface{}, q ...Query) (int, error) {
 			return 0, errors.New("ptr not to slice")
 		}
 		t = t.Elem()
-		if t.Kind()!=reflect.Ptr{
+		if t.Kind() != reflect.Ptr {
 			log.Println(t.Kind())
 			return 0, errors.New("slice item not ptr")
 		}
-		t= t.Elem()
-		if t.Kind()!=reflect.Struct {
+		t = t.Elem()
+		if t.Kind() != reflect.Struct {
 			log.Println(t.Kind())
 			return 0, errors.New("prt not to struct")
 		}

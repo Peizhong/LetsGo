@@ -1,7 +1,6 @@
 package config
 
 import (
-	"encoding/json"
 	"github.com/go-ini/ini"
 	"github.com/peizhong/letsgo/pkg/log"
 	"os"
@@ -12,24 +11,13 @@ import (
 
 // todo: 文件监视: watch file, delivering events to a channel
 
-type logging struct {
-	LogLevel map[string]string
-}
-
-type Appsettings struct {
-	Logging           logging
-	ConnectionStrings map[string]string
-}
-
-const defaultSettingFile = "c:/users/peizhong/source/repos/letsgo/playground/conf/appsettings.json"
-
 var (
 	// json
 	once     sync.Once
 	settings atomic.Value
 
 	// ini
-	HomeDir string
+	HomeDir      string
 	WorkspaceDir string
 
 	cfg       *ini.File
@@ -49,8 +37,8 @@ var (
 	HTTPApp1Port int
 	GrpcApp1Port int
 
-	CertCrt string
-	CertKey string
+	CertCrt  string
+	CertKey  string
 	CertName string
 )
 
@@ -96,25 +84,4 @@ func loadApp() {
 	CertName = sec.Key("CERT_NAME").MustString("LetsGo")
 	CertCrt = sec.Key("CERT_CRT").MustString("source/repos/letsgo/playground/key/server.crt")
 	CertKey = sec.Key("CERT_KEY").MustString("source/repos/letsgo/playground/key/server.key")
-}
-
-// GetConnectionString get connection string from appsettings.json
-func GetAppsettings(settingFile string) (s Appsettings) {
-	once.Do(func() {
-		if settingFile == "" {
-			settingFile = defaultSettingFile
-		}
-		settingFile = filepath.ToSlash(settingFile)
-		file, err := os.Open(settingFile)
-		// 函数返回时，关闭文件
-		defer file.Close()
-		if err == nil {
-			s := Appsettings{}
-			err := json.NewDecoder(file).Decode(&s)
-			if err == nil {
-				settings.Store(s)
-			}
-		}
-	})
-	return settings.Load().(Appsettings)
 }

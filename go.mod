@@ -11,6 +11,7 @@ require (
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/go-ini/ini v1.55.0
 	github.com/go-redis/redis v6.15.7+incompatible
+	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.3.5
 	github.com/google/btree v1.0.0

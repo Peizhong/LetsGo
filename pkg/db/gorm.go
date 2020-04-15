@@ -1,20 +1,33 @@
 package db
 
-import "github.com/jinzhu/gorm"
+import (
+	"fmt"
+	"reflect"
+	"strings"
+	"sync"
+
+	"github.com/jinzhu/gorm"
+)
 
 type GormHandler struct {
 	dBType, connStr string
+	db              *gorm.DB
 }
 
+var onceMysql sync.Once
+
 func (g *GormHandler) Do(f func(*gorm.DB) (interface{}, error)) (interface{}, error) {
-	g.dBType, g.connStr = GetDBConnString("")
-	if db, err := gorm.Open(g.dBType, g.connStr); err != nil {
-		return nil, err
-	} else {
-		db.LogMode(true)
-		r, err := f(db)
-		return r, err
-	}
+	onceMysql.Do(func() {
+		var err error
+		g.dBType, g.connStr = getDBConnString(g.dBType)
+		g.db, err = gorm.Open(g.dBType, g.connStr)
+		if err != nil {
+			panic(err)
+		}
+		g.db.LogMode(false)
+	})
+	r, err := f(g.db)
+	return r, err
 }
 
 func (g *GormHandler) Ping() error {
@@ -40,9 +53,20 @@ func (g *GormHandler) Create(i interface{}) error {
 	return err
 }
 
+func (*GormHandler) buildQuery(query ...Query) (querySql string, args []interface{}) {
+	var qs []string
+	for _, q := range query {
+		qs = append(qs, fmt.Sprintf("%s %s ?", q.Key, q.Op))
+		args = append(args, q.Value)
+	}
+	querySql = strings.Join(qs, " AND ")
+	return
+}
+
 func (g *GormHandler) Get(i interface{}, q ...Query) error {
 	_, err := g.Do(func(db *gorm.DB) (interface{}, error) {
-		db.First(i)
+		t := reflect.TypeOf(i).Elem()
+		db.Table(t.Name()).Where(g.buildQuery(q...)).First(i)
 		return nil, nil
 	})
 	return err

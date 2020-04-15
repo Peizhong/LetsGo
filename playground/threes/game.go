@@ -242,7 +242,7 @@ func canMove() bool {
 	return false
 }
 
-var v int = 1
+var v = 1
 
 func next() {
 	nextValue = v%2 + 1

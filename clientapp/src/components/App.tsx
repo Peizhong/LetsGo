@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import Button from 'antd/es/button';
+import { DatePicker } from 'antd/es';
 import './App.css';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <Button type="primary">Button</Button>
+        <DatePicker/>
       </div>
     );
   }

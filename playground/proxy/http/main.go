@@ -12,8 +12,6 @@ import (
 	"sync"
 )
 
-const ()
-
 func start() {
 	handle := func(client net.Conn) {
 		buf := make([]byte, 1024)
