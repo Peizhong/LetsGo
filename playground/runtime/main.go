@@ -50,12 +50,13 @@ func add() {
 	sum++
 }
 
+// https://mikespook.com/2013/07/%E7%BF%BB%E8%AF%91go-%E7%9A%84%E8%B0%83%E5%BA%A6%E5%99%A8/
 func race() {
 	go add()
 	go add()
 }
 
-func copy() {
+func iocopy() {
 	// https://blog.go-zh.org/race-detector
 	// If the given Writer implements a ReadFrom method, call writer.ReadFrom(reader)
 	// Discard has an internal buffer that is shared
@@ -95,6 +96,5 @@ func TestCal2(t *testing.T) {
 }
 
 func main() {
-	// https://mikespook.com/2013/07/%E7%BF%BB%E8%AF%91go-%E7%9A%84%E8%B0%83%E5%BA%A6%E5%99%A8/
-	race()
+	UseSlice()
 }
