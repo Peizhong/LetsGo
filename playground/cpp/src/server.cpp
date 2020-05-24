@@ -39,6 +39,8 @@ void readData(int fd)
 
 int EpollServer()
 {
+    unsigned int evenx = EPOLLIN | EPOLLET;
+
     struct epoll_event ev, events[MAX_EVENTS];
     int listen_sock, conn_sock, nfds, epollfd;
 

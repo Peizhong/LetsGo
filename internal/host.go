@@ -2,11 +2,12 @@ package internal
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"runtime"
+	"runtime/pprof"
+	"runtime/trace"
 	"time"
 )
 
@@ -83,11 +84,34 @@ loop:
 	}
 }
 
-func CheckError(err error, msg string) error {
-	if err == nil {
-		return nil
+func PProf(start, stop func()) {
+	const cpuprofile = "cpu.pprof"
+	cpufile, err := os.Create(cpuprofile)
+	if err != nil {
+		panic(err)
 	}
-	err = fmt.Errorf("%s err: [%v]", msg, err)
-	log.Println(err.Error())
-	return err
+	defer cpufile.Close()
+
+	pprof.StartCPUProfile(cpufile)
+	defer func() {
+		pprof.StopCPUProfile()
+		log.Println("go tool pprof -http=:8080 -no_browser [program]", cpuprofile)
+	}()
+	Host(start, stop)
+}
+
+func Trace(start, stop func()) {
+	const traceout = "trace.out"
+	tracefile, err := os.Create(traceout)
+	if err != nil {
+		panic(err)
+	}
+	defer tracefile.Close()
+
+	trace.Start(tracefile)
+	defer func() {
+		trace.Stop()
+		log.Println(" go tool trace", traceout)
+	}()
+	Host(start, stop)
 }

@@ -19,7 +19,15 @@ func subscribe(addr, queue string) (msgs <-chan amqp.Delivery, closer func()) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	err = ch.ExchangeDeclare(
+		"logs",   // name
+		"fanout", // type
+		true,     // durable
+		false,    // auto-deleted
+		false,    // internal
+		false,    // no-wait
+		nil,      // arguments
+	  )
 	q, err := ch.QueueDeclare(
 		"hello", // name
 		true,    // durable
@@ -27,6 +35,13 @@ func subscribe(addr, queue string) (msgs <-chan amqp.Delivery, closer func()) {
 		false,   // exclusive
 		false,   // no-wait
 		nil,     // arguments
+	)
+	err = ch.QueueBind(
+		q.Name, // queue name
+		"",     // routing key
+		"logs", // exchange
+		false,
+		nil,
 	)
 	msgs, err = ch.Consume(
 		q.Name, // queue
@@ -54,6 +69,8 @@ loop:
 			break loop
 		case d := <-msgs:
 			d.Ack(false)
+			// d.Nack(false,true) 进死信
+			// d.Reject(false)
 			buf.Push(d)
 		case <-t.C:
 			log.Println("clear", buf.Size())

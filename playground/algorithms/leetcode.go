@@ -18,6 +18,21 @@ func p386() {
 
 }
 
+func p1() {
+	twoSum := func(nums []int, target int) []int {
+		length := len(nums)
+		for i := 0; i < length-1; i++ {
+			for j := i + 1; j < length; j++ {
+				if nums[i]+nums[j] == target {
+					return []int{i, j}
+				}
+			}
+		}
+		return nil
+	}([]int{3, 2, 4}, 6)
+	log.Println(twoSum)
+}
+
 // 字符串转数字
 func p8() {
 	str := "abc我是def"

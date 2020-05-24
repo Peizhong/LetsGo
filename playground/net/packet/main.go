@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/google/gopacket/pcap"
 	"log"
+
+	"github.com/google/gopacket/pcap"
 )
 
+// sudo apt-get install libpcap-dev
 func main() {
 	// Find all devices
 	devices, err := pcap.FindAllDevs()

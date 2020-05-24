@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"sync/atomic"
+
 	"github.com/peizhong/letsgo/pkg/db"
 	"golang.org/x/sync/singleflight"
 	"golang.org/x/sys/cpu"
-	"net/http"
-	"runtime"
-	"sync/atomic"
+
+	_ "net/http/pprof"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "net/http/pprof"
 )
 
 // _ "go.uber.org/automaxprocs"
@@ -85,7 +86,7 @@ func (d *database) Handler(writer http.ResponseWriter, request *http.Request) {
 		AccountName string `gorm:"Column:account_name;type:varchar(200);"`
 	}
 	var ma money_account
-	err := d.database.Get(&ma, db.Query{Key: "id",Op: "=",Value: 2})
+	err := d.database.Get(&ma, db.Query{Key: "id", Op: "=", Value: 2})
 	if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
 		return
@@ -107,7 +108,6 @@ func main() {
 	// https://eddycjy.com/posts/go/tools/2018-09-15-go-tool-pprof/
 	// go tool pprof -http :8080 http://localhost:8000/debug/pprof/profile
 
-	runtime.GOMAXPROCS(12)
 	http.HandleFunc("/ab", func(writer http.ResponseWriter, request *http.Request) {
 		writer.Write([]byte("OK"))
 	})
