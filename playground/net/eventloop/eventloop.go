@@ -131,7 +131,7 @@ func goEvio() {
 	}
 	// when the server receives new data from a connection
 	events.Data = func(c evio.Conn, in []byte) (out []byte, action evio.Action) {
-		// log.Println(string(in))
+		log.Println(string(in))
 		out = in
 		// action = evio.Detach
 		return
@@ -155,7 +155,22 @@ func goNet() {
 	gnet.Serve(echo, "tcp://localhost:5000", gnet.WithMulticore(true))
 }
 
+func lotsOfWork() {
+	n := 8
+	var wg sync.WaitGroup
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go func() {
+			for {
+
+			}
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+}
+
+// GODEBUG=schedtrace=500 ./eventloop
 func main() {
-	// GODEBUG=schedtrace=500 ./eventloop
-	internal.PProf(goNet, nil)
+	internal.Host(goEvio, nil)
 }

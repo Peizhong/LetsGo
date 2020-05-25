@@ -3,15 +3,16 @@ package db
 import (
 	"context"
 	"errors"
+	"log"
+	"reflect"
+	"time"
+
 	"github.com/peizhong/letsgo/pkg/config"
 	"github.com/peizhong/letsgo/pkg/data"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"log"
-	"reflect"
-	"time"
 )
 
 type MongoHandler struct {
@@ -50,6 +51,10 @@ func mapTobsonD(m map[string]interface{}) bson.D {
 		}
 	}
 	return d
+}
+
+func (m *MongoHandler) SetContext(string, interface{}) {
+
 }
 
 func (m *MongoHandler) do(f func(client *mongo.Client) (interface{}, error)) (interface{}, error) {

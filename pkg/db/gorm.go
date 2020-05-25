@@ -1,20 +1,40 @@
 package db
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"strings"
 	"sync"
 
 	"github.com/jinzhu/gorm"
+	"github.com/opentracing/opentracing-go"
+	tracinglog "github.com/opentracing/opentracing-go/log"
 )
 
 type GormHandler struct {
 	dBType, connStr string
 	db              *gorm.DB
+	context         context.Context
 }
 
+const (
+	tracing_span_name = "gorm_sql"
+	tracing_span      = "sql_span"
+)
+
 var onceMysql sync.Once
+
+func (g *GormHandler) SetContext(key string, val interface{}) {
+	// tracing 污染代码
+	if key == "" {
+		if ctx, ok := val.(context.Context); ok {
+			g.context = ctx
+		}
+	} else {
+		g.context = context.WithValue(g.context, key, val)
+	}
+}
 
 func (g *GormHandler) Do(f func(*gorm.DB) (interface{}, error)) (interface{}, error) {
 	onceMysql.Do(func() {
@@ -25,9 +45,31 @@ func (g *GormHandler) Do(f func(*gorm.DB) (interface{}, error)) (interface{}, er
 			panic(err)
 		}
 		g.db.LogMode(false)
+		g.db.Callback().Query().Before("gorm:query").Register("tracing:query_before", g.before)
+		g.db.Callback().Query().After("gorm:after_query").Register("tracing:query_after", g.after)
+		// g.db.Callback().Create()
+		// g.db.Callback().Update()
+		// g.db.Callback().RowQuery()
 	})
 	r, err := f(g.db)
 	return r, err
+}
+
+func (g *GormHandler) before(scope *gorm.Scope) {
+	// context设置了
+	span, _ := opentracing.StartSpanFromContext(g.context, tracing_span)
+	scope.DB().Set(tracing_span, span)
+}
+
+func (g *GormHandler) after(scope *gorm.Scope) {
+	if sp, ok := scope.Get(tracing_span); ok {
+		span := sp.(opentracing.Span)
+		defer span.Finish()
+		span.LogFields(tracinglog.String("sql", scope.SQL))
+		if scope.HasError() {
+			span.LogFields(tracinglog.Error(scope.DB().Error))
+		}
+	}
 }
 
 func (g *GormHandler) Ping() error {

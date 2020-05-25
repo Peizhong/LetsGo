@@ -1,7 +1,9 @@
 package db
 
 import (
+	"context"
 	"fmt"
+
 	"github.com/peizhong/letsgo/pkg/config"
 )
 
@@ -27,7 +29,7 @@ func DBFactory(db string) ORMHandler {
 	}
 	switch dbType {
 	case "mysql", "sqlite3":
-		return &GormHandler{dBType: dbType}
+		return &GormHandler{dBType: dbType, context: context.Background()}
 	case "mongo":
 		return &MongoHandler{}
 	}
@@ -35,12 +37,13 @@ func DBFactory(db string) ORMHandler {
 }
 
 type Query struct {
-	Key string
-	Op string
+	Key   string
+	Op    string
 	Value interface{}
 }
 
 type ORMHandler interface {
+	SetContext(string, interface{})
 	Ping() error
 	Create(interface{}) error
 	Get(interface{}, ...Query) error

@@ -113,5 +113,6 @@ func Trace(start, stop func()) {
 		trace.Stop()
 		log.Println(" go tool trace", traceout)
 	}()
+
 	Host(start, stop)
 }

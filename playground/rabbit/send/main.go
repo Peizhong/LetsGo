@@ -40,6 +40,7 @@ func (r *rabbit) init(addr, queue string) {
 		false, // no-wait
 		nil,   // arguments
 	)
+	r.channel.Qos(3, 0, false)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -55,6 +56,7 @@ func (r *rabbit) publish(queue, text string) error {
 			DeliveryMode: amqp.Persistent,
 			ContentType:  "text/plain",
 			Body:         []byte(text),
+			Expiration:   "60000", // 消息过期时间 毫秒
 		})
 	return err
 }

@@ -12,7 +12,7 @@ require (
 	github.com/go-ini/ini v1.55.0
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/gogo/protobuf v1.3.1
-	github.com/golang/protobuf v1.3.5
+	github.com/golang/protobuf v1.4.0
 	github.com/google/btree v1.0.0
 	github.com/google/gopacket v1.1.17
 	github.com/google/uuid v1.1.1
@@ -20,14 +20,13 @@ require (
 	github.com/hashicorp/golang-lru v0.5.0
 	github.com/hashicorp/memberlist v0.2.0
 	github.com/jinzhu/gorm v1.9.12
-	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/kavu/go_reuseport v1.5.0 // indirect
-	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/onsi/ginkgo v1.12.0 // indirect
 	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/opentracing/opentracing-go v1.1.0
 	github.com/oschwald/geoip2-golang v1.4.0
 	github.com/panjf2000/gnet v1.2.0
+	github.com/prometheus/client_golang v1.6.0
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/cobra v0.0.7
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71

@@ -158,3 +158,7 @@ POST http://localhost:11585/expend/ApplyDiscount
 ###
 http://localhost:12005/retail_order_return/GetsByERP?SourceType=&ReturnCode=&MasterCode=&SellCode=&Mobile=&MemberId=&BarCode=&GoodsName=&CreateTime1=&CreateTime2=&CheckTime1=&CheckTime2=&OrderBy=0&IsAsced=1&PageIndex=1&PageSize=20
 access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIzMzgyNWYwNC1lMTA4LTRlN2YtYTY2Zi1lYzY3YjBiMzU0NmYiLCJjcGMiOiJmdDQiLCJlcWkiOiIiLCJzdWIiOiJmdDQwMSIsImV4cCI6MTU3NjYxNDMzNC4yOTcyNTU1LCJpYXQiOjE1NzY1Mjc5MzQuMjk3MjU1NX0.MTA1ZWZkNjNkNjA3NDJiZGNmODU2YjJhOTljMTUxNDQ4M2E1MTI4NGJlMzRhMmU2YzA5ZjJkNGExNjQ1MGY5YTQ3ZTQ4NjBkZjIzOGI4M2ViYzFiODI1NDQ0MWRhNmU4M2I1NjAyNDAxMTZkNjk3ZDVlZmM3NTZiYThjZGFjMWE
+
+
+###
+HEAD http://down.360safe.com/inst.exe
