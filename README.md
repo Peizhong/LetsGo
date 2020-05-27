@@ -24,3 +24,7 @@
 (```)
 
 ## call cpp export LD_LIBRARY_PATH
+
+
+this is windows wsl
+this is ubuntu vscode

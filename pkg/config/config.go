@@ -1,12 +1,13 @@
 package config
 
 import (
-	"github.com/go-ini/ini"
-	"github.com/peizhong/letsgo/pkg/log"
 	"os"
 	"path/filepath"
 	"sync"
 	"sync/atomic"
+
+	"github.com/go-ini/ini"
+	"github.com/peizhong/letsgo/pkg/log"
 )
 
 // todo: 文件监视: watch file, delivering events to a channel
@@ -45,7 +46,7 @@ var (
 func init() {
 	var err error
 	HomeDir, err = os.UserHomeDir()
-	WorkspaceDir = filepath.Join(HomeDir, "source/repos/letsgo")
+	WorkspaceDir = filepath.Join("", "/mnt/d/source/repos/letsgo")
 	if err != nil {
 		log.Fatalf("Fail to load user home dir: %v", err)
 	}
