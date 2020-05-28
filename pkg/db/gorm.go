@@ -121,3 +121,7 @@ func (g *GormHandler) Gets(i interface{}, q ...Query) (int, error) {
 	})
 	return 0, err
 }
+
+func (g *GormHandler) Update(i interface{}) error {
+	return nil
+}

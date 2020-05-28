@@ -3,10 +3,11 @@ package data
 import (
 	"context"
 	"encoding/json"
-	"github.com/google/uuid"
-	"github.com/tidwall/gjson"
 	"reflect"
 	"strconv"
+
+	"github.com/google/uuid"
+	"github.com/tidwall/gjson"
 )
 
 func IntTryParse(s string) (n int, b bool) {
@@ -48,7 +49,25 @@ func GetTypeName(i interface{}) string {
 	return t.Name()
 }
 
-func GetMap(i interface{}) (string,map[string]interface{}) {
+// get tag from single field
+func GetTag(i interface{}, tag string) (string, string) {
+	t := reflect.TypeOf(i)
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
+	if t.Kind() != reflect.Struct {
+		return "", ""
+	}
+	for n := 0; n < t.NumField(); n++ {
+		field := t.Field(n)
+		if value, ok := field.Tag.Lookup(tag); ok {
+			return field.Name, value
+		}
+	}
+	return "", ""
+}
+
+func GetMap(i interface{}) (string, map[string]interface{}) {
 	table := GetTypeName(i)
 	m := map[string]interface{}{}
 	v := reflect.ValueOf(i)
@@ -64,10 +83,19 @@ func GetMap(i interface{}) (string,map[string]interface{}) {
 	return table, m
 }
 
-func GetMapAsJson(i interface{}) (string,map[string]interface{}) {
+func GetMapAsJson(i interface{}) (string, map[string]interface{}) {
 	table := GetTypeName(i)
 	m := map[string]interface{}{}
 	data, _ := json.Marshal(i)
 	json.Unmarshal(data, &m)
 	return table, m
+}
+
+// primarykey is tag:pk, i should be pointer
+func GetPrimaryKey(i interface{}) map[string]interface{} {
+	if filed, isKey := GetTag(i, "pk"); isKey == "true" {
+		value := reflect.ValueOf(i).Elem().FieldByName(filed).Interface()
+		return map[string]interface{}{filed: value}
+	}
+	return nil
 }

@@ -15,7 +15,7 @@ func getDBConnString(db string) (dbType, connStr string) {
 	case "sqlite3":
 		connStr = "letsgo.db"
 	case "mongo":
-		connStr = fmt.Sprintf("mongodb://%s:27017", config.DBHost)
+		connStr = fmt.Sprintf("mongodb://%s:27017", config.MongoDBHost)
 	default:
 		panic("no database")
 	}
@@ -48,4 +48,5 @@ type ORMHandler interface {
 	Create(interface{}) error
 	Get(interface{}, ...Query) error
 	Gets(interface{}, ...Query) (int, error)
+	Update(interface{}) error
 }

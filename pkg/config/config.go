@@ -26,11 +26,12 @@ var (
 	JwtSecret string
 
 	// database
-	DBType     string
-	DBHost     string
-	DBName     string
-	DBUser     string
-	DBPassword string
+	DBType      string
+	DBHost      string
+	DBName      string
+	DBUser      string
+	DBPassword  string
+	MongoDBHost string
 
 	// server
 	GatewayPort int
@@ -67,6 +68,7 @@ func loadDatabase() {
 	DBType = cfg.Section("database").Key("TYPE").MustString("sqlite3")
 	DBName = cfg.Section("database").Key("NAME").MustString("dev")
 	DBHost = cfg.Section("database").Key("HOST").MustString("localhost")
+	MongoDBHost = cfg.Section("database").Key("MONGOHOST").MustString("localhost")
 	DBUser = cfg.Section("database").Key("USER").MustString("root")
 	DBPassword = cfg.Section("database").Key("PASSWORD").MustString("root")
 }

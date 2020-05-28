@@ -70,11 +70,14 @@ func (m *MongoHandler) do(f func(client *mongo.Client) (interface{}, error)) (in
 func (m *MongoHandler) colletion(i interface{}, f func(*mongo.Collection) (int, error)) (int, error) {
 	_, m.connStr = getDBConnString("mongo")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	// todo: 连接池
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(m.connStr))
 	if err != nil {
 		return 0, err
 	}
 	table := data.GetTypeName(i)
+	// use db
+	// databases hold collections of documents
 	collection := client.Database(config.DBName).Collection(table)
 	return f(collection)
 }
@@ -155,4 +158,16 @@ func (m *MongoHandler) Gets(i interface{}, q ...Query) (int, error) {
 		return cnt, nil
 	})
 	return cnt, err
+}
+
+func (m *MongoHandler) Update(i interface{}) error {
+	_, err := m.colletion(i, func(collection *mongo.Collection) (int, error) {
+		if keymap := data.GetPrimaryKey(i); keymap != nil {
+			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+			filter := mapTobsonD(keymap)
+			collection.UpdateOne(ctx, filter, i)
+		}
+		return 0, nil
+	})
+	return err
 }

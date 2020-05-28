@@ -12,13 +12,14 @@ require (
 	github.com/go-ini/ini v1.55.0
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/gogo/protobuf v1.3.1
-	github.com/golang/protobuf v1.4.0
+	github.com/golang/protobuf v1.4.2
 	github.com/google/btree v1.0.0
 	github.com/google/gopacket v1.1.17
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/mux v1.7.4
-	github.com/hashicorp/golang-lru v0.5.0
+	github.com/hashicorp/golang-lru v0.5.1
 	github.com/hashicorp/memberlist v0.2.0
+	github.com/imdario/mergo v0.3.9 // indirect
 	github.com/jinzhu/gorm v1.9.12
 	github.com/kavu/go_reuseport v1.5.0 // indirect
 	github.com/onsi/ginkgo v1.12.0 // indirect
@@ -43,5 +44,8 @@ require (
 	golang.org/x/sys v0.0.0-20200519105757-fe76b779f299
 	google.golang.org/grpc v1.28.1
 	gopkg.in/ini.v1 v1.55.0 // indirect
-	sigs.k8s.io/yaml v1.2.0 // indirect
+	k8s.io/api v0.18.3 // indirect
+	k8s.io/apimachinery v0.18.3
+	k8s.io/client-go v0.0.0-20200520082344-7ab8430bef2c
+	k8s.io/utils v0.0.0-20200520001619-278ece378a50 // indirect
 )
