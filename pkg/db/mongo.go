@@ -19,6 +19,16 @@ type MongoHandler struct {
 	connStr string
 }
 
+func structTobsonM(i interface{})bson.M {
+	v := reflect.ValueOf(i)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+	_, m := data.GetMapAsJson(v.Interface())
+	bm := mapTobsonM(m)
+	return bm
+}
+
 func mapTobsonM(m map[string]interface{}) bson.M {
 	// b := (*bson.M)(unsafe.Pointer(&m))
 	b := bson.M{}
@@ -28,25 +38,14 @@ func mapTobsonM(m map[string]interface{}) bson.M {
 	return b
 }
 
+// query, ordered params
 func queryTobsonD(m []Query) bson.D {
 	d := bson.D{}
 	for _, v := range m {
-		d = append(d, bson.E{
-			Key:   v.Key,
-			Value: v.Value,
-		})
-	}
-	return d
-}
-
-func mapTobsonD(m map[string]interface{}) bson.D {
-	d := bson.D{}
-	for k, i := range m {
-		t := reflect.TypeOf(i)
-		if i != reflect.Zero(t).Interface() {
+		if v.Op=="="{
 			d = append(d, bson.E{
-				Key:   k,
-				Value: i,
+				Key:   v.Key,
+				Value: v.Value,
 			})
 		}
 	}
@@ -94,8 +93,10 @@ func (m *MongoHandler) Ping() error {
 func (m *MongoHandler) Create(i interface{}) error {
 	_, err := m.colletion(i, func(collection *mongo.Collection) (int, error) {
 		_, m := data.GetMapAsJson(i)
-		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+		// M is an unordered representation of a BSON document
+		// Elements will be serialized in an undefined, random order
 		b := mapTobsonM(m)
+		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 		res, err := collection.InsertOne(ctx, b)
 		log.Println("insert", res.InsertedID)
 		return 1, err
@@ -105,10 +106,10 @@ func (m *MongoHandler) Create(i interface{}) error {
 
 func (m *MongoHandler) Get(i interface{}, q ...Query) error {
 	_, err := m.colletion(i, func(collection *mongo.Collection) (int, error) {
+		// D is an ordered representation of a BSON document
+		filter := queryTobsonD(q)
 		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-		_, m := data.GetMapAsJson(i)
-		d := mapTobsonD(m)
-		err := collection.FindOne(ctx, d).Decode(i)
+		err := collection.FindOne(ctx, filter).Decode(i)
 		return 0, err
 	})
 	return err
@@ -137,9 +138,9 @@ func (m *MongoHandler) Gets(i interface{}, q ...Query) (int, error) {
 			return 0, errors.New("prt not to struct")
 		}
 		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-		// todo: how to query slice
-		query := queryTobsonD(q)
-		cur, err := collection.Find(ctx, query)
+		filter := queryTobsonD(q)
+		// return a cursor
+		cur, err := collection.Find(ctx, filter)
 		if err != nil {
 			return 0, err
 		}
@@ -164,8 +165,11 @@ func (m *MongoHandler) Update(i interface{}) error {
 	_, err := m.colletion(i, func(collection *mongo.Collection) (int, error) {
 		if keymap := data.GetPrimaryKey(i); keymap != nil {
 			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-			filter := mapTobsonD(keymap)
-			collection.UpdateOne(ctx, filter, i)
+			filter := mapTobsonM(keymap)
+			// https://docs.mongodb.com/manual/reference/operator/update/
+			// use $set
+			update := structTobsonM(i)
+			collection.ReplaceOne(ctx, filter, update)
 		}
 		return 0, nil
 	})
