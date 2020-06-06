@@ -20,10 +20,11 @@ func usecond() {
 	}
 	println("wait 1 second to broadcast")
 	<-time.After(time.Second)
-	cond.L.Lock()
+	// not required cond.L.Lock()
+	// cond.L.Lock()
 	cond.Signal()
 	cond.Broadcast()
-	cond.L.Unlock()
+	// cond.L.Unlock()
 }
 
 func usesingleflight() {
@@ -46,6 +47,18 @@ func usesingleflight() {
 	}
 	wg.Wait()
 	println("actually", acutally)
+}
+
+func usePool() {
+	type ss struct {
+		v byte
+	}
+	pool := sync.Pool{New: func() interface{} {
+		return ss{}
+	}}
+	v := pool.New()
+	pool.Put(v)
+	_ = pool.Get()
 }
 
 func UseSync() {

@@ -2,16 +2,17 @@ package main
 
 import (
 	"context"
-	"github.com/peizhong/letsgo/pkg/config"
-	pb "github.com/peizhong/letsgo/playground/rpc/pb/twoway"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"io"
 	"log"
 	"math/rand"
 	"net"
 	"strconv"
 	"time"
+
+	"github.com/peizhong/letsgo/pkg/config"
+	pb "github.com/peizhong/letsgo/playground/rpc/pb/twoway"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 // printFeature gets the feature for the given point.
@@ -54,7 +55,7 @@ func randomPoint(r *rand.Rand) *pb.Point {
 }
 
 // runRecordRoute sends a sequence of points to server and expects to get a RouteSummary from server.
-func runRecordRoute(client pb.TwoWayJobClient){
+func runRecordRoute(client pb.TwoWayJobClient) {
 	// Create a random number of random points
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	pointCount := int(r.Int31n(100)) + 2 // Traverse at least two points
@@ -73,7 +74,7 @@ func runRecordRoute(client pb.TwoWayJobClient){
 			log.Fatalf("%v.Send(%v) = %v", stream, point, err)
 		}
 	}
-	reply,err := stream.CloseAndRecv()
+	reply, err := stream.CloseAndRecv()
 	if err != nil {
 		log.Fatalf("%v.CloseAndRecv() got error %v, want %v", stream, err, nil)
 	}
@@ -83,8 +84,9 @@ func runRecordRoute(client pb.TwoWayJobClient){
 func main() {
 	port := config.GrpcApp1Port
 	addr := net.JoinHostPort("", strconv.Itoa(port))
+	// 客户端只需要证书
 	creds, _ := credentials.NewClientTLSFromFile(config.CertCrt, config.CertName)
-	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(creds))
+	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(creds), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}

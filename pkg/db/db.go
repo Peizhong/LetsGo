@@ -2,10 +2,19 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"github.com/peizhong/letsgo/pkg/config"
 )
+
+func raw() {
+	db, err := sql.Open("", "")
+	if err != nil {
+		return
+	}
+	db.Ping()
+}
 
 func getDBConnString(db string) (dbType, connStr string) {
 	dbType = db

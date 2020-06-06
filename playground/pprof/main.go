@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync/atomic"
+	"unsafe"
 
 	"github.com/peizhong/letsgo/pkg/db"
 	"golang.org/x/sync/singleflight"
@@ -31,7 +32,7 @@ func (np *NoPad) Increase() {
 type Pad struct {
 	a uint64
 	// 数据被多个goroutine访问，如果多个cpu同时访问某个变量，可能cpu把变量和相邻数据都读到缓存中
-	// 当cpu1更新变量时，cpu2的变量无效(false sharing)，导致cpu2没用到的变量也更新
+	// 当cpu1更新变量时，cpu2的变量无效(false sharing)，导致cpu2没用到的变量也要同步更新
 	// 将变量补足为64字节，填充一个cacheline
 	_p1 [8]uint64
 	b   uint64
@@ -62,12 +63,13 @@ func (mp *MPad) Increase() {
 }
 
 type SysPad struct {
-	_ cpu.CacheLinePad
-	a uint64
-	_ cpu.CacheLinePad
-	b uint64
-	_ cpu.CacheLinePad
-	c uint64
+	bl bool
+	a  uint64
+	_  cpu.CacheLinePad
+	b  uint64
+	_  cpu.CacheLinePad
+	c  uint64
+	_  cpu.CacheLinePad
 }
 
 func (sp *SysPad) Increase() {
@@ -98,7 +100,18 @@ func (d *database) Handler(writer http.ResponseWriter, request *http.Request) {
 
 // go tool compile -S main.go
 
+type sb struct {
+	b [64]bool
+}
+
+type sp struct {
+	a sb
+	p int
+}
+
 func main() {
+	fmt.Println(unsafe.Sizeof(sb{}), unsafe.Alignof(sb{}))
+	fmt.Println(unsafe.Sizeof(sp{}), unsafe.Alignof(sp{}))
 	// "net/http/pprof"
 	// debug/pprof/profile：访问这个链接会自动进行 CPU profiling，持续 30s，并生成一个文件供下载
 	// debug/pprof/heap： Memory Profiling 的路径，访问这个链接会得到一个内存 Profiling 结果的文件，在应用程序进行堆分配时记录堆栈跟踪，用于监视当前和历史内存使用情况，以及检查内存泄漏

@@ -47,7 +47,7 @@ var (
 func init() {
 	var err error
 	HomeDir, err = os.UserHomeDir()
-	WorkspaceDir = filepath.Join("", "/mnt/d/source/repos/letsgo")
+	WorkspaceDir = filepath.Join("", "/home/peizhong/source/repos/letsgo")
 	if err != nil {
 		log.Fatalf("Fail to load user home dir: %v", err)
 	}

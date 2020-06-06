@@ -47,6 +47,8 @@ func (g *GormHandler) Do(f func(*gorm.DB) (interface{}, error)) (interface{}, er
 		g.db.LogMode(false)
 		g.db.Callback().Query().Before("gorm:query").Register("tracing:query_before", g.before)
 		g.db.Callback().Query().After("gorm:after_query").Register("tracing:query_after", g.after)
+		g.db.DB().SetMaxIdleConns(10)
+		g.db.DB().SetMaxOpenConns(100)
 		// g.db.Callback().Create()
 		// g.db.Callback().Update()
 		// g.db.Callback().RowQuery()

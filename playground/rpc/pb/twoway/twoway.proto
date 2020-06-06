@@ -28,6 +28,27 @@ service TwoWayJob {
     rpc RouteChat(stream RouteNote) returns (stream RouteNote) {}
 }
 
+message OneOfMessage {
+  oneof test_oneof {
+    string name = 4;
+    Point pt = 9;
+  }
+}
+
+message Emiu {
+    int32 value = 1;
+    enum Corpus {
+        UNIVERSAL = 0;
+        WEB = 1;
+        IMAGES = 2;
+        LOCAL = 3;
+        NEWS = 4;
+        PRODUCTS = 5;
+        VIDEO = 6;
+    }
+    Corpus type = 2;
+}
+
 message Point {
     int32 latitude = 1;
     int32 longitude = 2;

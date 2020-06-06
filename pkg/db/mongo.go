@@ -19,7 +19,7 @@ type MongoHandler struct {
 	connStr string
 }
 
-func structTobsonM(i interface{})bson.M {
+func structTobsonM(i interface{}) bson.M {
 	v := reflect.ValueOf(i)
 	if v.Kind() == reflect.Ptr {
 		v = v.Elem()
@@ -42,7 +42,7 @@ func mapTobsonM(m map[string]interface{}) bson.M {
 func queryTobsonD(m []Query) bson.D {
 	d := bson.D{}
 	for _, v := range m {
-		if v.Op=="="{
+		if v.Op == "=" {
 			d = append(d, bson.E{
 				Key:   v.Key,
 				Value: v.Value,
@@ -115,6 +115,7 @@ func (m *MongoHandler) Get(i interface{}, q ...Query) error {
 	return err
 }
 
+// todo: set value
 func (m *MongoHandler) Gets(i interface{}, q ...Query) (int, error) {
 	cnt, err := m.colletion(i, func(collection *mongo.Collection) (int, error) {
 		t := reflect.TypeOf(i)
@@ -153,7 +154,7 @@ func (m *MongoHandler) Gets(i interface{}, q ...Query) (int, error) {
 			if err != nil {
 				return cnt, err
 			}
-			log.Println(n.Interface())
+			// log.Println(n.Interface())
 			cnt++
 		}
 		return cnt, nil
