@@ -64,7 +64,7 @@ func iocopy() {
 	io.Copy(ioutil.Discard, bytes.NewReader([]byte{}))
 }
 
-func channel() {
+func doDhannel() {
 
 }
 
@@ -96,5 +96,6 @@ func TestCal2(t *testing.T) {
 }
 
 func main() {
-	UseSlice()
+	m := make(map[int]int)
+	m[1] = 1
 }

@@ -1,6 +1,6 @@
 package main
 
-// runtime/chan.go
+// /usr/local/go/src/runtime/chan.go #32
 
 func WhatChan() {
 	// 在堆上分配

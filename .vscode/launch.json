@@ -15,10 +15,10 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/playground/cpp/helloworld.out",
+            "program": "${workspaceFolder}/playground/cpp/src/a.out",
             "args": [],
             "stopAtEntry": true,
-            "cwd": "${workspaceFolder}/playground/cpp/",
+            "cwd": "${workspaceFolder}/playground/cpp/src/",
             "environment": [],
             "externalConsole": true,
             "windows": {

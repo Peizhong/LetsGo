@@ -42,6 +42,7 @@ require (
 	go.mongodb.org/mongo-driver v1.3.1
 	go.uber.org/atomic v1.6.0
 	go.uber.org/automaxprocs v1.3.0
+	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
 	golang.org/x/sys v0.0.0-20200519105757-fe76b779f299
 	google.golang.org/grpc v1.29.1

@@ -96,7 +96,9 @@ int EpollServer()
                 }
                 setnonblocking(conn_sock);
                 ev.data.fd = conn_sock;
-                ev.events = EPOLLIN | EPOLLET;
+                // EPOLLET 边缘触发
+                // EPOLLONESHOT 最多触发一次，用完要再epoll_ctl一次
+                ev.events = EPOLLIN | EPOLLET | EPOLLONESHOT;
                 // 添加连接进入epoll监听列表
                 int res = epoll_ctl(epollfd, EPOLL_CTL_ADD, conn_sock,&ev);
                 if (res==-1)
