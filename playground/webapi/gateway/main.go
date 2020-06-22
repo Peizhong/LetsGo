@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
+
 	"github.com/peizhong/letsgo/internal"
 	"github.com/peizhong/letsgo/pkg/config"
 	"github.com/peizhong/letsgo/pkg/log"
 	"github.com/peizhong/letsgo/playground/webapi/gateway/middlewares"
-	"net/http"
 
 	"github.com/gorilla/mux"
 )
@@ -23,7 +24,16 @@ consul for service discovery
 */
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	log.Info("I do nothing")
+	// log.Info("I do nothing")
+	v := 0
+	for i := 0; i < 100; i++ {
+		v += 1
+	}
+	fmt.Fprintf(w, "%d", v)
+}
+
+func Do() {
+
 }
 
 func Start() {

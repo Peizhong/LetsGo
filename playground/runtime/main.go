@@ -6,7 +6,9 @@ import (
 	"io"
 	"io/ioutil"
 	"runtime"
+	"sync"
 	"testing"
+	"time"
 
 	// 宿主的cpu和容器实际cpu
 	_ "go.uber.org/automaxprocs"
@@ -95,7 +97,55 @@ func TestCal2(t *testing.T) {
 	b = 1
 }
 
+type field struct {
+	name string
+}
+
+func (p *field) print() {
+	fmt.Println(p.name)
+}
+
 func main() {
-	m := make(map[int]int)
-	m[1] = 1
+	if false {
+
+		var wg sync.WaitGroup
+		for i := 0; i < 10; i++ {
+			wg.Add(1)
+			go func() {
+				var r int
+				for v := 0; v < 100000; v++ {
+					for w := 0; w < 10000; w++ {
+						r = v*w - v + w
+					}
+				}
+				if r > 0 {
+
+				}
+				wg.Done()
+			}()
+		}
+		// runtime.Gosched()
+		for i := 0; i < 6; i++ {
+			// 这里只有6个，会出现idleprocs，但没有自旋?
+			wg.Add(1)
+			go func() {
+				var r int
+				for v := 0; v < 100000; v++ {
+					for w := 0; w < 10000; w++ {
+						r = v*w - v + w
+						r = v*w - v + w
+					}
+				}
+				if r > 0 {
+
+				}
+				wg.Done()
+			}()
+		}
+		go func() {
+			<-time.After(time.Minute)
+			wg.Done()
+		}()
+		wg.Wait()
+	}
 }

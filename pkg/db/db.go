@@ -14,6 +14,9 @@ func raw() {
 		return
 	}
 	db.Ping()
+
+	r,err:=db.Query("", "")
+	r.Close()
 }
 
 func getDBConnString(db string) (dbType, connStr string) {

@@ -2,14 +2,16 @@ package main
 
 import (
 	"sync"
+	"sync/atomic"
 	"time"
+	"unsafe"
 
 	"golang.org/x/sync/singleflight"
 )
 
 func usecond() {
 	cond := sync.NewCond(&sync.Mutex{})
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 1; i++ {
 		tt := i
 		go func() {
 			cond.L.Lock()
@@ -24,7 +26,6 @@ func usecond() {
 	// cond.L.Lock()
 	cond.Signal()
 	cond.Broadcast()
-	// cond.L.Unlock()
 }
 
 func usesingleflight() {
@@ -59,6 +60,30 @@ func usePool() {
 	v := pool.New()
 	pool.Put(v)
 	_ = pool.Get()
+}
+
+func syncMap() {
+	var mp sync.Map
+	mp.Store("aa", "bb")
+	if v, ok := mp.Load("aa"); ok {
+		println(v)
+	}
+	mp.Store(12, "34")
+	mp.Delete("aa")
+	mp.Range(func(k, v interface{}) bool {
+		return true
+	})
+}
+
+func UseAtomic() {
+	type v struct {
+		a, b int
+	}
+	av := atomic.Value{}
+	av.Store(v{1, 2})
+	xv := av.Load().(v)
+	p := (*v)(unsafe.Pointer(uintptr(unsafe.Pointer(&xv)) + 10))
+	println(xv.a, xv.b, p)
 }
 
 func UseSync() {

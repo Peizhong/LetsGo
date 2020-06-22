@@ -65,6 +65,14 @@ void enqueue(){
     printf("cas:%d\n",res);
 }
 
+void fn(){
+    int x, y, r;
+    x = r;
+    // 之前的内存访问先于其之后的内存访问
+    __asm__ __volatile__("": : :"memory");
+    y = 1;
+}
+
 pMyData bufffer = NULL;
 
 // gcc go.c -lrt
@@ -79,7 +87,7 @@ void main()
     }
     for (int i=0;i<buffersize;i++)
     {
-        printf("%d",bufffer[i].col1);
+        // printf("%d",bufffer[i].col1);
     }
     enqueue();
     free(bufffer);

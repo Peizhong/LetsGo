@@ -18,6 +18,7 @@ require (
 	github.com/google/gopacket v1.1.17
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/mux v1.7.4
+	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/consul/api v1.4.0
 	github.com/hashicorp/golang-lru v0.5.4
 	github.com/hashicorp/memberlist v0.2.2
@@ -45,7 +46,7 @@ require (
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
 	golang.org/x/sys v0.0.0-20200519105757-fe76b779f299
-	google.golang.org/grpc v1.29.1
+	google.golang.org/grpc v1.26.0
 	google.golang.org/protobuf v1.23.0
 	gopkg.in/ini.v1 v1.55.0 // indirect
 	k8s.io/api v0.18.3 // indirect

@@ -1,14 +1,27 @@
 package main
 
 import (
-	"github.com/peizhong/letsgo/internal"
 	"log"
 	"net"
+	"net/http"
+
+	"github.com/peizhong/letsgo/internal"
 )
 
 const (
 	Port = 8080
 )
+
+func httpclient() {
+	resp, err := http.Get("https://api.ipify.org?format=json")
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	tr := &http.Transport{DisableKeepAlives: true}
+	client := &http.Client{Transport: tr}
+	resp, err = client.Get("http://golang.org")
+}
 
 func main() {
 	internal.Host(func() {

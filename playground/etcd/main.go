@@ -3,14 +3,20 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/emirpasic/gods/lists"
-	"github.com/emirpasic/gods/lists/arraylist"
-	"github.com/peizhong/letsgo/internal"
-	etcd "go.etcd.io/etcd/clientv3"
 	"log"
 	"reflect"
 	"sync"
 	"time"
+
+	"github.com/emirpasic/gods/lists"
+	"github.com/emirpasic/gods/lists/arraylist"
+	"github.com/peizhong/letsgo/internal"
+
+	"github.com/coreos/etcd/clientv3"
+	etcdnaming "go.etcd.io/etcd/clientv3/naming"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/balancer"
 )
 
 type watchList struct {
@@ -32,11 +38,11 @@ func (w *watchList) addWatch(key string) *watchList {
 
 func (w *watchList) watching(ctx context.Context) {
 	go func() {
-		cfg := etcd.Config{
+		cfg := clientv3.Config{
 			Endpoints:   []string{"http://193.112.41.28:2379"},
 			DialTimeout: 2 * time.Second,
 		}
-		client, err := etcd.New(cfg)
+		client, err := clientv3.New(cfg)
 		if err != nil {
 			log.Println(err)
 			return
@@ -65,7 +71,7 @@ func (w *watchList) watching(ctx context.Context) {
 		})
 		for {
 			if _, value, ok := reflect.Select(cases); ok {
-				if v, ok := value.Interface().(etcd.WatchResponse); ok {
+				if v, ok := value.Interface().(clientv3.WatchResponse); ok {
 					for _, e := range v.Events {
 						fmt.Println(fmt.Sprintf("op: %v, k: %s, v: %s, rv: %d", e.Type, string(e.Kv.Key), string(e.Kv.Value), e.Kv.ModRevision))
 					}
@@ -87,6 +93,24 @@ func app(ctx context.Context, exit chan struct{}) {
 	}
 	// todo: 没有等待watching结束
 
+}
+
+// 将etcd的访问封装成grpc的负载均衡器，grpc调用服务指定域名，etcd负载均衡器解析成实际的ip
+func grpccall() {
+	cli, cerr := clientv3.NewFromURL("http://localhost:2379")
+	if cerr != nil {
+		return
+	}
+	// etcd的域名解析
+	r := &etcdnaming.GRPCResolver{Client: cli}
+	b := grpc.RoundRobin(r)
+	// grpc只用传域名
+	conn, gerr := grpc.Dial("my-service", grpc.WithBalancer(b), grpc.WithBlock())
+	if gerr != nil {
+		return
+	}
+	defer conn.Close()
+	// r.Update(context.TODO(), "my-service", naming.Update{Op: naming.Add, Addr: "1.2.3.4", Metadata: "..."})
 }
 
 func main() {

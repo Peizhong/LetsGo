@@ -29,3 +29,11 @@ func WhatChan() {
 
 	// checkdead(): 检查运行的M，如果等于0，dead
 }
+
+func inOnly(ch chan<- int) {
+
+}
+
+func outOnlu(ch <-chan int) {
+
+}

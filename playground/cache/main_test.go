@@ -5,6 +5,13 @@ import (
 	"testing"
 )
 
+// go test -test.run TestRedis
+func TestRedis(t *testing.T) {
+	rds := &GoRedis{}
+	rds.Init()
+	rds.SetString("wpz", "www")
+}
+
 // go test -bench=. -benchtime="3s" -cpuprofile profile_cpu.out
 // pprof -http=:8080 profile_cpu.out
 
@@ -22,7 +29,7 @@ func BenchmarkDoRedis(b *testing.B) {
 		}
 	}
 	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next(){
+		for pb.Next() {
 
 		}
 	})

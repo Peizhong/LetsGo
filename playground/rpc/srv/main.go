@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	consul_api "github.com/hashicorp/consul/api"
 	"github.com/peizhong/letsgo/pkg/config"
 	"github.com/peizhong/letsgo/playground/rpc/pb/helloworld"
@@ -203,7 +204,9 @@ func main() {
 	// tls
 	s := grpc.NewServer(grpc.Creds(creds))
 	// 暂时不用tls，给consul用
-	s = grpc.NewServer()
+	s = grpc.NewServer(
+		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
+		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor))
 	gServer := &server{}
 	gServer.loadFeatures(filepath.Join(config.WorkspaceDir, "playground/conf/example.json"))
 	pb.RegisterTwoWayJobServer(s, gServer)

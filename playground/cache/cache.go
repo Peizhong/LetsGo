@@ -19,22 +19,23 @@ type Cacher interface {
 }
 
 type GoRedis struct {
-	client *redis.Ring
+	client *redis.Client
+	ring   *redis.Ring
 }
 
 func (r *GoRedis) Init() error {
 	// 单节点
-	/*client := redis.NewClient(&redis.Options{
-		Addr: "193.112.41.28:6379",
+	client := redis.NewClient(&redis.Options{
+		Addr: "localhost:6379",
 		DB:   0,
 	})
-	*/
-	// 分区
-	client := redis.NewRing(&redis.RingOptions{
-		Addrs:    map[string]string{"remote": "193.112.41.28:6379", "local": "localhost:3679"},
-		DB:       0,
-		Password: "ur@hello123",
-	})
+	/*
+		// 分区
+		client := redis.NewRing(&redis.RingOptions{
+			Addrs:    map[string]string{"remote": "193.112.41.28:6379", "local": "localhost:3679"},
+			DB:       0,
+			Password: "ur@hello123",
+		})*/
 	pong, err := client.Ping().Result()
 	if err != nil {
 		log.Panicln(err)
@@ -49,8 +50,9 @@ func (r *GoRedis) GetConfig() map[string]interface{} {
 }
 
 func (r *GoRedis) SetString(key, value string) error {
-	err := r.client.Set(key, value, time.Second).Err()
-	return err
+	cmd := r.client.Set(key, value, time.Second)
+	// log.Println(cmd.String())
+	return cmd.Err()
 }
 
 func (r *GoRedis) GetString(key string) (string, error) {

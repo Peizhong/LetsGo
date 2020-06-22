@@ -53,6 +53,7 @@ func (r *rabbit) publish(queue, text string) error {
 		false, // mandatory
 		false, // immediate
 		amqp.Publishing{
+			Headers:      make(amqp.Table),
 			DeliveryMode: amqp.Persistent,
 			ContentType:  "text/plain",
 			Body:         []byte(text),

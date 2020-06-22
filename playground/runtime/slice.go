@@ -4,8 +4,10 @@ func UseSlice() {
 	root := []int{1, 2, 3, 4, 5, 6}
 	r1 := root[1:5]
 	r2 := root[2:4]
+
 	bak := make([]int, 10)
 	// min(len(bak),len(r1))
+	//copy(dest,srt)，拷贝长度不超过src
 	copy(bak, r1)
 	println(cap(r1), cap(r2))
 	r1[2] = 100
@@ -19,4 +21,11 @@ func UseSlice() {
 	// 达到5之后，再扩容就是不同底层数组了
 	r2 = append(r2, 500)
 	r2[2] = 200
+}
+
+func UseString() {
+	str := "hello 你好!"
+	for _, s := range []rune(str) {
+		println(string(s))
+	}
 }

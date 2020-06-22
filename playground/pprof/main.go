@@ -119,6 +119,7 @@ func main() {
 	// debug/pprof/goroutines：运行的 goroutines 列表，以及调用关系
 
 	// https://eddycjy.com/posts/go/tools/2018-09-15-go-tool-pprof/
+	// ab -n 1000 -c 4 localhost:8000/run
 	// go tool pprof -http :8080 http://localhost:8000/debug/pprof/profile
 
 	http.HandleFunc("/ab", func(writer http.ResponseWriter, request *http.Request) {
