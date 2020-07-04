@@ -15,6 +15,11 @@
 
 #define BUFFER_B 8
 
+typedef struct  {
+    int64_t col1,col2,col3;
+    char v[512];
+} MyData,*pMyData;
+
 // https://blog.csdn.net/bbzhaohui/article/details/81665370
 void setShareMem()
 {
@@ -27,19 +32,17 @@ void setShareMem()
     // mmap也可以映射普通文件
     void *map = mmap(NULL,shm_size,PROT_READ|PROT_WRITE,MAP_SHARED,shmfd,0);
     assert(map!=MAP_FAILED);
-    sprintf((char*)map,"hello, i will show you something");  
-    printf("%s\n",(char*)map);
+    pMyData pData = (pMyData)map;
+    pData->col1=43;
+    // sprintf(pData->v,"hello, i will show you something");  
+    strcpy(pData->v,"hello, i will show you something\0");
+    printf("%s\n",pData->v);
     // memset(map,43,shm_size);
     close(shmfd);
     // 删除/dev/shm的文件
-    shm_unlink(shm_name);
+    // shm_unlink(shm_name);
     munmap(map, shm_size);
 }
-
-typedef struct  {
-    int64_t col1,col2,col3;
-    char v;
-} MyData,*pMyData;
 
 void readShareMem()
 {
@@ -49,7 +52,7 @@ void readShareMem()
     void *map = mmap(NULL,shm_size,PROT_READ,MAP_SHARED,shmfd,0);
     assert(map!=MAP_FAILED);
     pMyData dd = (pMyData)map;
-    printf("col1:%ld,col2:%ld,col3:%ld,v:%c\n",dd->col1,dd->col2,dd->col3,dd->v);
+    printf("col1:%ld,col2:%ld,col3:%ld,v:%s\n",dd->col1,dd->col2,dd->col3,dd->v);
     int64_t *col = (int64_t*)map;
     for (int i=0;i<3;i++)
     {
@@ -91,5 +94,5 @@ void main()
     }
     enqueue();
     free(bufffer);
-    // readShareMem();
+    setShareMem();
 }

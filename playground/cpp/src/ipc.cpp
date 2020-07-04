@@ -14,10 +14,20 @@
 #include <sys/msg.h>
 #include <sys/shm.h>
 
+#include <iostream>
+#include <thread>
+
+#include "tree.h"
+
 #define FIFO_PATH "ff"
 #define SEM_PATH "sm"
 #define MSG_KEY 43
 #define SHM_KEY 23
+
+#define max(a,b) (a>b?a:b)
+
+using namespace std;
+
 
 void doPipe()
 {
@@ -165,7 +175,110 @@ void doSignal()
     kill(pid,SIGUSR1);
 }
 
+typedef class fClass {
+    public:
+    int a,b;
+    private:
+    int c,d;
+    // 友元函数
+    friend fClass duplicate(fClass);
+    // 友元类
+    friend class fClass2;
+} fClass;
+
+typedef class fClass2{
+    public:
+        fClass2(int v);
+        void Dofriend();
+        virtual void vv(); // 虚拟
+        virtual void vv0()=0; // 抽象
+    protected:
+        int f2;
+        void DoproFriend();
+    private:
+        void F2Private();
+} fClass2;
+
+void fClass2::Dofriend(){
+    fClass f;
+    int a = f.c+f.d;
+}
+
+typedef class fClass3 : public fClass2{
+    public:
+        int a;
+        void DoClass3();
+        fClass3();
+        void vv0();
+} fClass3;
+
+typedef class fClass4 : protected fClass2{
+    public:
+        int a;
+        void DoClass4();
+        fClass4();
+        void vv0();
+} fClass4;
+
+
+void fClass4::vv0(){
+    this->DoproFriend();
+}
+
+typedef class fClass5 : private fClass2{
+    public:
+        int a;
+        void DoClass4();
+        fClass5();
+        void vv0();
+} fClass5;
+
+
+void fClass5::vv0(){
+
+}
+
+fClass3::fClass3():fClass2(3){
+    a = this->f2;
+}
+
+void fClass3::DoClass3(){
+    this->DoproFriend();
+    printf("%s:%d@%s\n",__func__,__LINE__,__FILE__);
+}
+
+void fClass3::vv0(){
+
+}
+
+void trun(int n){
+    auto id = std::this_thread::get_id();
+    std::this_thread::yield();
+}
+
+void doThread(){
+    auto t = thread(trun,2);
+    t.join();
+
+    // 通过构造函数
+    thread t2(trun,2);
+    t2.join();
+
+    thread t3(trun,3);
+    t3.detach(); // main线程退出，进程不会退出
+}
+
 int main(){
+    int a= 0;
+    auto str = "ada\n";
     doMsg();
+    a ++;
+    fClass f;
+    fClass3 f3;
+    f3.Dofriend();
+    duplicate(f);
     exit(EXIT_SUCCESS);
+    fClass4 f4;
+    fClass5 f5;
+    f4.Dofriend();
 }

@@ -10,11 +10,11 @@
 ---
 # 概况
 - 7年软件开发工作经验，近2年从事微服务项目的开发，1年多的Go开发经验
-- 熟悉Go语言编程及生态，懂得Go Runtime、调优。阅读过自带和第三方源码
-- 以往项目中使用过C++、Python、C#开发。熟悉常用软件设计模式、数据结构和算法
+- 熟悉Go语言编程及生态，懂得Go Runtime、调优。阅读过自带库和第三方源码
+- 掌握C++、Python、C#语言。熟悉常用软件设计模式、数据结构和算法
+- Linux(Ubuntu、WSL)开发经验，了解操作系统、多任务、网络编程、虚拟化和容器技术
 - 熟悉微服务模式的后台开发，具备架构能力，熟悉TCP、HTTP、MySQL、Redis、etcd、RabbitMQ、gRPC。使用框架包括gin、gorm、evio、Django、ASP .NET Core
-- 具有分布式解决方案的经验：Docker、Kubernetes、MongoDB、监控(Prometheus)、服务注册(Consul)、网关(Nginx、Ocelot)、身份认证(IdenetityServer)、日志(ELK)、链路追踪(Jaeger)、分布式任务(celery)。了解分布式应用协议(gossip, raft)
-- Linux(Ubuntu、WSL)开发经验，了解操作系统、虚拟化和容器技术
+- 具有分布式解决方案的经验：Docker、Kubernetes、OSS、MongoDB、监控(Prometheus)、服务注册(Consul)、网关(Nginx、Ocelot)、网络安全(OpenSSL、IdenetityServer)、日志(ELK)、链路追踪(Jaeger)、分布式任务(celery)。了解分布式应用协议(gossip, raft)
 - 较好的英语能力，可以口语交流，高效地阅读Github项目文档，查阅英文资料
 
 ---

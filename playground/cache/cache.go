@@ -66,6 +66,17 @@ func (r *GoRedis) GetString(key string) (string, error) {
 	return val, nil
 }
 
+func (r *GoRedis) Blpop(key string) (string, error) {
+	val, err := r.client.BLPop(time.Second, key).Result()
+	if err == redis.Nil {
+		// log.Println("key does not exist")
+		return "", nil
+	} else if err != nil {
+		return "", err
+	}
+	return val[0], nil
+}
+
 type GoEtcd struct {
 	client *etcd.Client
 	kapi   etcd.KeysAPI
