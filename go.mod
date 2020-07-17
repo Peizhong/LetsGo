@@ -43,12 +43,14 @@ require (
 	go.mongodb.org/mongo-driver v1.3.1
 	go.uber.org/atomic v1.6.0
 	go.uber.org/automaxprocs v1.3.0
+	go.uber.org/dig v1.10.0
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
 	golang.org/x/sys v0.0.0-20200519105757-fe76b779f299
 	google.golang.org/grpc v1.26.0
 	google.golang.org/protobuf v1.23.0
 	gopkg.in/ini.v1 v1.55.0 // indirect
+	gopkg.in/vmihailenco/msgpack.v2 v2.9.1
 	k8s.io/api v0.18.3 // indirect
 	k8s.io/apimachinery v0.18.3
 	k8s.io/client-go v0.0.0-20200520082344-7ab8430bef2c
