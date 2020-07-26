@@ -13,6 +13,7 @@ require (
 	github.com/go-ini/ini v1.57.0
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/gogo/protobuf v1.3.1
+	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.4.2
 	github.com/google/btree v1.0.0
 	github.com/google/gopacket v1.1.17
