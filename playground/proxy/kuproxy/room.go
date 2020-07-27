@@ -1,6 +1,8 @@
 package main
 
+//go:generate mockgen -destination ./mock/room.go -package mock_main -source room.go
+
 type room interface {
-	Join(string)
-	Leave(string)
+	Join(room string, endpoint string)
+	Leave(room string, endpoint string)
 }

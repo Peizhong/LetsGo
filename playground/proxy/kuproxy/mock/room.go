@@ -33,25 +33,25 @@ func (m *Mockroom) EXPECT() *MockroomMockRecorder {
 }
 
 // Join mocks base method
-func (m *Mockroom) Join(arg0 string) {
+func (m *Mockroom) Join(room, endpoint string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Join", arg0)
+	m.ctrl.Call(m, "Join", room, endpoint)
 }
 
 // Join indicates an expected call of Join
-func (mr *MockroomMockRecorder) Join(arg0 interface{}) *gomock.Call {
+func (mr *MockroomMockRecorder) Join(room, endpoint interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Join", reflect.TypeOf((*Mockroom)(nil).Join), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Join", reflect.TypeOf((*Mockroom)(nil).Join), room, endpoint)
 }
 
 // Leave mocks base method
-func (m *Mockroom) Leave(arg0 string) {
+func (m *Mockroom) Leave(room, endpoint string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Leave", arg0)
+	m.ctrl.Call(m, "Leave", room, endpoint)
 }
 
 // Leave indicates an expected call of Leave
-func (mr *MockroomMockRecorder) Leave(arg0 interface{}) *gomock.Call {
+func (mr *MockroomMockRecorder) Leave(room, endpoint interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Leave", reflect.TypeOf((*Mockroom)(nil).Leave), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Leave", reflect.TypeOf((*Mockroom)(nil).Leave), room, endpoint)
 }
