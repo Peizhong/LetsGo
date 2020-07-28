@@ -23,7 +23,9 @@ type K8sServiceDiscovery struct {
 
 func (K8sServiceDiscovery) Endpoints(serviceName string) ([]string, error) {
 	config, err := rest.InClusterConfig()
-	if err != nil {
+	if err == nil {
+		log.Println("in cluster")
+	} else {
 		if err == rest.ErrNotInCluster {
 			log.Println("not in cluster")
 			// microk8s kubectl proxy --accept-hosts=.* --address=0.0.0.0
@@ -50,4 +52,11 @@ func (K8sServiceDiscovery) Endpoints(serviceName string) ([]string, error) {
 		}
 	}
 	return res, nil
+}
+
+type MockServiceDiscovery struct {
+}
+
+func (MockServiceDiscovery) Endpoints(serviceName string) ([]string, error) {
+	return []string{"localhost:54478"}, nil
 }

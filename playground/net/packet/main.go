@@ -66,10 +66,12 @@ func main() {
 	packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
 	for packet := range packetSource.Packets() {
 		if tcpLayer := packet.Layer(layers.LayerTypeTCP); tcpLayer != nil {
-			if tcp, ok := tcpLayer.(*layers.TCP); ok && tcp.DstPort == layers.TCPPort(targetPort) {
-				atomic.AddInt64(&bytes, int64(len(tcpLayer.LayerContents())))
-				atomic.AddInt64(&count, 1)
-				// spew.Dump(tcp)
+			if tcp, ok := tcpLayer.(*layers.TCP); ok && tcp.SrcPort == layers.TCPPort(targetPort) {
+				if tcp.PSH {
+					l := len(tcpLayer.LayerPayload())
+					atomic.AddInt64(&bytes, int64(l))
+					atomic.AddInt64(&count, 1)
+				}
 			}
 		}
 	}
