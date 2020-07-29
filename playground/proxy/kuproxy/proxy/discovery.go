@@ -40,14 +40,16 @@ func (*K8sServiceDiscovery) Endpoints(serviceName string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	// microk8s.kubectl proxy --accept-hosts=.* --address=0.0.0.0
 	// http://192.168.3.143:8001/api/v1/namespaces/default/endpoints/nginx-service
-	endpoint, err := client.CoreV1().Endpoints("default").Get(context.Background(), "nginx-service", v1.GetOptions{})
+	endpoint, err := client.CoreV1().Endpoints("default").Get(context.Background(), serviceName, v1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
 	res := []string{}
 	for _, ep := range endpoint.Subsets {
 		for _, addr := range ep.Addresses {
+			// todo: 如果pod暴露了多个端口，subsets.ports会有多个，name区分
 			res = append(res, fmt.Sprintf("%s:%d", addr.IP, ep.Ports[0].Port))
 		}
 	}
