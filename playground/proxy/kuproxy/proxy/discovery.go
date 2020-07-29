@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 )
 
 //go:generate mockgen -destination ./mock/room.go -source discovery.go
-type discovery interface {
+type Discovery interface {
 	// endpoints 返回endpoints信息
 	Endpoints(serviceName string) ([]string, error)
 }
@@ -21,7 +21,7 @@ type discovery interface {
 type K8sServiceDiscovery struct {
 }
 
-func (K8sServiceDiscovery) Endpoints(serviceName string) ([]string, error) {
+func (*K8sServiceDiscovery) Endpoints(serviceName string) ([]string, error) {
 	config, err := rest.InClusterConfig()
 	if err == nil {
 		log.Println("in cluster")
@@ -57,6 +57,6 @@ func (K8sServiceDiscovery) Endpoints(serviceName string) ([]string, error) {
 type MockServiceDiscovery struct {
 }
 
-func (MockServiceDiscovery) Endpoints(serviceName string) ([]string, error) {
-	return []string{"localhost:54478"}, nil
+func (*MockServiceDiscovery) Endpoints(serviceName string) ([]string, error) {
+	return []string{"localhost:54478", "localhost:3000"}, nil
 }
