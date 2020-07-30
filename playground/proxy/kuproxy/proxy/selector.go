@@ -10,10 +10,13 @@ import (
 )
 
 // selector select upstream pod
-type selector interface {
-	// SelectEndpoint 根据标识，获得对应endpoints
+type Selector interface {
+	// SelectEndpoint 根据标识，获得对应endpoints，并分配房间。
+	// 如果后续操作失败，通过ReleaseEndpoint释放房间
 	SelectEndpoint(id string) (string, error)
 	ReleaseEndpoint(endpoint, id string)
+	// 查询房间状态：endpoint: [id, ...]
+	LoadStatus() map[string][]string
 }
 
 type LoadBalance int
@@ -31,7 +34,7 @@ const (
 
 type loop struct {
 	endpoint string
-	count    uint // connection count
+	count    int // connection count
 }
 
 var (
@@ -40,7 +43,7 @@ var (
 	UpdateEndpointsInterval         = time.Second
 )
 
-type MockSelector struct {
+type LBSelector struct {
 	serviceName string
 
 	serviceDiscovery Discovery
@@ -53,12 +56,12 @@ type MockSelector struct {
 	room *roomService
 }
 
-func NewSelector(serviceName string) selector {
-	mock := &MockSelector{
+func NewSelector(serviceName string, config Config) Selector {
+	mock := &LBSelector{
 		serviceName:      serviceName,
 		loadbalance:      LeastConnections,
 		serviceDiscovery: &MockServiceDiscovery{},
-		room:             NewRoomSerivce(),
+		room:             NewRoomSerivce(config),
 	}
 	mock.refreshEndpoints()
 	// stopCh := make(chan struct{})
@@ -66,11 +69,14 @@ func NewSelector(serviceName string) selector {
 	return mock
 }
 
-func (m *MockSelector) SelectEndpoint(id string) (string, error) {
-	// 如果id已和endpint绑定
+func (m *LBSelector) SelectEndpoint(id string) (string, error) {
+	// 通过repository(redis)查询，如果id已和endpoint绑定
 	if cachedEndpoint, ok := m.room.Where(id); ok {
+		// 检查cache的endpoint和最新的endpoint是否一致
 		for _, ep := range m.loops {
 			if ep.endpoint == cachedEndpoint {
+				// 房间再增加一个连接
+				m.room.Enter(cachedEndpoint, id)
 				return cachedEndpoint, nil
 			}
 		}
@@ -102,12 +108,23 @@ func (m *MockSelector) SelectEndpoint(id string) (string, error) {
 	return "", SelectServiceEndPointFailed
 }
 
-func (m *MockSelector) ReleaseEndpoint(endpoint, id string) {
+func (m *LBSelector) ReleaseEndpoint(endpoint, id string) {
 	m.room.Leave(endpoint, id)
 }
 
+func (m *LBSelector) LoadStatus() map[string][]string {
+	res := make(map[string][]string)
+	for _, ep := range m.loops {
+		// 重置本地loop数据，加载cache的
+		roomInfo := m.room.Status(ep.endpoint)
+		ep.count = len(roomInfo)
+		res[ep.endpoint] = roomInfo
+	}
+	return res
+}
+
 // refreshEndpoints 覆盖更新endpoints信息
-func (m *MockSelector) refreshEndpoints() {
+func (m *LBSelector) refreshEndpoints() {
 	endpoints, err := m.serviceDiscovery.Endpoints(m.serviceName)
 	if err != nil {
 		log.Info("serviceDiscovery Endpoints error", err.Error())
@@ -134,7 +151,7 @@ func (m *MockSelector) refreshEndpoints() {
 }
 
 // updateTrigger 开启定时器，定时查询最新endpoints
-func (m *MockSelector) updateTrigger() {
+func (m *LBSelector) updateTrigger() {
 	// 随机时间开启
 	randStagger := time.Duration(uint64(rand.Int63()) % uint64(UpdateEndpointsInterval))
 	<-time.After(randStagger)

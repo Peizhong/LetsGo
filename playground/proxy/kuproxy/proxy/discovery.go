@@ -60,5 +60,5 @@ type MockServiceDiscovery struct {
 }
 
 func (*MockServiceDiscovery) Endpoints(serviceName string) ([]string, error) {
-	return []string{"localhost:54478", "localhost:3000"}, nil
+	return []string{"localhost:3000", "localhost:3001"}, nil
 }

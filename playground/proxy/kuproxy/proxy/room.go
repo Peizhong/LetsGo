@@ -18,9 +18,9 @@ var (
 	}
 )
 
-func NewRoomSerivce() *roomService {
+func NewRoomSerivce(config Config) *roomService {
 	return &roomService{
-		repo: NewRedisRepository(),
+		repo: NewRedisRepository(config),
 	}
 }
 
@@ -29,24 +29,36 @@ func (r *roomService) Where(roomId string) (string, bool) {
 	return r.repo.GetString(roomLocationKey(roomId))
 }
 
-// 加入房间，记录房间中的人数
+// 申请房间，记录房间中的人数
 func (r *roomService) CheckIn(endpoint, roomId string) {
 	r.repo.SetString(roomLocationKey(roomId), endpoint)
+	r.repo.SetSortedSetMemberScore(endpointInfoKey(endpoint), roomId, 1)
+}
+
+// 加入房间
+func (r *roomService) Enter(endpoint, roomId string) {
 	r.repo.IncrSortedSetMemberScore(endpointInfoKey(endpoint), roomId, 1)
 }
 
-// Leave: 有人离开房间。房间仍保留
+// Leave: 有人离开房间。如果走完了，删除
 func (r *roomService) Leave(endpoint, roomId string) {
-	r.repo.IncrSortedSetMemberScore(endpointInfoKey(endpoint), roomId, -1)
+	// 降低一个
+	remain := r.repo.IncrSortedSetMemberScore(endpointInfoKey(endpoint), roomId, -1)
+	if remain <= 0 && remain != RepoErrorVal {
+		r.CheckOut(endpoint, roomId)
+	}
 }
 
-// CheckOut: 删除房间信息
+// CheckOut: 最后一个连接端断开，删除房间信息
 func (r *roomService) CheckOut(endpoint, roomId string) {
 	r.repo.DeleteString(roomLocationKey(roomId))
-	r.repo.SetSortedSetMemberScore(endpointInfoKey(endpoint), roomId, 0)
+	r.repo.RemoveSortedSetMember(endpointInfoKey(endpoint), roomId)
 }
 
-// CleanUp: 查找没有人的房间，删除
-func (r *roomService) CleanUp() {
-	// todo: get keys
+func (r *roomService) Status(endpoint string) []string {
+	var res []string
+	for room, num := range r.repo.GetSortedSetMembersWithScore(endpointInfoKey(endpoint)) {
+		res = append(res, fmt.Sprintf("%s:%v", room, num))
+	}
+	return res
 }
