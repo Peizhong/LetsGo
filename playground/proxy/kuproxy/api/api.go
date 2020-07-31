@@ -34,6 +34,7 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 
 func StartHttp(httpAddr string, rt *proxy.Runtime) {
 	r := mux.NewRouter()
+	// todo: 如果部署多个副本就用不了了
 	r.PathPrefix("/debug/pprof/").Handler(http.DefaultServeMux)
 	r.Handle("/metrics", promhttp.Handler())
 

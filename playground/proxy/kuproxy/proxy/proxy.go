@@ -82,7 +82,7 @@ func (p *proxy) makeTunnel(downConn net.Conn) error {
 	log.Println(url, roomId, serviceName)
 	selector, ok := p.rt.SelectorMap[serviceName]
 	if !ok {
-		selector = NewSelector(serviceName, p.rt.Config)
+		selector = NewSelector(serviceName, p.rt)
 		p.rt.SelectorMap[serviceName] = selector
 	}
 	endpoint, newSelect, err := selector.SelectEndpoint(roomId)

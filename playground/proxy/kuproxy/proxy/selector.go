@@ -41,7 +41,7 @@ type loop struct {
 
 var (
 	NoAvailableServiceEndPointError = errors.New("No available service endpoint")
-	UpdateEndpointsInterval         = time.Second
+	UpdateEndpointsInterval         = 30 * time.Second
 )
 
 type LBSelector struct {
@@ -57,12 +57,12 @@ type LBSelector struct {
 	room *roomService
 }
 
-func NewSelector(serviceName string, config Config) Selector {
+func NewSelector(serviceName string, rt *Runtime) Selector {
 	mock := &LBSelector{
 		serviceName:      serviceName,
 		loadbalance:      LeastConnections,
-		serviceDiscovery: &MockServiceDiscovery{},
-		room:             NewRoomSerivce(config),
+		serviceDiscovery: rt.Discovery,
+		room:             NewRoomSerivce(rt.Config),
 	}
 	// 初次加载servicce的endpoint
 	mock.refreshEndpoints()
