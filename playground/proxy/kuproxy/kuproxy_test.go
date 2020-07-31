@@ -25,16 +25,16 @@ func TestK8sServiceDiscovery(t *testing.T) {
 func TestSelectService(t *testing.T) {
 	selector := proxy.NewSelector("Test", proxy.NewConfig())
 	roomId0 := "room0"
-	endpoint0, err := selector.SelectEndpoint(roomId0)
+	endpoint0, _, err := selector.SelectEndpoint(roomId0)
 	assert.NoError(t, err)
-	endpoint1, err := selector.SelectEndpoint(roomId0)
+	endpoint1, _, err := selector.SelectEndpoint(roomId0)
 	assert.NoError(t, err)
 	assert.Equal(t, endpoint0, endpoint1)
 
 	room1 := "room1"
-	endpoint2, err := selector.SelectEndpoint(room1)
+	endpoint2, _, err := selector.SelectEndpoint(room1)
 	assert.NoError(t, err)
-	endpoint3, err := selector.SelectEndpoint(room1)
+	endpoint3, _, err := selector.SelectEndpoint(room1)
 	assert.NoError(t, err)
 	assert.Equal(t, endpoint2, endpoint3)
 
@@ -49,8 +49,8 @@ func TestSelectService(t *testing.T) {
 func TestRoomSerive(t *testing.T) {
 	selector := proxy.NewSelector("Test", proxy.NewConfig())
 	roomId0 := UniqueKey("RoomSerivce")
-	endpoint0, _ := selector.SelectEndpoint(roomId0)
-	endpoint1, _ := selector.SelectEndpoint(roomId0)
+	endpoint0, _, _ := selector.SelectEndpoint(roomId0)
+	endpoint1, _, _ := selector.SelectEndpoint(roomId0)
 	status := selector.LoadStatus()
 	targetRoom, ok := status[roomId0]
 	assert.True(t, ok)

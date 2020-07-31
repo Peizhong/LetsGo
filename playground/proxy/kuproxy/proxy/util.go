@@ -1,6 +1,9 @@
 package proxy
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 func parseRequestLine(line string) (method, requestURI, roomId, serviceName string) {
 	s1 := strings.Index(line, " ")
@@ -30,4 +33,11 @@ func parseRequestLine(line string) (method, requestURI, roomId, serviceName stri
 	// todo: 从环境变量读取
 	serviceName = parseParams(ServiceNameParam)
 	return
+}
+
+func checkError(err error, message string) error {
+	if err != nil {
+		return fmt.Errorf("%s err: %s", message, err.Error())
+	}
+	return nil
 }

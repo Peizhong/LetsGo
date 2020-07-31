@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/go-redis/redis"
 	"github.com/peizhong/letsgo/pkg/log"
@@ -12,14 +13,14 @@ const RepoErrorVal float64 = -999
 // 储存room和server的信息
 type Repository interface {
 	GetString(key string) (string, bool)
-	SetString(key string, value string)
+	SetString(key string, value string) error
 	DeleteString(key string)
 	Keys(pattern string) []string
 
 	GetSortedSetMemberCount(key string) int64
 	GetSortedSetMemberScore(key, member string) float64
-	SetSortedSetMemberScore(key, member string, score float64)
-	IncrSortedSetMemberScore(key, member string, incr float64) float64
+	SetSortedSetMemberScore(key, member string, score float64) error
+	IncrSortedSetMemberScore(key, member string, incr float64) (float64, error)
 	RemoveSortedSetMember(key, member string)
 	RemoveSortedSetMemberScoreRange(key string, min, max float64)
 	GetSortedSetMembersWithScore(key string) map[string]float64
@@ -29,19 +30,28 @@ type RedisRepository struct {
 	rc *redis.Client
 }
 
+var onceRepo sync.Once
+var singelRedis Repository
+
 func NewRedisRepository(conf Config) Repository {
-	// 单节点
-	client := redis.NewClient(&redis.Options{
-		Addr:     conf.GetString(redisAddrKey),
-		Password: conf.GetString(redisPasswordKey),
-		DB:       0,
+	if singelRedis != nil {
+		return singelRedis
+	}
+	onceRepo.Do(func() {
+		// 单节点
+		client := redis.NewClient(&redis.Options{
+			Addr:     conf.GetString(redisAddrKey),
+			Password: conf.GetString(redisPasswordKey),
+			DB:       0,
+		})
+		if err := client.Ping().Err(); err != nil {
+			panic(err)
+		}
+		singelRedis = &RedisRepository{
+			rc: client,
+		}
 	})
-	if err := client.Ping().Err(); err != nil {
-		panic(err)
-	}
-	return &RedisRepository{
-		rc: client,
-	}
+	return singelRedis
 }
 
 func (r *RedisRepository) Keys(pattern string) []string {
@@ -60,8 +70,9 @@ func (r *RedisRepository) GetString(key string) (string, bool) {
 	return val, true
 }
 
-func (r *RedisRepository) SetString(key string, value string) {
-	r.rc.Set(key, value, 0)
+func (r *RedisRepository) SetString(key string, value string) error {
+	err := r.rc.Set(key, value, 0).Err()
+	return err
 }
 
 func (r *RedisRepository) DeleteString(key string) {
@@ -85,21 +96,22 @@ func (r *RedisRepository) GetSortedSetMemberScore(key, member string) float64 {
 }
 
 // SetSortedSet
-func (r *RedisRepository) SetSortedSetMemberScore(key, member string, score float64) {
-	r.rc.ZAdd(key, redis.Z{
+func (r *RedisRepository) SetSortedSetMemberScore(key, member string, score float64) error {
+	err := r.rc.ZAdd(key, redis.Z{
 		Member: member,
 		Score:  score,
-	})
+	}).Err()
+	return err
 }
 
 // IncrSortedSetMemberScore redis: ZINCRBY
-func (r *RedisRepository) IncrSortedSetMemberScore(key, member string, incr float64) float64 {
+func (r *RedisRepository) IncrSortedSetMemberScore(key, member string, incr float64) (float64, error) {
 	val, err := r.rc.ZIncrBy(key, incr, member).Result()
 	if err != nil {
 		log.Info("redis err", err.Error())
-		return RepoErrorVal
+		return RepoErrorVal, err
 	}
-	return val
+	return val, nil
 }
 
 // RemoveSortedSetMember redis: ZREM

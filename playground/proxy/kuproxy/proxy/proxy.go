@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -35,7 +36,7 @@ func StartProxy(tcpAddr string, rt *Runtime) error {
 	log.Println("tcp listen at", tcpAddr)
 	l, err := net.Listen("tcp", tcpAddr)
 	if err != nil {
-		return err
+		panic(err)
 	}
 	p := &proxy{
 		rt: rt,
@@ -43,11 +44,13 @@ func StartProxy(tcpAddr string, rt *Runtime) error {
 	go p.cleanUpBrokenConn()
 	for {
 		conn, err := l.Accept()
-		if err != nil {
+		if ce := checkError(err, "accept"); ce != nil {
+			log.Println(ce.Error())
 			continue
 		}
-		if err = p.makeTunnel(conn); err != nil {
-			log.Println("abort tcp conn", err.Error())
+		err = p.makeTunnel(conn)
+		if ce := checkError(err, "make tunnel"); ce != nil {
+			log.Println(ce.Error())
 			conn.Close()
 		}
 	}
@@ -55,11 +58,12 @@ func StartProxy(tcpAddr string, rt *Runtime) error {
 
 // makeTunnel: 建立双向转发通道
 // todo: 每个连接会产生2个goroutine，换成select/epoll?
-func (p *proxy) makeTunnel(down net.Conn) error {
-	buf := make([]byte, 1024)
-	n, err := down.Read(buf)
-	if err != nil {
-		return err
+func (p *proxy) makeTunnel(downConn net.Conn) error {
+	buf := make([]byte, 512)
+	n, err := downConn.Read(buf)
+	if ce := checkError(err, "read downstream"); ce != nil {
+		log.Println(ce.Error())
+		return ce
 	}
 	// 检查请求是否是包含roomId的http请求
 	_, url, roomId, serviceName := parseRequestLine(string(buf))
@@ -68,6 +72,7 @@ func (p *proxy) makeTunnel(down net.Conn) error {
 		return ParseRequestError
 	}
 	if roomId == "" {
+		log.Println("no roomId, use default")
 		roomId = DefaultRoomId
 	}
 	if serviceName == "" {
@@ -80,55 +85,55 @@ func (p *proxy) makeTunnel(down net.Conn) error {
 		selector = NewSelector(serviceName, p.rt.Config)
 		p.rt.SelectorMap[serviceName] = selector
 	}
-	endpoint, err := selector.SelectEndpoint(roomId)
-	if err != nil {
-		return err
+	endpoint, newSelect, err := selector.SelectEndpoint(roomId)
+	if ce := checkError(err, fmt.Sprintf("select %s endpoint", selector.ServiceName())); ce != nil {
+		log.Println(ce.Error())
+		return ce
 	}
 	log.Println("dial to ", endpoint)
-	upconn, err := net.Dial("tcp", endpoint)
-	if err != nil {
-		// dial失败，释放刚申请的房间
-		brokenConnCh <- proxyEndMsg{
-			service:  serviceName,
-			endpoint: endpoint,
-			id:       roomId,
-		}
-		return err
+	upConn, err := net.Dial("tcp", endpoint)
+	if ce := checkError(err, fmt.Sprintf("dial %s", endpoint)); ce != nil {
+		log.Println(ce.Error())
+		// dial upstream失败，放弃本次连接
+		return ce
 	}
 	// 将截取的tcp写回upstream
-	_, err = upconn.Write(buf[:n])
-	if err != nil {
-		// 写入失败，释放刚申请的房间
-		brokenConnCh <- proxyEndMsg{
-			service:  serviceName,
-			endpoint: endpoint,
-			id:       roomId,
-		}
-		return err
+	_, err = upConn.Write(buf[:n])
+	if ce := checkError(err, "write upstream"); ce != nil {
+		log.Println(ce.Error())
+		// 写入upstream失败，放弃本次连接
+		upConn.Close()
+		return ce
+	}
+	// 向公共缓存写入roomId和endpoint的信息
+	err = selector.ConfirmEnpoint(endpoint, roomId, newSelect)
+	if ce := checkError(err, "confirm endpoint"); ce != nil {
+		// 如果写入失败，不能保证后续该roomid的连接到同一个endpoint
+		log.Println("WARN", ce.Error())
+		// 但仍继续往下走
+		// return ce
 	}
 	// upstream -> downstream
 	go func() {
-		defer down.Close()
-		defer upconn.Close()
-		_, err := io.Copy(down, upconn)
-		if err != nil {
-			return
-		}
+		defer downConn.Close()
+		defer upConn.Close()
+		io.Copy(downConn, upConn)
 	}()
 	// downstream -> upstream
 	go func() {
-		// 连接断开后，通知cleanUpBrokenConn清理
-		// 2个goroutine，有一个err，另一个也会err，只触发一次
+		// up/down连接断开后，2个goroutine都会err，只在一个地方清理
 		defer func() {
+			// 通知cleanUpBrokenConn清理
 			brokenConnCh <- proxyEndMsg{
 				service:  serviceName,
 				endpoint: endpoint,
 				id:       roomId,
 			}
 		}()
-		defer down.Close()
-		defer upconn.Close()
-		_, err = io.Copy(upconn, down)
+		defer downConn.Close()
+		defer upConn.Close()
+		_, err = io.Copy(upConn, downConn)
+		// 不检测也可以
 		if err != nil {
 			return
 		}

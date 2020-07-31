@@ -30,22 +30,28 @@ func (r *roomService) Where(roomId string) (string, bool) {
 }
 
 // 申请房间，记录房间中的人数
-func (r *roomService) CheckIn(endpoint, roomId string) {
-	r.repo.SetString(roomLocationKey(roomId), endpoint)
-	r.repo.SetSortedSetMemberScore(endpointInfoKey(endpoint), roomId, 1)
+func (r *roomService) CheckIn(endpoint, roomId string) (err error) {
+	err = r.repo.SetString(roomLocationKey(roomId), endpoint)
+	if err != nil {
+		return
+	}
+	err = r.repo.SetSortedSetMemberScore(endpointInfoKey(endpoint), roomId, 1)
+	return
 }
 
 // 加入房间
-func (r *roomService) Enter(endpoint, roomId string) {
-	r.repo.IncrSortedSetMemberScore(endpointInfoKey(endpoint), roomId, 1)
+func (r *roomService) Enter(endpoint, roomId string) error {
+	_, err := r.repo.IncrSortedSetMemberScore(endpointInfoKey(endpoint), roomId, 1)
+	return err
 }
 
 // Leave: 有人离开房间。如果走完了，删除
 func (r *roomService) Leave(endpoint, roomId string) {
 	// 降低一个
-	remain := r.repo.IncrSortedSetMemberScore(endpointInfoKey(endpoint), roomId, -1)
+	remain, _ := r.repo.IncrSortedSetMemberScore(endpointInfoKey(endpoint), roomId, -1)
 	if remain <= 0 && remain != RepoErrorVal {
-		r.CheckOut(endpoint, roomId)
+		// todo: socket.io建立握手时，向发送服务器发送三次请求。一个连接断开后，不能马上删除对应的endpoint信息
+		// r.CheckOut(endpoint, roomId)
 	}
 }
 

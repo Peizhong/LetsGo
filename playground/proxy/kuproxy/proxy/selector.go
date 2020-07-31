@@ -11,9 +11,11 @@ import (
 
 // selector select upstream pod
 type Selector interface {
-	// SelectEndpoint 根据标识，获得对应endpoints，并分配房间。
-	// 如果后续操作失败，通过ReleaseEndpoint释放房间
-	SelectEndpoint(id string) (string, error)
+	ServiceName() string
+	// SelectEndpoint 根据标识，获得对应endpoints
+	SelectEndpoint(id string) (endpoint string, newSelect bool, err error)
+	// 确认使用Endpoint，向Redis注册
+	ConfirmEnpoint(endpoint, id string, checkIn bool) error
 	ReleaseEndpoint(endpoint, id string)
 	// 查询房间状态：endpoint: [id, ...]
 	LoadStatus() map[string][]string
@@ -39,7 +41,6 @@ type loop struct {
 
 var (
 	NoAvailableServiceEndPointError = errors.New("No available service endpoint")
-	SelectServiceEndPointFailed     = errors.New("Select service endPoint failed")
 	UpdateEndpointsInterval         = time.Second
 )
 
@@ -63,30 +64,39 @@ func NewSelector(serviceName string, config Config) Selector {
 		serviceDiscovery: &MockServiceDiscovery{},
 		room:             NewRoomSerivce(config),
 	}
+	// 初次加载servicce的endpoint
 	mock.refreshEndpoints()
-	// stopCh := make(chan struct{})
+	// todo: 服务越多，线程越多
 	go mock.updateTrigger()
 	return mock
 }
 
-func (m *LBSelector) SelectEndpoint(id string) (string, error) {
+func (m *LBSelector) ServiceName() string {
+	return m.serviceName
+}
+
+func (m *LBSelector) SelectEndpoint(id string) (string, bool, error) {
+	// 检查本地的endpoint缓存
+	length := len(m.loops)
+	if length == 0 {
+		return "", false, NoAvailableServiceEndPointError
+	}
+	// 没有指定roomId，总是分配到第一个
+	if id == DefaultRoomId {
+		return m.loops[0].endpoint, false, nil
+	}
 	// 通过repository(redis)查询，如果id已和endpoint绑定
 	if cachedEndpoint, ok := m.room.Where(id); ok {
 		// 检查cache的endpoint和最新的endpoint是否一致
 		for _, ep := range m.loops {
 			if ep.endpoint == cachedEndpoint {
-				// 房间再增加一个连接
-				m.room.Enter(cachedEndpoint, id)
-				return cachedEndpoint, nil
+				return cachedEndpoint, false, nil
 			}
 		}
 		// 清理错误的endpoint信息
 		m.room.CheckOut(cachedEndpoint, id)
 	}
-	length := len(m.loops)
-	if length == 0 {
-		return "", NoAvailableServiceEndPointError
-	}
+	// todo: 如果updateTrigger将loops数量减少了，暂时不考虑
 	var endpoint string
 	if m.loadbalance == LeastConnections {
 		minConnLoop := m.loops[0]
@@ -101,11 +111,21 @@ func (m *LBSelector) SelectEndpoint(id string) (string, error) {
 		m.loopindex = (m.loopindex + 1) % length
 		endpoint = m.loops[m.loopindex].endpoint
 	}
-	if endpoint != "" {
-		m.room.CheckIn(endpoint, id)
-		return endpoint, nil
+	return endpoint, true, nil
+}
+
+// ConfirmEnpoint 确认
+func (m *LBSelector) ConfirmEnpoint(endpoint, id string, checkIn bool) (err error) {
+	if checkIn {
+		// 写入room:endpoint
+		// 覆盖写入endpoint:room = 1
+		err = m.room.CheckIn(endpoint, id)
+	} else {
+		// 不写入room:endpoint
+		// 写入endpoint:room += 1
+		err = m.room.Enter(endpoint, id)
 	}
-	return "", SelectServiceEndPointFailed
+	return
 }
 
 func (m *LBSelector) ReleaseEndpoint(endpoint, id string) {
