@@ -31,7 +31,7 @@ func (r *roomService) Where(roomId string) (string, bool) {
 
 // 申请房间，记录房间中的人数
 func (r *roomService) CheckIn(endpoint, roomId string) (err error) {
-	err = r.repo.SetString(roomLocationKey(roomId), endpoint)
+	err = r.repo.SetString(roomLocationKey(roomId), endpoint, RoomExpireTime)
 	if err != nil {
 		return
 	}
@@ -48,10 +48,13 @@ func (r *roomService) Enter(endpoint, roomId string) error {
 // Leave: 有人离开房间。如果走完了，删除
 func (r *roomService) Leave(endpoint, roomId string) {
 	// 降低一个
-	remain, _ := r.repo.IncrSortedSetMemberScore(endpointInfoKey(endpoint), roomId, -1)
-	if remain <= 0 && remain != RepoErrorVal {
-		// todo: socket.io建立握手时，向发送服务器发送三次请求。一个连接断开后，不能马上删除对应的endpoint信息
-		// r.CheckOut(endpoint, roomId)
+	remain, err := r.repo.IncrSortedSetMemberScore(endpointInfoKey(endpoint), roomId, -1)
+	if err == nil && remain <= 0 {
+		// socket.io建立握手时，向发送服务器发送三次请求。一个连接断开后，不能马上删除对应的endpoint信息
+		// r.repo.DeleteString(roomLocationKey(roomId))
+
+		// sortedset的数据可以删除，用于统计
+		r.repo.RemoveSortedSetMember(endpointInfoKey(endpoint), roomId)
 	}
 }
 

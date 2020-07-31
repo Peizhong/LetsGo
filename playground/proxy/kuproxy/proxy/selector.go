@@ -41,7 +41,6 @@ type loop struct {
 
 var (
 	NoAvailableServiceEndPointError = errors.New("No available service endpoint")
-	UpdateEndpointsInterval         = 30 * time.Second
 )
 
 type LBSelector struct {
@@ -82,7 +81,7 @@ func (m *LBSelector) SelectEndpoint(id string) (string, bool, error) {
 		return "", false, NoAvailableServiceEndPointError
 	}
 	// 没有指定roomId，总是分配到第一个
-	if id == DefaultRoomId {
+	if id == "" {
 		return m.loops[0].endpoint, false, nil
 	}
 	// 通过repository(redis)查询，如果id已和endpoint绑定

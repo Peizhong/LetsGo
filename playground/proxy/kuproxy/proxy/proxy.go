@@ -15,11 +15,6 @@ type proxy struct {
 const (
 	RoomIdParam      = "roomId"
 	ServiceNameParam = "serviceName"
-	// k8s中service的名字
-
-	// todo：本地调试
-	DefaultRoomId      = "DefaultRoomId"
-	DefaultServiceName = "DefaultServiceName"
 )
 
 type proxyEndMsg struct {
@@ -73,7 +68,6 @@ func (p *proxy) makeTunnel(downConn net.Conn) error {
 	}
 	if roomId == "" {
 		log.Println("no roomId, use default")
-		roomId = DefaultRoomId
 	}
 	if serviceName == "" {
 		// 调试用，应该在http请求中包含

@@ -23,7 +23,7 @@ func TestK8sServiceDiscovery(t *testing.T) {
 }
 
 func TestSelectService(t *testing.T) {
-	selector := proxy.NewSelector("Test", proxy.NewConfig())
+	selector := proxy.NewSelector("Test", proxy.NewRuntime())
 	roomId0 := "room0"
 	endpoint0, _, err := selector.SelectEndpoint(roomId0)
 	assert.NoError(t, err)

@@ -3,17 +3,16 @@ package proxy
 import (
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/go-redis/redis"
 	"github.com/peizhong/letsgo/pkg/log"
 )
 
-const RepoErrorVal float64 = -999
-
 // 储存room和server的信息
 type Repository interface {
 	GetString(key string) (string, bool)
-	SetString(key string, value string) error
+	SetString(key string, value string, expiration time.Duration) error
 	DeleteString(key string)
 	Keys(pattern string) []string
 
@@ -70,8 +69,8 @@ func (r *RedisRepository) GetString(key string) (string, bool) {
 	return val, true
 }
 
-func (r *RedisRepository) SetString(key string, value string) error {
-	err := r.rc.Set(key, value, 0).Err()
+func (r *RedisRepository) SetString(key string, value string, expiration time.Duration) error {
+	err := r.rc.Set(key, value, expiration).Err()
 	return err
 }
 
@@ -90,7 +89,7 @@ func (r *RedisRepository) GetSortedSetMemberScore(key, member string) float64 {
 		return 0
 	} else if err != nil {
 		log.Info("redis err", err.Error())
-		return RepoErrorVal
+		return -1
 	}
 	return val
 }
@@ -109,7 +108,7 @@ func (r *RedisRepository) IncrSortedSetMemberScore(key, member string, incr floa
 	val, err := r.rc.ZIncrBy(key, incr, member).Result()
 	if err != nil {
 		log.Info("redis err", err.Error())
-		return RepoErrorVal, err
+		return -1, err
 	}
 	return val, nil
 }
