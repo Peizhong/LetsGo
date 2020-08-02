@@ -25,22 +25,18 @@ var singelDiscovery Discovery
 func NewSerivceDiscovery() Discovery {
 	if singelDiscovery == nil {
 		onceDiscovery.Do(func() {
-			config, err := rest.InClusterConfig()
-			if err != nil {
-				if err == rest.ErrNotInCluster {
-					log.Println("in dev")
-					singelDiscovery = &MockServiceDiscovery{}
-				} else {
+			if config, err := rest.InClusterConfig(); err == nil {
+				client, err := kubernetes.NewForConfig(config)
+				if err != nil {
 					panic(err)
 				}
-			}
-			client, err := kubernetes.NewForConfig(config)
-			if err != nil {
-				panic(err)
-			}
-			log.Println("in k8s")
-			singelDiscovery = &K8sServiceDiscovery{
-				client: client,
+				log.Println("use k8s discovery")
+				singelDiscovery = &K8sServiceDiscovery{
+					client: client,
+				}
+			} else {
+				log.Println("use mock discovery:", err)
+				singelDiscovery = &MockServiceDiscovery{}
 			}
 		})
 	}
@@ -72,5 +68,5 @@ type MockServiceDiscovery struct {
 }
 
 func (*MockServiceDiscovery) Endpoints(serviceName string) ([]string, error) {
-	return []string{"localhost:3000", "localhost:3001"}, nil
+	return []string{"192.168.3.143:3000", "localhost:3001"}, nil
 }
