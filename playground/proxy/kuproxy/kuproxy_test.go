@@ -21,7 +21,8 @@ func TestApi(t *testing.T) {
 	admin := api.AdminHandler{}
 	server := httptest.NewServer(http.HandlerFunc(admin.Root))
 	defer server.Close()
-	log.Println(server.URL)
+	assert.NotZero(t, server.URL)
+	t.Log("done", server.URL)
 }
 
 func TestK8sServiceDiscovery(t *testing.T) {
