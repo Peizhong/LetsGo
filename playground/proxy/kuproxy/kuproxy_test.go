@@ -3,15 +3,25 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 
+	"github.com/peizhong/letsgo/playground/proxy/kuproxy/api"
 	"github.com/peizhong/letsgo/playground/proxy/kuproxy/proxy"
 	"github.com/stretchr/testify/assert"
 )
 
 func UniqueKey(prefix string) string {
 	return fmt.Sprintf("%s_%d", prefix, time.Now().UnixNano())
+}
+
+func TestApi(t *testing.T) {
+	admin := api.AdminHandler{}
+	server := httptest.NewServer(http.HandlerFunc(admin.Root))
+	defer server.Close()
+	log.Println(server.URL)
 }
 
 func TestK8sServiceDiscovery(t *testing.T) {
@@ -47,7 +57,7 @@ func TestSelectService(t *testing.T) {
 }
 
 func TestRoomSerive(t *testing.T) {
-	selector := proxy.NewSelector("Test", proxy.NewConfig())
+	selector := proxy.NewSelector("Test", proxy.NewRuntime())
 	roomId0 := UniqueKey("RoomSerivce")
 	endpoint0, _, _ := selector.SelectEndpoint(roomId0)
 	endpoint1, _, _ := selector.SelectEndpoint(roomId0)
@@ -64,7 +74,7 @@ func TestRoomSerive(t *testing.T) {
 }
 
 func BenchmarkSelectService(b *testing.B) {
-	selector := proxy.NewSelector("Test", proxy.NewConfig())
+	selector := proxy.NewSelector("Test", proxy.NewRuntime())
 	changeRoom := 0
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {

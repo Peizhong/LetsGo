@@ -40,8 +40,8 @@ func StartHttp(httpAddr string, rt *proxy.Runtime) {
 
 	admin := r.PathPrefix("/admin").Subrouter()
 	adminHandler := NewAdminHandler(rt)
-	admin.HandleFunc("/", adminHandler.root)
-	admin.HandleFunc("/services/{serviceName}", adminHandler.serviceEndpoints)
+	admin.HandleFunc("/", adminHandler.Root)
+	admin.HandleFunc("/services/{serviceName}", adminHandler.ServiceEndpoints)
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hello"))
