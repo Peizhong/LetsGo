@@ -20,13 +20,13 @@ func NewAdminHandler(rt *proxy.Runtime) *AdminHandler {
 }
 
 // adminHandler: admin api handler
-func (h *AdminHandler) root(w http.ResponseWriter, r *http.Request) {
+func (h *AdminHandler) Root(w http.ResponseWriter, r *http.Request) {
 	message := make(map[string]string)
 	message["hello"] = "Hello, i will show you some api"
 	ResponseJson(w, message)
 }
 
-func (h *AdminHandler) serviceEndpoints(w http.ResponseWriter, r *http.Request) {
+func (h *AdminHandler) ServiceEndpoints(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if serviceName := vars["serviceName"]; serviceName != "" {
 		endpoints, err := h.rt.Discovery.Endpoints(serviceName)
