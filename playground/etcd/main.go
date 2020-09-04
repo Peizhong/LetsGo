@@ -16,7 +16,6 @@ import (
 	etcdnaming "go.etcd.io/etcd/clientv3/naming"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/balancer"
 )
 
 type watchList struct {

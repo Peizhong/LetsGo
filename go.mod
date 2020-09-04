@@ -4,14 +4,19 @@ go 1.12
 
 require (
 	github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5
+	github.com/casbin/casbin v1.9.1
+	github.com/casbin/casbin/v2 v2.11.2
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/coreos/etcd v3.3.22+incompatible
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/emirpasic/gods v1.12.0
 	github.com/fsnotify/fsnotify v1.4.9
+	github.com/gin-contrib/authz v0.0.0-20200815104511-3695bd1c4577
+	github.com/gin-gonic/gin v1.5.0
 	github.com/go-ini/ini v1.57.0
 	github.com/go-redis/redis v6.15.7+incompatible
+	github.com/gobwas/glob v0.2.3
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/groupcache v0.0.0-20191227052852-215e87163ea7 // indirect
 	github.com/golang/mock v1.3.1

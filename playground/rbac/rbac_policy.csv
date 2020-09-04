@@ -1,0 +1,15 @@
+# 基础的功能
+p, basic, doc, ping/*, *
+# 角色权限：kae域名下的dev角色具有kube/*的权限
+p, dev, kae, kube/*, *
+p, dev, doc, wps/auth, post
+p, dev, doc, wps/*, *
+
+# 权限的继承
+g, dev, basic, kae
+g, dev, basic, doc
+# wpz是kee(租户)的dev(角色)
+g, wpz@wps.cn, dev, kae
+g, wpz@wps.cn, dev, doc
+# visitor 有basic权限
+g, visitor, basic, doc

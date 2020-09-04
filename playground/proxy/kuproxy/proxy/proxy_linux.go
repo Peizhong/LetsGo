@@ -2,6 +2,12 @@
 
 package proxy
 
+import (
+	"log"
+	"runtime"
+	"syscall"
+)
+
 type epoll struct {
 	fd int // epoll fd
 }
