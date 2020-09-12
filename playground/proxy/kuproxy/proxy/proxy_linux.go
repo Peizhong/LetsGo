@@ -24,7 +24,6 @@ func (p *epoll) AddRead(fd int) {
 }
 
 func (p *epoll) AddReadWrite(fd int) {
-	syscall.Kqueue()
 	if err := syscall.EpollCtl(p.fd, syscall.EPOLL_CTL_ADD, fd,
 		&syscall.EpollEvent{Fd: int32(fd),
 			Events: syscall.EPOLLIN | syscall.EPOLLOUT,

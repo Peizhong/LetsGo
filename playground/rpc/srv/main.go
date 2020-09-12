@@ -20,6 +20,7 @@ import (
 	"github.com/peizhong/letsgo/pkg/config"
 	"github.com/peizhong/letsgo/playground/rpc/pb/helloworld"
 	pb "github.com/peizhong/letsgo/playground/rpc/pb/twoway"
+	"go.elastic.co/apm/module/apmgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -207,6 +208,8 @@ func main() {
 	s = grpc.NewServer(
 		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor))
+
+	s = grpc.NewServer(grpc.UnaryInterceptor(apmgrpc.NewUnaryServerInterceptor()))
 	gServer := &server{}
 	gServer.loadFeatures(filepath.Join(config.WorkspaceDir, "playground/conf/example.json"))
 	pb.RegisterTwoWayJobServer(s, gServer)

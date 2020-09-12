@@ -39,6 +39,7 @@ require (
 	github.com/oschwald/geoip2-golang v1.4.0
 	github.com/panjf2000/gnet v1.2.0
 	github.com/prometheus/client_golang v1.6.0
+	github.com/prometheus/procfs v0.1.3 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/cobra v1.0.0
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
@@ -47,21 +48,27 @@ require (
 	github.com/tidwall/gjson v1.6.0
 	github.com/uber/jaeger-client-go v2.22.1+incompatible
 	github.com/uber/jaeger-lib v2.2.0+incompatible
+	go.elastic.co/apm/module/apmgin v1.8.0
+	go.elastic.co/apm/module/apmgoredis v1.8.0
+	go.elastic.co/apm/module/apmgorm v1.8.0
+	go.elastic.co/apm/module/apmgrpc v1.8.0
+	go.elastic.co/apm/module/apmhttp v1.8.0
 	go.etcd.io/etcd v3.3.22+incompatible
 	go.mongodb.org/mongo-driver v1.3.1
 	go.uber.org/atomic v1.6.0
 	go.uber.org/automaxprocs v1.3.0
 	go.uber.org/dig v1.10.0
-	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
+	golang.org/x/net v0.0.0-20200904194848-62affa334b73
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6 // indirect
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
-	golang.org/x/sys v0.0.0-20200519105757-fe76b779f299
+	golang.org/x/sys v0.0.0-20200909081042-eff7692f9009
+	golang.org/x/text v0.3.3 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
-	golang.org/x/tools v0.0.0-20191227053925-7b8e75db28f4 // indirect
+	golang.org/x/tools v0.0.0-20200509030707-2212a7e161a5 // indirect
 	google.golang.org/appengine v1.6.5 // indirect
-	google.golang.org/genproto v0.0.0-20191230161307-f3c370f40bfb // indirect
-	google.golang.org/grpc v1.26.0
-	google.golang.org/protobuf v1.23.0
+	google.golang.org/genproto v0.0.0-20200911024640-645f7a48b24f // indirect
+	google.golang.org/grpc v1.29.0
+	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/ini.v1 v1.55.0 // indirect
 	gopkg.in/vmihailenco/msgpack.v2 v2.9.1
 	k8s.io/apimachinery v0.18.6
