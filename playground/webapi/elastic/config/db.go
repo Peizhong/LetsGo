@@ -11,7 +11,7 @@ type DBConfig struct {
 var db = &DBConfig{
 	UserName:        "app_user",
 	Password:        "app_user",
-	Database:        "kae",
+	Database:        "kzz",
 	Address:         "localhost:13306",
 	IdleConnections: 2,
 	MaxConnections:  5,
