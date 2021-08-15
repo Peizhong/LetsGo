@@ -17,7 +17,7 @@ require (
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/gin-contrib/authz v0.0.0-20200815104511-3695bd1c4577
 	github.com/gin-contrib/pprof v1.3.0
-	github.com/gin-gonic/gin v1.6.2
+	github.com/gin-gonic/gin v1.7.0
 	github.com/go-ini/ini v1.57.0
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/gobwas/glob v0.2.3
