@@ -7,11 +7,13 @@ require (
 	github.com/armon/go-metrics v0.3.4 // indirect
 	github.com/casbin/casbin v1.9.1
 	github.com/casbin/casbin/v2 v2.11.2
+	github.com/cncf/udpa/go v0.0.0-20200629203442-efcf912fb354 // indirect
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/coreos/etcd v3.3.22+incompatible
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/emirpasic/gods v1.12.0
+	github.com/envoyproxy/go-control-plane v0.9.6
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/gin-contrib/authz v0.0.0-20200815104511-3695bd1c4577
 	github.com/gin-contrib/pprof v1.3.0
