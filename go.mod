@@ -53,7 +53,7 @@ require (
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/cobra v1.0.0
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
-	github.com/stretchr/testify v1.6.0
+	github.com/stretchr/testify v1.6.1
 	github.com/tidwall/evio v1.0.7
 	github.com/tidwall/gjson v1.6.0
 	github.com/uber/jaeger-client-go v2.22.1+incompatible
@@ -64,7 +64,7 @@ require (
 	go.elastic.co/apm/module/apmgrpc v1.8.0
 	go.elastic.co/apm/module/apmhttp v1.8.0
 	go.etcd.io/etcd v3.3.22+incompatible
-	go.mongodb.org/mongo-driver v1.3.1
+	go.mongodb.org/mongo-driver v1.5.1
 	go.uber.org/atomic v1.6.0
 	go.uber.org/automaxprocs v1.3.0
 	go.uber.org/dig v1.10.0
@@ -73,7 +73,6 @@ require (
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6 // indirect
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
 	golang.org/x/sys v0.0.0-20200922070232-aee5d888a860
-	golang.org/x/text v0.3.3 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	golang.org/x/tools v0.0.0-20200509030707-2212a7e161a5 // indirect
 	google.golang.org/appengine v1.6.5 // indirect
